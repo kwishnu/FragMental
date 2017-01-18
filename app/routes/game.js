@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStor
 //import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
 import Button from '../components/Button';
-//var Sound = require('react-native-sound');
+var Sound = require('react-native-sound');
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -41,26 +41,32 @@ var useSounds = 'false';
 var dataBackup = {};
 var puzzleData = {};
 var dsArray = [];
-//const plink = new Sound('plink.mp3', Sound.MAIN_BUNDLE, (error) => {
-//  if (error) {
-//    window.alert('Sound file not found');
-//  }
-//});
-//const slide = new Sound('slide.mp3', Sound.MAIN_BUNDLE, (error) => {
-//  if (error) {
-//    window.alert('Sound file not found');
-//  }
-//});
-//const blat = new Sound('blat.mp3', Sound.MAIN_BUNDLE, (error) => {
-//  if (error) {
-//    window.alert('Sound file not found');
-//  }
-//});
-//const fanfare = new Sound('fanfare.mp3', Sound.MAIN_BUNDLE, (error) => {
-//  if (error) {
-//    window.alert('Sound file not found');
-//  }
-//});
+var playedPlinkLast = false;
+const plink1 = new Sound('plink.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
+const plink2 = new Sound('plink.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
+const slide = new Sound('slide.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
+const blat = new Sound('blat.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
+const fanfare = new Sound('fanfare.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
 
 // {/* ... */} for JSX commenting
 class Game extends Component {
@@ -227,7 +233,7 @@ class Game extends Component {
             selectedItem: item,
         });
         window.alert(item);
-}
+    }
     border(color) {
         return {
             borderColor: color,
@@ -340,7 +346,15 @@ class Game extends Component {
             solved = (onFrag ==  this.state.numFrags)?true:false;
 
             if(!solved){
-//                if(useSounds == 'true')plink.play();
+                if(useSounds == 'true'){
+                    if (playedPlinkLast){
+                        plink2.play();
+                        playedPlinkLast = false;
+                    }else{
+                        plink1.play();
+                        playedPlinkLast = true;
+                    }
+                }
             }else{
                 onFrag  = 0;
                 scoreToAdd = 3;
@@ -404,15 +418,15 @@ class Game extends Component {
             if(howMuchToScore>0) {
                 this.score_increment(scoreToAdd);
             }else{
-//                if(useSounds == 'true')blat.play();
+                if(useSounds == 'true')blat.play();
                 this.score_decrement(scoreToAdd);
             }
         }else{
-//            if(useSounds == 'true')blat.play();
+            if(useSounds == 'true')blat.play();
             this.score_decrement(1);
         }
         if (solved){
-//            if(useSounds == 'true')slide.play();
+            if(useSounds == 'true')slide.play();
             setTimeout(() => {this.animate_word(currClue)}, 20);
         };
     }
@@ -628,7 +642,7 @@ class Game extends Component {
             textToReturn = parseInt(this.state.onThisClue + 1, 10) + ':  ' + currClue.substring(currClue.indexOf(':') + 1);
             return textToReturn;
         }else{
-//            if(useSounds == 'true')fanfare.play();
+            if(useSounds == 'true')fanfare.play();
             try {
                 AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
             } catch (error) {
@@ -780,10 +794,10 @@ class Game extends Component {
                             </View>
                             <View style={ container_styles.buttons_container }>
                                 <Button style={styles.skip_button} onPress={ () => this.skip_to_next() }>
-                                    <Image source={ require('../images/skip.png')} style={{ width: 36, height: 36 }} />
+                                    <Image source={ require('../images/skip.png')} style={{ width: 50, height: 50 }} />
                                 </Button>
                                 <Button style={styles.hint_button} onPress={ () => this.give_hint() }>
-                                    <Image source={ require('../images/question.png')} style={{ width: 36, height: 36 }} />
+                                    <Image source={ require('../images/question.png')} style={{ width: 50, height: 50 }} />
                                 </Button>
                             </View>
                             <View style={ container_styles.stars_container }>
