@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage, AppState, Platform } from 'react-native';
 import {Switch} from '../components/Switch';
 import Button from '../components/Button';
+import PushNotification from 'react-native-push-notification';
+import PushController from '../components/PushController';
+
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
 var KEY_Sound = 'soundKey';
@@ -9,7 +12,6 @@ var KEY_Color_L = 'lColorKey';
 var KEY_Color_G = 'gColorKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
-//var PushNotification = require('react-native-push-notification');
 
 module.exports = class Settings extends Component {
     constructor(props) {
@@ -24,11 +26,15 @@ module.exports = class Settings extends Component {
             picker_enabled: true,
             notif_time: '7:00 am',
             notifOnOrOff: 'Yes, at',
+            seconds: 5,
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
+        this.handleAppStateChange = this.handleAppStateChange.bind(this);
     }
     componentDidMount(){
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.addEventListener('change', this.handleAppStateChange);
+
         AsyncStorage.getItem(KEY_Sound).then((sounds) => {
             if (sounds !== null) {
                 var textToUse = (sounds == 'true')?'Game sounds on':'Game sounds off';
@@ -100,11 +106,10 @@ module.exports = class Settings extends Component {
                 }
             }
         });
-
-
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.removeEventListener('change', this.handleAppStateChange);
     }
     handleHardwareBackButton() {
         try {
@@ -166,6 +171,21 @@ module.exports = class Settings extends Component {
             window.alert('AsyncStorage error: ' + error.message);
         }
     }
+    handleAppStateChange(appState) {
+        if (appState === 'background') {
+          let date = new Date(Date.now() + (this.state.seconds * 1000));
+
+          if (Platform.OS === 'ios') {
+            date = date.toISOString();
+          }
+
+          PushNotification.localNotificationSchedule({
+            message: "My Notification Message",
+            date,
+          });
+        }
+      }
+
 
     render() {
         return (
