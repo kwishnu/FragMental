@@ -3,8 +3,6 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, Li
 import moment from 'moment';
 import SectionHeader  from '../components/SectionHeader';
 import Button from '../components/Button';
-var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
 
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -41,6 +39,8 @@ function invertColor(hex, bw) {
     // pad each with zeros and return
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
+var SideMenu = require('react-native-side-menu');
+var Menu = require('./menu');
 var listening = false;
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
@@ -58,6 +58,7 @@ var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 11/1/2016
 var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 var sArray = [];
+
 
 
 class PuzzleContents extends Component{
@@ -111,12 +112,12 @@ class PuzzleContents extends Component{
         return { dataBlob, sectionIds, rowIds };
     }
     componentDidMount() {
+
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
         AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
-                  //window.alert(sArray.toString());
             } else {
                 var solvedArray = new Array(30).fill('0');
                 sArray = solvedArray;
@@ -266,11 +267,12 @@ class PuzzleContents extends Component{
                 borderWidth: bordWidth,
             };
     }
-    bg(colorSent){
+    bg(colorSent) {
         var strToReturn=colorSent.replace(/\"/g, "");
         return {
             backgroundColor: strToReturn
         };
+
     }
     getTextColor(bg){
         var strToReturn = invertColor(bg, true);
@@ -374,10 +376,12 @@ class PuzzleContents extends Component{
                     <View style={ container_styles.footer }>
                         <Text style={ styles.copyright }>Some fine print...</Text>
                     </View>
+
                  </View>
             </SideMenu>
         );
     }
+//                                <PushController />
 
 }
 

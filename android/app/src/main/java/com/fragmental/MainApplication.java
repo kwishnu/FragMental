@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.zmxv.RNSound.RNSoundPackage;
+import android.content.Intent;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;

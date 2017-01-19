@@ -57,7 +57,6 @@ module.exports = class Menu extends Component {
     render() {
         return (<View style=  {menu_styles.container} >
                      <ListView  showsVerticalScrollIndicator ={false}
-                                initialListSize ={100}
                                 contentContainerStyle={ menu_styles.listview }
                                 dataSource={this.state.dataSource}
                                 renderRow={(rowData) =>

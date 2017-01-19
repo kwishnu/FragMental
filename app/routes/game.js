@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator } from 'react-native';
-//import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');

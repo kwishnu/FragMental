@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage, AppState, Platform } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage } from 'react-native';
 import {Switch} from '../components/Switch';
 import Button from '../components/Button';
 import PushNotification from 'react-native-push-notification';
-import PushController from '../components/PushController';
+import moment from 'moment';
 
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
@@ -12,6 +12,8 @@ var KEY_Color_L = 'lColorKey';
 var KEY_Color_G = 'gColorKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
+var nowISO = moment().valueOf();
+var tonightMidnight = moment().endOf('day').valueOf();
 
 module.exports = class Settings extends Component {
     constructor(props) {
@@ -23,18 +25,13 @@ module.exports = class Settings extends Component {
             color_L_state: true,
             color_G_state: true,
             notifs_state: true,
-            picker_enabled: true,
-            notif_time: '7:00 am',
-            notifOnOrOff: 'Yes, at',
-            seconds: 5,
+            notif_time: '7',
+            notif_text: 'Yes, at',
         };
-        this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
-        this.handleAppStateChange = this.handleAppStateChange.bind(this);
+       this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount(){
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
-        AppState.addEventListener('change', this.handleAppStateChange);
-
         AsyncStorage.getItem(KEY_Sound).then((sounds) => {
             if (sounds !== null) {
                 var textToUse = (sounds == 'true')?'Game sounds on':'Game sounds off';
@@ -80,36 +77,28 @@ module.exports = class Settings extends Component {
             }
         });
         AsyncStorage.getItem(KEY_Notifs).then((notifs) => {
-            if (notifs !== null) {
-                var stateToUse = (notifs == 'true')?true:false;
+            if (notifs !== '0') {
                 this.setState({
-                    notifs_state: stateToUse
+                    notifs_state: true,
+                    notif_time: notifs,
+                    notif_text: 'Yes, at'
                 });
             }else{
-                try {
-                    AsyncStorage.setItem(KEY_Notifs, 'true');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-        });
-        AsyncStorage.getItem(KEY_NotifTime).then((notifTime) => {
-            if (notifTime !== null) {
                 this.setState({
-                    notif_time: notifTime
+                    notifs_state: false,
+                    notif_time: '7',
+                    notif_text: 'No'
                 });
-            }else{
-                try {
-                    AsyncStorage.setItem(KEY_NotifTime, '7:00 am');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
             }
+        })
+        .catch(function(error) {
+            //window.alert(error.message);
+            throw error;
         });
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
-        AppState.removeEventListener('change', this.handleAppStateChange);
+        //AppState.removeEventListener('change', this.handleAppStateChange);
     }
     handleHardwareBackButton() {
         try {
@@ -155,139 +144,144 @@ module.exports = class Settings extends Component {
         }
     }
     toggleUseNotifs(state){
-        var yesOrNo = (state)?'Yes, at':'No'
-        this.setState({ picker_enabled: state, notifOnOrOff: yesOrNo });
+        PushNotification.cancelLocalNotifications({id: '777'});
+        var yesOrNo = '';
+        var strNotifs = '';
+        if(state){
+            yesOrNo = 'Yes, at';
+            strNotifs = this.state.notif_time;
+            this.startNotifications(strNotifs);
+        }else{
+            yesOrNo = 'No';
+            strNotifs = '0';
+        }
+        this.setState({ notifs_state: state, notif_text: yesOrNo });
         try {
-            AsyncStorage.setItem(KEY_Notifs, state.toString());
+            AsyncStorage.setItem(KEY_Notifs, strNotifs);
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
     }
     setNotifTime(key: value){
+        PushNotification.cancelLocalNotifications({id: '777'});
+        this.startNotifications(key.selectedValue);
         this.setState({ notif_time: key.selectedValue });
         try {
-            AsyncStorage.setItem(KEY_NotifTime, key.selectedValue);
+            AsyncStorage.setItem(KEY_Notifs, key.selectedValue);
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
     }
-    handleAppStateChange(appState) {
-        if (appState === 'background') {
-          let date = new Date(Date.now() + (this.state.seconds * 1000));
+    startNotifications(time) {
+        //let date = new Date(Date.now() + (parseInt(time, 10) * 1000));
+        var tomorrowAM = new Date(Date.now() + (moment(tonightMidnight).add(parseInt(time, 10), 'hours').valueOf()) - nowISO);
 
-          if (Platform.OS === 'ios') {
-            date = date.toISOString();
-          }
+        PushNotification.localNotificationSchedule({
+            message: "A new Daily Puzzle is in!",
+            vibrate: true,
+            soundName: 'plink.mp3',
+            repeatType: 'day',//can be 'time', if so use following:
+            //repeatTime: 86400000,//daily
+            date: tomorrowAM,
+            id: '777',
+        });
+    }
 
-          PushNotification.localNotificationSchedule({
-            message: "My Notification Message",
-            date,
-          });
-        }
-      }
 
 
     render() {
         return (
-                <View style={settings_styles.container}>
-                    <View style={ settings_styles.header }>
-                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                        <Text style={styles.header_text} >Settings
-                        </Text>
-                        <Button>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                    </View>
+            <View style={settings_styles.container}>
+                <View style={ settings_styles.header }>
+                    <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                    </Button>
+                    <Text style={styles.header_text} >Settings
+                    </Text>
+                    <Button>
+                        <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                    </Button>
+                </View>
 
                 <View style={ settings_styles.settings_container }>
-                <ScrollView>
-                    <View>
-                        <View style={[settings_styles.parameter_container, {marginTop: 40}]}>
-                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                <Text style={settings_styles.text}>{this.state.sounds_text}</Text>
+                    <ScrollView>
+                        <View>
+                            <View style={[settings_styles.parameter_container, {marginTop: 40}]}>
+                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                    <Text style={settings_styles.text}>{this.state.sounds_text}</Text>
+                                </View>
+                                <View style={settings_styles.switch_container}>
+                                    <Switch value={this.state.sounds_state} onValueChange={(state)=>{this.toggleGameSounds(state)}}/>
+                                </View>
                             </View>
-                            <View style={settings_styles.switch_container}>
-                                <Switch value={this.state.sounds_state} onValueChange={(state)=>{this.toggleGameSounds(state)}}/>
+
+                            <View style={settings_styles.parameter_container}>
+                                <View style={settings_styles.divider}>
+                                </View>
+                            </View>
+
+                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                                <View style={settings_styles.text_container}>
+                                    <Text style={[settings_styles.text, {paddingLeft: 15}]}>Use Puzzle Pack colors...</Text>
+                                </View>
+                            </View>
+
+                            <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
+                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                    <Text style={settings_styles.text}>in Launcher:</Text>
+                                </View>
+
+                                <View style={settings_styles.switch_container}>
+                                    <Switch value={this.state.color_L_state} onValueChange={(state)=>{this.toggleColorL(state)}}/>
+                                </View>
+                            </View>
+                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                    <Text style={settings_styles.text}>in Game:</Text>
+                                </View>
+                                <View style={settings_styles.switch_container}>
+                                    <Switch value={this.state.color_G_state} onValueChange={(state)=>{this.toggleColorG(state)}}/>
+                                </View>
+                            </View>
+
+                            <View style={settings_styles.parameter_container}>
+                                <View style={settings_styles.divider}>
+                                </View>
+                            </View>
+
+                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                                <View style={settings_styles.text_container}>
+                                    <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
+                                </View>
+                            </View>
+                            <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
+                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                    <Text style={settings_styles.text}>{this.state.notif_text}</Text>
+                                </View>
+                                <View style={settings_styles.switch_container}>
+                                    <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
+                                </View>
+                            </View>
+                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                                <Picker
+                                    enabled={this.state.notifs_state}
+                                    style={settings_styles.picker}
+                                    selectedValue={this.state.notif_time}
+                                    onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
+                                >
+                                    <Picker.Item label='5:00 am' value={'5'} />
+                                    <Picker.Item label='6:00 am' value={'6'} />
+                                    <Picker.Item label='7:00 am' value={'7'} />
+                                    <Picker.Item label='8:00 am' value={'8'} />
+                                    <Picker.Item label='9:00 am' value={'9'} />
+                                </Picker>
                             </View>
                         </View>
-
-                        <View style={settings_styles.parameter_container}>
-                            <View style={settings_styles.divider}>
-                            </View>
-                        </View>
-
-                        <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
-                            <View style={settings_styles.text_container}>
-                                <Text style={[settings_styles.text, {paddingLeft: 15}]}>Use Puzzle Pack colors...</Text>
-                            </View>
-                        </View>
-
-                        <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
-                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                <Text style={settings_styles.text}>in Launcher:</Text>
-                            </View>
-
-                            <View style={settings_styles.switch_container}>
-                                <Switch value={this.state.color_L_state} onValueChange={(state)=>{this.toggleColorL(state)}}/>
-                            </View>
-                        </View>
-                        <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
-                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                <Text style={settings_styles.text}>in Game:</Text>
-                            </View>
-                            <View style={settings_styles.switch_container}>
-                                <Switch value={this.state.color_G_state} onValueChange={(state)=>{this.toggleColorG(state)}}/>
-                            </View>
-                        </View>
-                        <View style={settings_styles.parameter_container}>
-                            <View style={settings_styles.divider}>
-                            </View>
-                        </View>
-
-                        <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
-                            <View style={settings_styles.text_container}>
-                                <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
-                            </View>
-                        </View>
-                        <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
-                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                <Text style={settings_styles.text}>{this.state.notifOnOrOff}</Text>
-                            </View>
-                            <View style={settings_styles.switch_container}>
-                                <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
-                            </View>
-                        </View>
-
-
-
-                        <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
-                            <Picker
-                                enabled={this.state.picker_enabled}
-                                style={settings_styles.picker}
-                                selectedValue={this.state.notif_time}
-                                onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
-                            >
-                                <Picker.Item label='5:00 am' value={'5:00 am'} />
-                                <Picker.Item label='6:00 am' value={'6:00 am'} />
-                                <Picker.Item label='7:00 am' value={'7:00 am'} />
-                                <Picker.Item label='8:00 am' value={'8:00 am'} />
-                                <Picker.Item label='9:00 am' value={'9:00 am'} />
-
-                            </Picker>
-
-                        </View>
-
-                    </View>
-                </ScrollView>
+                    </ScrollView>
                 </View>
-                </View>
-    );
-  }
-//                    <View style={ settings_styles.listview_container }>
-//                        <Switch onChangeState={(state)=>{alert(state)}}/>
-//                    </View>
+            </View>
+        );
+    }
 };
 
 
@@ -331,6 +325,7 @@ const settings_styles = StyleSheet.create({
     },
     text: {
         color: 'white',
+        fontSize: 15,
     },
     picker: {
         width: 100,
