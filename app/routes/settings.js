@@ -8,8 +8,7 @@ import moment from 'moment';
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
 var KEY_Sound = 'soundKey';
-var KEY_Color_L = 'lColorKey';
-var KEY_Color_G = 'gColorKey';
+var KEY_Color = 'colorKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
 var nowISO = moment().valueOf();
@@ -22,8 +21,8 @@ module.exports = class Settings extends Component {
             id: 'settings',
             sounds_text: 'Game sounds on',
             sounds_state: true,
-            color_L_state: true,
-            color_G_state: true,
+            color_state: true,
+            use_colors: 'Use Puzzle Pack colors',
             notifs_state: true,
             notif_time: '7',
             notif_text: 'Yes, at',
@@ -48,29 +47,17 @@ module.exports = class Settings extends Component {
                 }
             }
         });
-        AsyncStorage.getItem(KEY_Color_L).then((colorsL) => {
-            if (colorsL !== null) {
-                var stateToUse = (colorsL == 'true')?true:false;
+        AsyncStorage.getItem(KEY_Color).then((colors) => {
+            if (colors !== null) {
+                var stateToUse = (colors == 'true')?true:false;
+                var strToUse = (colors == 'true')?'Use Puzzle Pack colors':'Using default colors';
                 this.setState({
-                    color_L_state: stateToUse
+                    color_state: stateToUse,
+                    use_colors: strToUse
                 });
             }else{
                 try {
-                    AsyncStorage.setItem(KEY_Color_L, 'true');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-        });
-        AsyncStorage.getItem(KEY_Color_G).then((colorsG) => {
-            if (colorsG !== null) {
-                var stateToUse = (colorsG == 'true')?true:false;
-                this.setState({
-                    color_G_state: stateToUse
-                });
-            }else{
-                try {
-                    AsyncStorage.setItem(KEY_Color_G, 'true');//
+                    AsyncStorage.setItem(KEY_Color, 'true');//
                 } catch (error) {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
@@ -129,16 +116,11 @@ module.exports = class Settings extends Component {
             window.alert('AsyncStorage error: ' + error.message);
         }
     }
-    toggleColorL(state){
+    toggleColor(state){
+        var strToUse = (state)?'Use Puzzle Pack colors':'Using default colors';
+        this.setState({use_colors: strToUse});
         try {
-            AsyncStorage.setItem(KEY_Color_L, state.toString());
-        } catch (error) {
-            window.alert('AsyncStorage error: ' + error.message);
-        }
-    }
-    toggleColorG(state){
-        try {
-            AsyncStorage.setItem(KEY_Color_G, state.toString());
+            AsyncStorage.setItem(KEY_Color, state.toString());
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
@@ -220,27 +202,14 @@ module.exports = class Settings extends Component {
                                 </View>
                             </View>
 
-                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
-                                <View style={settings_styles.text_container}>
-                                    <Text style={[settings_styles.text, {paddingLeft: 15}]}>Use Puzzle Pack colors...</Text>
-                                </View>
-                            </View>
 
-                            <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
-                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>in Launcher:</Text>
-                                </View>
 
-                                <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.color_L_state} onValueChange={(state)=>{this.toggleColorL(state)}}/>
-                                </View>
-                            </View>
                             <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
                                 <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>in Game:</Text>
+                                    <Text style={settings_styles.text}>{this.state.use_colors}</Text>
                                 </View>
                                 <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.color_G_state} onValueChange={(state)=>{this.toggleColorG(state)}}/>
+                                    <Switch value={this.state.color_state} onValueChange={(state)=>{this.toggleColor(state)}}/>
                                 </View>
                             </View>
 

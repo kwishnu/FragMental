@@ -4,15 +4,6 @@ import moment from 'moment';
 import SectionHeader  from '../components/SectionHeader';
 import Button from '../components/Button';
 
-function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-}
 function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
@@ -39,6 +30,26 @@ function invertColor(hex, bw) {
     // pad each with zeros and return
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
+function shadeColor(color, percent) {
+        var R = parseInt(color.substring(1,3),16);
+        var G = parseInt(color.substring(3,5),16);
+        var B = parseInt(color.substring(5,7),16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R<255)?R:255;
+        G = (G<255)?G:255;
+        B = (B<255)?B:255;
+
+        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+        return '#'+RR+GG+BB;
+}
+
 var SideMenu = require('react-native-side-menu');
 var Menu = require('./menu');
 var listening = false;
@@ -51,6 +62,7 @@ var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
 var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
 var BORDER_RADIUS = CELL_PADDING * .3;
 var KEY_daily_solved_array = 'solved_array';
+var KEY_Color = 'colorKey';
 var KEY_midnight = 'midnight';
 var nowISO = moment().valueOf();
 var launchDay = moment('2016 10', 'YYYY-MM');//November 1, 2016
@@ -58,6 +70,9 @@ var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 11/1/2016
 var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 var sArray = [];
+//var headerColor = null;//'#050e59';
+//var cluesBgColor = null;//'#0000ff';
+//var textColor = null;//'#ffffff';
 
 
 
@@ -78,6 +93,10 @@ class PuzzleContents extends Component{
             id: 'puzzles contents',
             isOpen: false,
             todayFull: null,
+//            headerColor: '#050e59',
+//            bgColor: '#09146d',
+//            cluesBgColor: '#0000ff',
+//            textColor: '#ffffff',
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
@@ -124,11 +143,11 @@ class PuzzleContents extends Component{
                 try {
                    AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(solvedArray));
                 } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
+                   window.alert('AsyncStorage error: ' + error.message);
                 }
             }
             return AsyncStorage.getItem(KEY_midnight)
-        }).then( (value) => {
+            }).then( (value) => {
             if (value !== null) {
                 var storedMidnight = parseInt(JSON.parse(value), 10);
                 var milliSecsOver = nowISO - storedMidnight;
@@ -234,25 +253,6 @@ class PuzzleContents extends Component{
                 break;
         }
     }
-    shadeColor(color, percent) {
-        var R = parseInt(color.substring(1,3),16);
-        var G = parseInt(color.substring(3,5),16);
-        var B = parseInt(color.substring(5,7),16);
-
-        R = parseInt(R * (100 + percent) / 100);
-        G = parseInt(G * (100 + percent) / 100);
-        B = parseInt(B * (100 + percent) / 100);
-
-        R = (R<255)?R:255;
-        G = (G<255)?G:255;
-        B = (B<255)?B:255;
-
-        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-
-        return '#'+RR+GG+BB;
-    }
     border(color) {
         return {
             borderColor: color,
@@ -260,7 +260,7 @@ class PuzzleContents extends Component{
         };
     }
     lightBorder(color, type) {
-        var lighterColor = this.shadeColor(color, 60);
+        var lighterColor = shadeColor(color, 60);
         var bordWidth = (type == 'daily')? 1:6;
             return {
                 borderColor: lighterColor,
@@ -289,15 +289,16 @@ class PuzzleContents extends Component{
     }
 
     onSelect(index, title, bg) {
-        var theDestination = 'puzzle launcher';
-        var theTitle = title;
-        var textColor = '';
-        var gripeText = '';
-
         if (title.indexOf('*') > -1){
             this.startPurchase(title.substring(1));
             return;
         }
+        var theDestination = 'puzzle launcher';
+        var theTitle = title;
+        var gripeText = '';
+        var useColors = '';
+        var bgColorToSend = '';
+
         switch(title){
             case 'Today\'s Puzzle':
                 theDestination = 'game board';
@@ -308,33 +309,55 @@ class PuzzleContents extends Component{
                         daily_solvedArray: sArray,
                         title: this.state.todayFull,
                         index: '0',
+                        bgColor: '#09146d',
                         fromWhere: 'puzzles contents',
                         dataElement: index,
                     },
                 });
                 return;
-                break;
             case 'Last Three Days':
                 gripeText = 'Purchase any puzzle pack and always have access here to the last 30 days of FragMental puzzles!';
             case 'Last Thirty Days':  //fallthrough
                 theDestination = 'daily launcher';
                 theTitle = 'Daily Puzzles';
-                break;
+                this.props.navigator.replace({
+                    id: theDestination,
+                    passProps: {
+                        puzzleData: this.props.puzzleData,
+                        daily_solvedArray: sArray,
+                        title: theTitle,
+                        gripeText: gripeText,
+                        dataElement: index,
+                        bgColor: '#09146d',
+                    },
+                });
+                return;
             default:
-                textColor = invertColor(bg, true);
         }
-        this.props.navigator.replace({
-            id: theDestination,
-            passProps: {
-                puzzleData: this.props.puzzleData,
-                daily_solvedArray: sArray,
-                title: theTitle,
-                gripeText: gripeText,
-                dataElement: index,
-                bgColor: bg,
-                textColor: textColor,
-            },
-       });
+        AsyncStorage.getItem(KEY_Color).then((colors) => {
+            if (colors !== null) {
+                useColors = colors;
+            }else{
+                useColors = 'true';
+                try {
+                    AsyncStorage.setItem(KEY_Color, useColors);//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+            bgColorToSend = (useColors == 'true')?bg:'#09146d';//#09146d default color
+            this.props.navigator.replace({
+                id: theDestination,
+                passProps: {
+                    puzzleData: this.props.puzzleData,
+                    daily_solvedArray: sArray,
+                    title: theTitle,
+                    gripeText: gripeText,
+                    dataElement: index,
+                    bgColor: bgColorToSend,
+                },
+            });
+        });
     }
 
     render() {

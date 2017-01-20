@@ -121,7 +121,7 @@ class SplashScreen extends Component {
     }
     setNotifications(){
         var time = this.state.notif_time;
-        if (time == '0'){return;}
+        if (time == '0'){return}
         //let date = new Date(Date.now() + (parseInt(time, 10) * 1000));
         var tomorrowAM = new Date(Date.now() + (moment(tonightMidnight).add(parseInt(time, 10), 'hours').valueOf()) - nowISO);
 

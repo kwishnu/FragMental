@@ -61,8 +61,9 @@ class PuzzleLaunch extends Component{
             dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i)),
             scrollPosition: 0,
             onPuzzle: 0,
+//            headerColor: this.props.headerColor,
             bgColor: this.props.bgColor,
-            textColor: this.props.textColor,
+//            textColor: this.props.textColor,
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -126,7 +127,7 @@ class PuzzleLaunch extends Component{
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
          if(num==onThis){
-             strToReturn='#0F0';
+             strToReturn='#00FF00';
              }else if(num<onThis){
              strToReturn='#079707';
              }else{
@@ -141,14 +142,14 @@ class PuzzleLaunch extends Component{
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
          if(num==onThis){
-             strToReturn='#01ff01';
+             strToReturn='#00FF00';
              }else if(num<onThis){
              strToReturn='#079707';
              }else{
              strToReturn='#999ba0';
              }
 
-         return {strToReturn};
+         return strToReturn;
     }
     getBorder(num){
          var strToReturn='';
@@ -156,19 +157,18 @@ class PuzzleLaunch extends Component{
          if(num==onThis){
              strToReturn='#0F0';
              }else if(num<onThis){
-             strToReturn='#00a700';
+                 strToReturn='#00a700';
              }else{
-             strToReturn='#7e867e';
+                 strToReturn='#7e867e';
              }
-
          return {borderColor: strToReturn};
     }
     headerFooter(color){
-         var strToReturn = shadeColor(color, -10);
+         var strToReturn = shadeColor(color, -20);
          return {backgroundColor: strToReturn};
     }
     containerBg(color){
-         var strToReturn = shadeColor(color, 60);
+         var strToReturn = shadeColor(color, 40);
          return {backgroundColor: strToReturn};
     }
     darkBorder(color) {
@@ -192,10 +192,9 @@ class PuzzleLaunch extends Component{
                 fromWhere: 'puzzle launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
-                myBg: this.props.bgColor,
+                bgColor: this.props.bgColor,
                 myTitle: this.props.title,
-                myTextColor: this.props.textColor,
-                },
+            },
        });
     }
 
@@ -209,8 +208,8 @@ class PuzzleLaunch extends Component{
 
                 <View style={ [container_styles.container, this.darkBorder(this.props.bgColor)] }>
                     <View style={ [container_styles.header, this.headerFooter(this.props.bgColor)] }>
-                        <Button style={{left: 15}} onPress={ () => this.toggle() }>
-                            <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
+                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
                         </Button>
                         <Text style={{fontSize: 18, color: '#fff'}} >{this.props.title}
                         </Text>
@@ -226,7 +225,7 @@ class PuzzleLaunch extends Component{
                                     renderRow={(rowData) =>
                                      <View>
                                          <TouchableHighlight onPress={() => this.onSelect(rowData)}
-                                                             underlayColor={() => this.bg(rowData)}
+                                                             underlayColor={() => this.getUnderlay(rowData)}
                                                              style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
                                              <Text style={ styles.puzzle_text_large }>{rowData + 1}</Text>
                                          </TouchableHighlight>

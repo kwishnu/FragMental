@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStor
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');
+
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -15,6 +16,25 @@ function shuffleArray(array) {
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
+}
+function shadeColor(color, percent) {
+        var R = parseInt(color.substring(1,3),16);
+        var G = parseInt(color.substring(3,5),16);
+        var B = parseInt(color.substring(5,7),16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R<255)?R:255;
+        G = (G<255)?G:255;
+        B = (B<255)?B:255;
+
+        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+        return '#'+RR+GG+BB;
 }
 
 var deepCopy = require('../data/deepCopy.js');
@@ -76,8 +96,6 @@ class Game extends Component {
  //*********** sender info: **********//
             fromWhere: this.props.fromWhere,
             myTitle: this.props.myTitle,
-            myBg: this.props.myBg,
-            myTextColor: this.props.myTextColor,
             daily_solvedArray: this.props.daily_solvedArray,
  //***********************************//
             puzzleData: this.props.puzzleData,
@@ -121,8 +139,13 @@ class Game extends Component {
             isOpen: false,
             puzzle_solved: false,
             wentBust: false,
-            score_color: 'white',
-            bgColor: '#09146d',
+            score_color: '#ffffff',
+//            headerColor: '#050e59',
+//            bgColor: '#09146d',
+//            cluesBgColor: '#0000ff',
+            bgColor: this.props.bgColor,
+            headerColor: this.props.headerColor,
+            cluesBgColor: this.props.cluesBgColor,
             starImage1: require('../images/star_grey.png'),
             starImage2: require('../images/star_grey.png'),
             arrowImage: require('../images/arrow_forward.png'),
@@ -139,7 +162,7 @@ class Game extends Component {
             if (sounds !== null) {
                 useSounds = sounds;
             }else{
-                useSounds = 'false';
+                useSounds = 'true';
                 try {
                     AsyncStorage.setItem(KEY_Sound, useSounds);//
                 } catch (error) {
@@ -170,8 +193,8 @@ class Game extends Component {
                         daily_solvedArray: dsArray,
                         dataElement: this.props.dataElement,
                         puzzleArray: this.state.puzzleArray,
-                        textColor: this.props.myTextColor,
-                        bgColor: this.props.myBg,
+                        textColor: this.props.textColor,
+                        bgColor: this.props.bgColor,
                         title: this.props.myTitle,
                         },
                 });
@@ -254,8 +277,8 @@ class Game extends Component {
                     daily_solvedArray: this.state.daily_solvedArray,
                     dataElement: this.props.dataElement,
                     puzzleArray: this.props.puzzleArray,
-                    textColor: this.props.myTextColor,
-                    bgColor: this.props.myBg,
+                    textColor: this.props.textColor,
+                    bgColor: this.props.bgColor,
                     title: this.props.myTitle,
                     },
             });
@@ -312,7 +335,7 @@ class Game extends Component {
     guess(which, howMuchToScore) {
         var solved = this.state.puzzle_solved;
         var bust = this.state.wentBust;
-            if(solved || bust){return;}
+            if(solved || bust){return}
 
         var entire_puzzle_solved = false;
         var theFrag = '';
@@ -450,7 +473,7 @@ class Game extends Component {
                         numFrags:  (this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')).split('|')).length,
                         solvedArray: arr,
                         score: 10,
-                        score_color: 'white',
+                        score_color: '#ffffff',
                         answer0: '',
                         answer1: '',
                         answer2: '',
@@ -494,7 +517,7 @@ class Game extends Component {
     skip_to_next(){
         var solved = this.state.puzzle_solved;
         var bust = this.state.wentBust;
-            if(solved || bust){return;}
+            if(solved || bust){return}
         var onFrag = this.state.onThisFrag;
         if(onFrag > 0){
             this.give_hint();
@@ -543,10 +566,26 @@ class Game extends Component {
     }
     getStyle() {
     return [
-              container_styles.word_container,
+              game_styles.word_container,
               {opacity: this.state.fadeAnim},
               {transform: this.state.pan.getTranslateTransform()}
             ];
+    }
+    header(color){
+         var strToReturn = shadeColor(color, -30);
+         return {backgroundColor: strToReturn};
+    }
+    containerBg(color){
+         var strToReturn = shadeColor(color, 50);
+         return {backgroundColor: strToReturn};
+    }
+//    clueContainerBg(color){
+//         var strToReturn = shadeColor(color, 40);
+//         return {backgroundColor: strToReturn};
+//    }
+    darkBorder(color) {
+        var darkerColor = shadeColor(color, -80);
+            return {borderColor: darkerColor};
     }
     animate_word(newClue){
         Animated.parallel([
@@ -714,7 +753,7 @@ class Game extends Component {
         const menu = <Menu onItemSelected={ this.onMenuItemSelected } data = {this.props.puzzleData} />;
         if(this.state.isLoading == true){
             return(
-                <View style={ container_styles.loading }>
+                <View style={ game_styles.loading }>
                     <ActivityIndicator animating={true} size={'large'}/>
                 </View>
             )
@@ -724,9 +763,8 @@ class Game extends Component {
                     menu={ menu }
                     isOpen={ this.state.isOpen }
                     onChange={ (isOpen) => this.updateMenuState(isOpen) } >
-
-                    <View style={ [container_styles.container, {backgroundColor: this.state.bgColor}, this.border('black')] }>
-                        <View style={ container_styles.game_header }>
+                    <View style={ [game_styles.container, this.containerBg(this.props.bgColor), this.darkBorder(this.props.bgColor)] }>
+                        <View style={ [game_styles.game_header, this.header(this.props.bgColor)]}>
                             <Button style={{left: 15}} onPress={ () => this.closeGame() }>
                                 <Image source={ require('../images/close.png') } style={ { width: 50, height: 50 } } />
                             </Button>
@@ -737,23 +775,23 @@ class Game extends Component {
                             </Button>
                         </View>
 
-                        <View style={ container_styles.display_area }>
-                            <View style={ container_styles.answers_container }>
-                                <View style={ container_styles.answers_column }>
+                        <View style={ game_styles.display_area }>
+                            <View style={ game_styles.answers_container }>
+                                <View style={ game_styles.answers_column }>
                                     <Text style={styles.answer_column_text}>{this.state.answer0}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer3}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer6}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer9}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer12}</Text>
                                 </View>
-                                <View style={ container_styles.answers_column }>
+                                <View style={ game_styles.answers_column }>
                                     <Text style={styles.answer_column_text}>{this.state.answer1}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer4}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer7}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer10}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer13}</Text>
                                 </View>
-                                <View style={ container_styles.answers_column }>
+                                <View style={ game_styles.answers_column }>
                                     <Text style={styles.answer_column_text}>{this.state.answer2}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer5}</Text>
                                     <Text style={styles.answer_column_text}>{this.state.answer8}</Text>
@@ -762,13 +800,13 @@ class Game extends Component {
                                 </View>
 
                             </View>
-                            <View style={ container_styles.clue_container }>
+                            <View style={[game_styles.clue_container, {backgroundColor: this.props.bgColor}]}>
                                 <Text style={styles.clue_text} >{this.getClueText()}
                                 </Text>
                             </View>
 
-                            <View style={ container_styles.word_and_frag }>
-                                <View style={ [container_styles.frag_container, {opacity: this.state.fragOpacity}] } onStartShouldSetResponder={() => this.guess(100, 1)}>
+                            <View style={ game_styles.word_and_frag }>
+                                <View style={ [game_styles.frag_container, {opacity: this.state.fragOpacity}] } onStartShouldSetResponder={() => this.guess(100, 1)}>
                                     <Text style={styles.keyfrag_text} >{this.state.keyFrag}
                                     </Text>
                                 </View>
@@ -779,19 +817,19 @@ class Game extends Component {
                             </View>
                         </View>
 
-                        <View style={ container_styles.tiles_container }>
+                        <View style={ game_styles.tiles_container }>
                                 <View onStartShouldSetResponder={ () => this.nextGame() }>
                                     <Image style={{ width: 96, height: 96, opacity: this.state.forwardBackOpacity, marginBottom: 30 }} source={this.state.arrowImage} />
                                 </View>
                             { this.drawTiles() }
                         </View>
 
-                        <View style={ container_styles.footer }>
-                            <View style={ container_styles.score_container }>
+                        <View style={ game_styles.footer }>
+                            <View style={ game_styles.score_container }>
                                 <Text style={[styles.answer_text, {right: 10}, {color: this.state.score_color}]} >{this.state.score}
                                 </Text>
                             </View>
-                            <View style={ container_styles.buttons_container }>
+                            <View style={ game_styles.buttons_container }>
                                 <Button style={styles.skip_button} onPress={ () => this.skip_to_next() }>
                                     <Image source={ require('../images/skip.png')} style={{ width: 50, height: 50 }} />
                                 </Button>
@@ -799,9 +837,9 @@ class Game extends Component {
                                     <Image source={ require('../images/question.png')} style={{ width: 50, height: 50 }} />
                                 </Button>
                             </View>
-                            <View style={ container_styles.stars_container }>
-                                <Image source={this.state.starImage1} style={ container_styles.star } />
-                                <Image source={this.state.starImage2} style={ container_styles.star } />
+                            <View style={ game_styles.stars_container }>
+                                <Image source={this.state.starImage1} style={ game_styles.star } />
+                                <Image source={this.state.starImage2} style={ game_styles.star } />
                             </View>
                         </View>
                     </View>
@@ -812,7 +850,7 @@ class Game extends Component {
 }
 
 
-var container_styles = StyleSheet.create({
+var game_styles = StyleSheet.create({
     container: {
         flex: 1,
     },
@@ -828,7 +866,6 @@ var container_styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: window.width,
-        backgroundColor: '#050e59',
     },
     display_area: {
         flex: 24,
@@ -851,7 +888,6 @@ var container_styles = StyleSheet.create({
     },
     clue_container: {
         flex: 9,
-        backgroundColor: 'blue',
         width: width - 30,
         padding: 10,
         borderRadius: 10,

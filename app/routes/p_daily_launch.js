@@ -127,7 +127,7 @@ class DailyLaunch extends Component{
              }else{
              strToReturn='#999ba0';//grey
              }
-         return (strToReturn);
+         return strToReturn;
     }
     getBorder(num){
          var strToReturn='';
@@ -173,8 +173,8 @@ class DailyLaunch extends Component{
 
                 <View style={ [container_styles.container, this.border('#070f4e')] }>
                     <View style={ container_styles.header }>
-                        <Button style={{left: 15}} onPress={ () => this.toggle() }>
-                            <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
+                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
