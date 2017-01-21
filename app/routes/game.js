@@ -36,6 +36,38 @@ function shadeColor(color, percent) {
 
         return '#'+RR+GG+BB;
 }
+function shadeColor2(color, percent) {
+    percent = percent/100;
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+}
+function invertColor(hex, bw) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+        g = parseInt(hex.slice(2, 4), 16),
+        b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+            ? '#000000'
+            : '#FFFFFF';
+    }
+    // invert color components
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+    // pad each with zeros and return
+    return "#" + padZero(r) + padZero(g) + padZero(b);
+}
+
 
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
@@ -140,12 +172,12 @@ class Game extends Component {
             puzzle_solved: false,
             wentBust: false,
             score_color: '#ffffff',
-//            headerColor: '#050e59',
-//            bgColor: '#09146d',
-//            cluesBgColor: '#0000ff',
             bgColor: this.props.bgColor,
-            headerColor: this.props.headerColor,
-            cluesBgColor: this.props.cluesBgColor,
+            headerColor: '',
+            cluesBgColor: '',
+            clueTextColor: '',
+            titleColor: '',
+            textColor: '',
             starImage1: require('../images/star_grey.png'),
             starImage2: require('../images/star_grey.png'),
             arrowImage: require('../images/arrow_forward.png'),
@@ -154,6 +186,7 @@ class Game extends Component {
     }
     componentDidMount() {
         puzzleData = this.state.puzzleData;
+        this.setColors();
         this.storeGameVariables(this.state.index);
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         this.setState({isLoading: false});
@@ -177,33 +210,30 @@ class Game extends Component {
     handleHardwareBackButton() {
         if (this.state.isOpen) {
             this.toggle();
-            return true;
         }else{
-            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-            for(let i=0; i<4; i++){
-                var rand0to9 = randomNum(0, 9);
-                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
-                puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[rand0to9].color;
-            }
-            try {
-                this.props.navigator.replace({
-                    id: this.props.fromWhere,
-                    passProps: {
-                        puzzleData: this.state.puzzleData,
-                        daily_solvedArray: dsArray,
-                        dataElement: this.props.dataElement,
-                        puzzleArray: this.state.puzzleArray,
-                        textColor: this.props.textColor,
-                        bgColor: this.props.bgColor,
-                        title: this.props.myTitle,
-                        },
-                });
-                return true;
-            } catch(err)  {
-            window.alert(err.message)
-                return true;
-            }
+            this.closeGame();
         }
+        return true;
+    }
+    setColors(){
+        var bgC = this.props.bgColor;
+
+        var fieldColor = shadeColor2(bgC, -10);;//(bgC, 50);
+        var headColor =  shadeColor2(bgC, -30);
+        var cluebgColor = shadeColor2(bgC, 30);
+        var txtColor = invertColor(fieldColor, true);
+        var titletextColor = invertColor(headColor, true);
+        var cluetextColor = invertColor(cluebgColor, true);
+        titletextColor = (bgC == '#09146d')?'#e3e004':titletextColor;
+        cluebgColor = (bgC == '#09146d')?'blue':cluebgColor;
+        this.setState({
+            bgColor: fieldColor,
+            headerColor: headColor,
+            cluesBgColor: cluebgColor,
+            clueTextColor: cluetextColor,
+            titleColor: titletextColor,
+            textColor: txtColor
+        });
     }
     storeGameVariables(index){
         dsArray = this.state.daily_solvedArray;
@@ -325,9 +355,9 @@ class Game extends Component {
         }
         return result;
     }
-    drawTile(key, position, frag ) {
+    drawTile(key, style, frag ) {
         return (
-            <View  key={ key } style={ [styles.tile, position] } onStartShouldSetResponder={() => this.guess(key, 1)} >
+            <View  key={ key } style={ [styles.tile, style] } onStartShouldSetResponder={() => this.guess(key, 1)} >
                     <Text style={ styles.puzzle_text_large }>{ frag }</Text>
             </View>
         );
@@ -492,7 +522,7 @@ class Game extends Component {
                         puzzle_solved: false,
                         wentBust: false,
                         isLoading: false,
-                        bgColor: '#09146d',
+                        bgColor: this.state.bgColor,
                     });
     }
     score_increment(howMuch){
@@ -506,7 +536,7 @@ class Game extends Component {
         var score = parseInt(this.state.score, 10);
         score -= howMuch;
         score = (score < 0)?0:score;
-        var bgc = (score < 1)?'#cd0404':'#09146d';
+        var bgc = (score < 1)?'#cd0404':this.state.bgColor;
         var bustOrNot = (score < 1)?true:false;
         this.setState({score: score,
                        score_color: 'red',
@@ -571,20 +601,12 @@ class Game extends Component {
               {transform: this.state.pan.getTranslateTransform()}
             ];
     }
-    header(color){
-         var strToReturn = shadeColor(color, -30);
-         return {backgroundColor: strToReturn};
-    }
-    containerBg(color){
-         var strToReturn = shadeColor(color, 50);
-         return {backgroundColor: strToReturn};
-    }
 //    clueContainerBg(color){
-//         var strToReturn = shadeColor(color, 40);
+//         var strToReturn = shadeColor2(color, 40);
 //         return {backgroundColor: strToReturn};
 //    }
     darkBorder(color) {
-        var darkerColor = shadeColor(color, -80);
+        var darkerColor = shadeColor2(color, -80);
             return {borderColor: darkerColor};
     }
     animate_word(newClue){
@@ -753,7 +775,7 @@ class Game extends Component {
         const menu = <Menu onItemSelected={ this.onMenuItemSelected } data = {this.props.puzzleData} />;
         if(this.state.isLoading == true){
             return(
-                <View style={ game_styles.loading }>
+                <View style={[game_styles.loading, {backgroundColor: this.state.bgColor}]}>
                     <ActivityIndicator animating={true} size={'large'}/>
                 </View>
             )
@@ -763,45 +785,45 @@ class Game extends Component {
                     menu={ menu }
                     isOpen={ this.state.isOpen }
                     onChange={ (isOpen) => this.updateMenuState(isOpen) } >
-                    <View style={ [game_styles.container, this.containerBg(this.props.bgColor), this.darkBorder(this.props.bgColor)] }>
-                        <View style={ [game_styles.game_header, this.header(this.props.bgColor)]}>
+                    <View style={ [game_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
+                        <View style={ [game_styles.game_header, {backgroundColor: this.state.headerColor}]}>
                             <Button style={{left: 15}} onPress={ () => this.closeGame() }>
-                                <Image source={ require('../images/close.png') } style={ { width: 50, height: 50 } } />
+                                <Image source={ require('../images/close.png') } style={{ width: 50, height: 50 }} />
                             </Button>
-                            <Text style={styles.header_text} >{this.state.title}
+                            <Text style={[{fontSize: 18}, {color: this.state.titleColor}]}>{this.state.title}
                             </Text>
                             <Button style={{right: 15}} onPress={ () => this.reset_scene() }>
-                                <Image source={ require('../images/replay.png') } style={ { width: 50, height: 50 } } />
+                                <Image source={require('../images/replay.png')} style={{ width: 50, height: 50 }} />
                             </Button>
                         </View>
 
                         <View style={ game_styles.display_area }>
                             <View style={ game_styles.answers_container }>
                                 <View style={ game_styles.answers_column }>
-                                    <Text style={styles.answer_column_text}>{this.state.answer0}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer3}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer6}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer9}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer12}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer0}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer3}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer6}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer9}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer12}</Text>
                                 </View>
                                 <View style={ game_styles.answers_column }>
-                                    <Text style={styles.answer_column_text}>{this.state.answer1}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer4}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer7}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer10}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer13}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer1}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer4}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer7}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer10}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer13}</Text>
                                 </View>
                                 <View style={ game_styles.answers_column }>
-                                    <Text style={styles.answer_column_text}>{this.state.answer2}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer5}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer8}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer11}</Text>
-                                    <Text style={styles.answer_column_text}>{this.state.answer14}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer2}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer5}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer8}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer11}</Text>
+                                    <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer14}</Text>
                                 </View>
-
                             </View>
-                            <View style={[game_styles.clue_container, {backgroundColor: this.props.bgColor}]}>
-                                <Text style={styles.clue_text} >{this.getClueText()}
+
+                            <View style={[game_styles.clue_container, {backgroundColor: this.state.cluesBgColor}]}>
+                                <Text style={[styles.clue_text, {color: this.state.clueTextColor}]} >{this.getClueText()}
                                 </Text>
                             </View>
 
@@ -831,10 +853,10 @@ class Game extends Component {
                             </View>
                             <View style={ game_styles.buttons_container }>
                                 <Button style={styles.skip_button} onPress={ () => this.skip_to_next() }>
-                                    <Image source={ require('../images/skip.png')} style={{ width: 50, height: 50 }} />
+                                    <Image source={ require('../images/skip.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
                                 <Button style={styles.hint_button} onPress={ () => this.give_hint() }>
-                                    <Image source={ require('../images/question.png')} style={{ width: 50, height: 50 }} />
+                                    <Image source={ require('../images/question.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
                             </View>
                             <View style={ game_styles.stars_container }>
@@ -858,7 +880,6 @@ var game_styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#09146d' ,
     },
     game_header: {
         flex: 4,

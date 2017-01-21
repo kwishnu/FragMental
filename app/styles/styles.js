@@ -33,7 +33,7 @@ module.exports = StyleSheet.create({
         backgroundColor: '#64aefa',
         borderRadius: 12,
         marginRight: 3,
-        padding: 2,
+        padding: 12,
     },
     hint_button: {
         flex:1,
@@ -42,7 +42,7 @@ module.exports = StyleSheet.create({
         backgroundColor: '#4aeeb2',
         borderRadius: 12,
         marginLeft: 3,
-        padding: 2,
+        padding: 12,
     },
     puzzle_text_large: {
         color: '#000',
@@ -62,7 +62,6 @@ module.exports = StyleSheet.create({
         fontSize: LETTER_SIZE * 2/3,
     },
     clue_text: {
-        color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
     },

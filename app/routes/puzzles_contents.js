@@ -70,10 +70,6 @@ var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 11/1/2016
 var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 var sArray = [];
-//var headerColor = null;//'#050e59';
-//var cluesBgColor = null;//'#0000ff';
-//var textColor = null;//'#ffffff';
-
 
 
 class PuzzleContents extends Component{
@@ -289,10 +285,10 @@ class PuzzleContents extends Component{
     }
 
     onSelect(index, title, bg) {
-        if (title.indexOf('*') > -1){
-            this.startPurchase(title.substring(1));
-            return;
-        }
+//        if (title.indexOf('*') > -1){
+//            this.startPurchase(title.substring(1));
+//            return;
+//        }
         var theDestination = 'puzzle launcher';
         var theTitle = title;
         var gripeText = '';
@@ -404,11 +400,7 @@ class PuzzleContents extends Component{
             </SideMenu>
         );
     }
-//                                <PushController />
-
 }
-
-//09146d
 
 
 var container_styles = StyleSheet.create({

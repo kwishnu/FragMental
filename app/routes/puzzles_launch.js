@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, Animated, AsyncStorage  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator  } from 'react-native';
 import Button from '../components/Button';
 
 function shuffleArray(array) {
@@ -10,6 +10,10 @@ function shuffleArray(array) {
         array[j] = temp;
     }
     return array;
+}
+function randomNum(low, high) {
+    high++;
+    return Math.floor((Math.random())*(high-low))+low;
 }
 function shadeColor(color, percent) {
         var R = parseInt(color.substring(1,3),16);
@@ -30,9 +34,36 @@ function shadeColor(color, percent) {
 
         return '#'+RR+GG+BB;
 }
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
+function shadeColor2(color, percent) {
+    percent = percent/100;
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+}
+function invertColor(hex, bw) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+        g = parseInt(hex.slice(2, 4), 16),
+        b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+            ? '#000000'
+            : '#FFFFFF';
+    }
+    // invert color components
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+    // pad each with zeros and return
+    return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 
 var deepCopy = require('../data/deepCopy.js');
@@ -59,23 +90,36 @@ class PuzzleLaunch extends Component{
             title: this.props.title,
             isOpen: false,
             dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i)),
-            scrollPosition: 0,
-            onPuzzle: 0,
-//            headerColor: this.props.headerColor,
             bgColor: this.props.bgColor,
-//            textColor: this.props.textColor,
+            headerColor: '',
+            titleColor: '',
+            isLoading: true,
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount() {
-//    window.alert(this.props.arraySize);
+        this.setColors();
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
-//         AsyncStorage.getItem(KEY_onPuzzle).then((value) => {
-//                 this.setState({onPuzzle: parseInt(value, 10)});
-//        });
+        setTimeout(() => {this.stopSpinner()}, 10);
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+    }
+    stopSpinner(){
+        this.setState({isLoading: false});
+    }
+    setColors(){
+        var bgC = this.props.bgColor;//
+        var fieldColor = shadeColor2(bgC, 10);
+        var headColor =  shadeColor2(bgC, -20);
+        var titletextColor = invertColor(headColor, true);
+        titletextColor = (bgC == '#09146d')?'#e3e004':titletextColor;
+
+        this.setState({
+            bgColor: fieldColor,
+            headerColor: headColor,
+            titleColor: titletextColor,
+        });
     }
     handleHardwareBackButton() {
         if (this.state.isOpen) {
@@ -123,6 +167,10 @@ class PuzzleLaunch extends Component{
             borderWidth: 2,
         };
     }
+    darkBorder(color) {
+        var darkerColor = shadeColor2(color, -60);
+            return {borderColor: darkerColor};
+    }
     bg(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
@@ -163,18 +211,6 @@ class PuzzleLaunch extends Component{
              }
          return {borderColor: strToReturn};
     }
-    headerFooter(color){
-         var strToReturn = shadeColor(color, -20);
-         return {backgroundColor: strToReturn};
-    }
-    containerBg(color){
-         var strToReturn = shadeColor(color, 40);
-         return {backgroundColor: strToReturn};
-    }
-    darkBorder(color) {
-        var darkerColor = shadeColor(color, -60);
-            return {borderColor: darkerColor};
-    }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
             var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
@@ -200,44 +236,52 @@ class PuzzleLaunch extends Component{
 
     render() {
         const menu = <Menu onItemSelected={ this.onMenuItemSelected } data = {this.props.puzzleData} />;
-        return (
-            <SideMenu
-                menu={ menu }
-                isOpen={ this.state.isOpen }
-                onChange={ (isOpen) => this.updateMenuState(isOpen) }>
+        if(this.state.isLoading == true){
+            return(
+                <View style={[container_styles.loading, {backgroundColor: this.props.bgColor}]}>
+                    <ActivityIndicator animating={true} size={'large'}/>
+                </View>
+            )
+        }else{
+            return (
+                <SideMenu
+                    menu={ menu }
+                    isOpen={ this.state.isOpen }
+                    onChange={ (isOpen) => this.updateMenuState(isOpen) }>
 
-                <View style={ [container_styles.container, this.darkBorder(this.props.bgColor)] }>
-                    <View style={ [container_styles.header, this.headerFooter(this.props.bgColor)] }>
-                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                        <Text style={{fontSize: 18, color: '#fff'}} >{this.props.title}
-                        </Text>
-                        <Button style={{right: 15}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                    </View>
-                    <View style={ [container_styles.tiles_container, this.containerBg(this.props.bgColor), this.darkBorder(this.props.bgColor)] }>
-                         <ListView  showsVerticalScrollIndicator ={false}
-                                    initialListSize ={100}
-                                    contentContainerStyle={ container_styles.listview }
-                                    dataSource={this.state.dataSource}
-                                    renderRow={(rowData) =>
-                                     <View>
-                                         <TouchableHighlight onPress={() => this.onSelect(rowData)}
-                                                             underlayColor={() => this.getUnderlay(rowData)}
-                                                             style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
-                                             <Text style={ styles.puzzle_text_large }>{rowData + 1}</Text>
-                                         </TouchableHighlight>
-                                     </View>}
-                         />
-                    </View>
-                    <View style={[container_styles.footer, this.headerFooter(this.props.bgColor)]}>
-                        <Text style={{fontSize: 11, color: '#fff'}}>Some fine print...</Text>
-                    </View>
-                 </View>
-            </SideMenu>
-        );
+                    <View style={ [container_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
+                        <View style={ [container_styles.header, {backgroundColor: this.state.headerColor}]}>
+                            <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
+                                <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                            </Button>
+                            <Text style={{fontSize: 18, color: '#fff'}} >{this.props.title}
+                            </Text>
+                            <Button style={{right: 15}}>
+                                <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                            </Button>
+                        </View>
+                        <View style={ [container_styles.tiles_container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
+                             <ListView  showsVerticalScrollIndicator ={false}
+                                        initialListSize ={100}
+                                        contentContainerStyle={ container_styles.listview }
+                                        dataSource={this.state.dataSource}
+                                        renderRow={(rowData) =>
+                                         <View>
+                                             <TouchableHighlight onPress={() => this.onSelect(rowData)}
+                                                                 underlayColor={() => this.getUnderlay(rowData)}
+                                                                 style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
+                                                 <Text style={ styles.puzzle_text_large }>{rowData + 1}</Text>
+                                             </TouchableHighlight>
+                                         </View>}
+                             />
+                        </View>
+                        <View style={ [container_styles.footer, {backgroundColor: this.state.headerColor}]}>
+                            <Text style={{fontSize: 11, color: '#fff'}}>Some fine print...</Text>
+                        </View>
+                     </View>
+                </SideMenu>
+            );
+        }
     }
 }
 
@@ -245,6 +289,11 @@ class PuzzleLaunch extends Component{
 var container_styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     listview: {
         flexDirection: 'row',
