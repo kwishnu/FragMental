@@ -7,10 +7,13 @@ import moment from 'moment';
 
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
+
 var KEY_Sound = 'soundKey';
 var KEY_Color = 'colorKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
+var KEY_UseNumLetters = 'numLetters';
+
 var nowISO = moment().valueOf();
 var tonightMidnight = moment().endOf('day').valueOf();
 
@@ -19,13 +22,15 @@ module.exports = class Settings extends Component {
         super(props);
         this.state = {
             id: 'settings',
-            sounds_text: 'Game sounds on',
             sounds_state: true,
+            sounds_text: 'Game sounds on',
             color_state: true,
             use_colors: 'Use Puzzle Pack colors',
             notifs_state: true,
             notif_time: '7',
             notif_text: 'Yes, at',
+            nl_state: true,
+            nl_text: 'Show number of letters'
         };
        this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -64,7 +69,7 @@ module.exports = class Settings extends Component {
             }
         });
         AsyncStorage.getItem(KEY_Notifs).then((notifs) => {
-            if (notifs !== '0') {
+            if (notifs !== null && notifs !== '0') {
                 this.setState({
                     notifs_state: true,
                     notif_time: notifs,
@@ -77,11 +82,25 @@ module.exports = class Settings extends Component {
                     notif_text: 'No'
                 });
             }
-        })
-        .catch(function(error) {
-            //window.alert(error.message);
-            throw error;
         });
+        AsyncStorage.getItem(KEY_UseNumLetters).then((letters) => {
+            if (letters !== null) {
+                var stateToUse = (letters == 'true')?true:false;
+                var strToUse = (letters == 'true')?'Show number of letters':'Hiding number of letters';
+                this.setState({
+                    nl_state: stateToUse,
+                    nl_text: strToUse
+                });
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_UseNumLetters, 'true');//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+        });
+
+
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
@@ -109,7 +128,7 @@ module.exports = class Settings extends Component {
     }
     toggleGameSounds(state){
         var textToUse = (state)?'Game sounds on':'Game sounds off';
-        this.setState({sounds_text:textToUse});
+        this.setState({sounds_text: textToUse});
         try {
             AsyncStorage.setItem(KEY_Sound, state.toString());
         } catch (error) {
@@ -121,6 +140,15 @@ module.exports = class Settings extends Component {
         this.setState({use_colors: strToUse});
         try {
             AsyncStorage.setItem(KEY_Color, state.toString());
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
+    }
+    toggleLetters(state){
+        var strToUse = (state)?'Show number of letters':'Hiding number of letters';
+        this.setState({nl_text: strToUse});
+        try {
+            AsyncStorage.setItem(KEY_UseNumLetters, state.toString());
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
@@ -245,6 +273,20 @@ module.exports = class Settings extends Component {
                                     <Picker.Item label='9:00 am' value={'9'} />
                                 </Picker>
                             </View>
+
+                            <View style={settings_styles.parameter_container}>
+                                <View style={settings_styles.divider}>
+                                </View>
+                            </View>
+                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                    <Text style={settings_styles.text}>{this.state.nl_text}</Text>
+                                </View>
+                                <View style={settings_styles.switch_container}>
+                                    <Switch value={this.state.nl_state} onValueChange={(state)=>{this.toggleLetters(state)}}/>
+                                </View>
+                            </View>
+
                         </View>
                     </ScrollView>
                 </View>

@@ -88,6 +88,7 @@ var timeoutHandle;
 var KEY_Puzzles = 'puzzlesKey';
 var KEY_daily_solved_array = 'solved_array';
 var KEY_Sound = 'soundKey';
+var KEY_UseNumLetters = 'numLetters';
 var useSounds = 'false';
 var dataBackup = {};
 var puzzleData = {};
@@ -171,6 +172,7 @@ class Game extends Component {
             isOpen: false,
             puzzle_solved: false,
             wentBust: false,
+            useNumLetters: true,
             score_color: '#ffffff',
             bgColor: this.props.bgColor,
             headerColor: '',
@@ -187,9 +189,13 @@ class Game extends Component {
     componentDidMount() {
         puzzleData = this.state.puzzleData;
         this.setColors();
-        this.storeGameVariables(this.state.index);
+        AsyncStorage.getItem(KEY_UseNumLetters).then((value) => {
+            var valueToBool = (value == 'true')?true:false;
+            this.setState({useNumLetters: valueToBool});
+            this.storeGameVariables(this.state.index);
+            this.setState({isLoading: false});
+        });
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
-        this.setState({isLoading: false});
 
         AsyncStorage.getItem(KEY_Sound).then((sounds) => {
             if (sounds !== null) {
@@ -699,7 +705,14 @@ class Game extends Component {
         var currClue = this.state.currentClue;
 
         if (currClue.indexOf(':') > 0){
-            textToReturn = parseInt(this.state.onThisClue + 1, 10) + ':  ' + currClue.substring(currClue.indexOf(':') + 1);
+            var counter = 0;
+            for (var letter = 0; letter < this.state.currentFrags.length; letter++){
+                if (currClue[letter] == '|')continue;
+                if (currClue[letter] == '^'){counter = counter + this.state.keyFrag.length; continue;}
+                counter++;
+            }
+            var prefix = (this.state.useNumLetters == true)?(counter.toString() + ' letters:  '):(parseInt(this.state.onThisClue + 1, 10) + ':  ');
+            textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
             return textToReturn;
         }else{
             if(useSounds == 'true')fanfare.play();
