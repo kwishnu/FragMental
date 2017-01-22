@@ -4,30 +4,18 @@ module.exports = [
 		index: '0',
 		type:'toPuzzles',
         link: 'puzzles contents',
-        data:{
-
-            },
-
     },
     {
 		title:'Today\'s Puzzle',
 		index: '1',
 		type:'toPuzzles',
         link: 'game board',
-        data:{
-
-            },
-
     },
     {
 		title:'Daily Puzzles',
 		index: '2',
 		type:'toPuzzles',
         link: 'daily launcher',
-        data:{
-
-            },
-
     },
     {
 		title:'Easy',
@@ -570,50 +558,30 @@ module.exports = [
 		index: '11',
 		type:'social',
         link: 'facebook',
-        data:{
-
-            },
-
     },
     {
 		title:'Twitter',
 		index: '12',
 		type:'social',
         link: 'twitter',
-        data:{
-
-            },
-
     },
     {
 		title:'How To Play',
 		index: '13',
-		type:'about',
+		type:'toPuzzles',
         link: 'app_intro',
-        data:{
-
-            },
-
     },
     {
 		title:'Settings',
 		index: '14',
 		type:'about',
         link: 'settings',
-        data:{
-
-            },
-
     },
     {
 		title:'About',
 		index: '15',
 		type:'about',
         link: 'about',
-        data:{
-
-            },
-
     },
 
 	{
@@ -758,7 +726,7 @@ module.exports = [
 		solved:'false',
 		bg_color:'',
 		puzzles:[
-
+			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			],
 	},
 	{
@@ -771,7 +739,7 @@ module.exports = [
 		solved:'false',
 		bg_color:'',
 		puzzles:[
-
+			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			],
 	},
 	{
@@ -784,7 +752,7 @@ module.exports = [
 		solved:'false',
 		bg_color:'',
 		puzzles:[
-
+			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			],
 	},
 	{
@@ -797,7 +765,7 @@ module.exports = [
 		solved:'false',
 		bg_color:'',
 		puzzles:[
-
+			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			],
 	},
 ];

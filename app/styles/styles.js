@@ -61,9 +61,13 @@ module.exports = StyleSheet.create({
         color: 'white',
         fontSize: LETTER_SIZE * 2/3,
     },
-    clue_text: {
+    clue_text_bold: {
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    clue_text: {
+        fontSize: 16,
     },
     keyfrag_text: {
         color: '#038c30',

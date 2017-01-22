@@ -72,7 +72,7 @@ function invertColor(hex, bw) {
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
+var Menu = require('../nav/menu');
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
 var NUM_WIDE = 4;
@@ -285,12 +285,70 @@ class Game extends Component {
         this.setState({ isOpen: isOpen });
 
     }
-    onMenuItemSelected(item) {
-        this.setState({
-            isOpen: false,
-            selectedItem: item,
-        });
-        window.alert(item);
+    onMenuItemSelected = (item) => {
+            switch (item.link){
+                case 'puzzles contents':
+                    this.props.navigator.replace({
+                        id: 'puzzles contents',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'game board':
+                    this.toggle();
+                    return;
+                case 'daily launcher':
+                    this.toggle();
+                    break;
+                case 'store':
+                    this.props.navigator.push({
+                        id: 'store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Puzzle Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'store3':
+                    this.props.navigator.push({
+                        id: 'combo store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Value Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'facebook':
+                    window.alert('Device not configured');
+                    break;
+                case 'twitter':
+                    window.alert('Device not configured');
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'game board',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'settings':
+                    window.alert('Settings may not be changed from within a game');
+                    break;
+                case 'about':
+                    this.props.navigator.push({
+                        id: 'about',
+                        passProps: {
+                            destination: 'game board',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+            }
     }
     border(color) {
         return {
@@ -325,7 +383,11 @@ class Game extends Component {
             }
     }
     nextGame(){
+
+    window.alert(this.props.fromWhere);
+    return;
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
+        if(this.props.fromWhere == 'puzzles contents'){this.closeGame();return;}
         var newIndex = (parseInt(this.state.index, 10) + 1).toString();
         this.setState({daily_solvedArray: dsArray,
                         isLoading: true,
@@ -472,7 +534,7 @@ class Game extends Component {
                             solvedArray: sArray,
                             goLeft: gl,
                             columnSort: colSort,
-                            });
+                        });
             if(howMuchToScore>0) {
                 this.score_increment(scoreToAdd);
             }else{
@@ -700,7 +762,7 @@ class Game extends Component {
             default:
         }
     }
-    getClueText(){
+    getClueText(which){
         var textToReturn = '';
         var currClue = this.state.currentClue;
 
@@ -711,9 +773,16 @@ class Game extends Component {
                 if (currClue[letter] == '^'){counter = counter + this.state.keyFrag.length; continue;}
                 counter++;
             }
-            var prefix = (this.state.useNumLetters == true)?(counter.toString() + ' letters:  '):(parseInt(this.state.onThisClue + 1, 10) + ':  ');
+
+            var nl_text = (this.state.useNumLetters == true)?(counter.toString() + '  letters'):'';
+            var prefix = (this.state.useNumLetters == true)?'':(parseInt(this.state.onThisClue + 1, 10) + ':  ');
             textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
-            return textToReturn;
+            switch (which){
+                case 'clue':
+                    return textToReturn;
+                case 'num':
+                    return nl_text;
+            }
         }else{
             if(useSounds == 'true')fanfare.play();
             try {
@@ -728,7 +797,12 @@ class Game extends Component {
                 textToReturn = 'Excellent:  you get both stars for solving the puzzle with ' + this.state.score + ' points!';
                 timeoutHandle = setTimeout(() => {this.changeStarImage(2)}, 50);
             }
-            return textToReturn;
+            switch (which){
+                case 'clue':
+                    return textToReturn;
+                case 'num':
+                    return '';
+            }
         }
     }
     changeStarImage(howMany){
@@ -836,8 +910,12 @@ class Game extends Component {
                             </View>
 
                             <View style={[game_styles.clue_container, {backgroundColor: this.state.cluesBgColor}]}>
-                                <Text style={[styles.clue_text, {color: this.state.clueTextColor}]} >{this.getClueText()}
-                                </Text>
+                                <View style = {game_styles.top_part_clue}>
+                                    <Text style={[styles.clue_text_bold, {color: this.state.clueTextColor}]} >{this.getClueText('clue')}</Text>
+                                </View>
+                                <View style = {game_styles.bottom_part_clue}>
+                                    <Text style={[styles.clue_text, {color: this.state.clueTextColor}]} >{this.getClueText('num')}</Text>
+                                </View>
                             </View>
 
                             <View style={ game_styles.word_and_frag }>
@@ -853,8 +931,8 @@ class Game extends Component {
                         </View>
 
                         <View style={ game_styles.tiles_container }>
-                                <View onStartShouldSetResponder={ () => this.nextGame() }>
-                                    <Image style={{ width: 96, height: 96, opacity: this.state.forwardBackOpacity, marginBottom: 30 }} source={this.state.arrowImage} />
+                                <View style={{width: 96, height: 96}} onStartShouldSetResponder={ () => this.nextGame() }>
+                                    <Image style={{ width: 60, height: 60, opacity: this.state.forwardBackOpacity, marginBottom: 30 }} source={this.state.arrowImage} />
                                 </View>
                             { this.drawTiles() }
                         </View>
@@ -926,6 +1004,24 @@ var game_styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    top_part_clue: {
+        flex: 4,
+        width: width - 30,
+        paddingTop: 4,
+        paddingBottom: 2,
+        paddingTop: 2,
+        paddingLeft: 8,
+        paddingRight: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    bottom_part_clue: {
+        flex: 1,
+        width: width - 30,
+        paddingTop: 6,
         alignItems: 'center',
         justifyContent: 'center',
     },

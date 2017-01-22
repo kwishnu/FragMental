@@ -20,7 +20,7 @@ function randomNum(low, high) {
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
+var Menu = require('../nav/menu');
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
 var NUM_WIDE = 3;
@@ -84,13 +84,88 @@ class DailyLaunch extends Component{
         this.setState({ isOpen: isOpen });
 
     }
-    onMenuItemSelected(item) {
-        this.setState({
-            isOpen: false,
-            selectedItem: item,
-        });
-        window.alert(item);
-}
+    onMenuItemSelected = (item) => {
+            switch (item.link){
+                case 'puzzles contents':
+                    this.props.navigator.replace({
+                        id: 'puzzles contents',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'game board':
+                    this.props.navigator.replace({
+                        id: 'game board',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                            daily_solvedArray: this.props.sArray,
+                            title: this.props.todayFull,
+                            index: '0',
+                            bgColor: '#09146d',
+                            fromWhere: 'puzzles contents',
+                            dataElement: '16',
+                        },
+                    });
+                    return;
+                case 'daily launcher':
+                    this.toggle();
+                    break;
+                case 'store':
+                    this.props.navigator.push({
+                        id: 'store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Puzzle Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'store3':
+                    this.props.navigator.push({
+                        id: 'combo store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Value Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'facebook':
+                    window.alert('Device not configured');
+                    break;
+                case 'twitter':
+                    window.alert('Device not configured');
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'daily launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'settings':
+                    this.props.navigator.push({
+                        id: 'settings',
+                        passProps: {
+                            destination: 'daily launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'about':
+                    this.props.navigator.push({
+                        id: 'about',
+                        passProps: {
+                            destination: 'daily launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+            }
+    }
     border(color) {
         return {
             borderColor: color,
@@ -156,10 +231,9 @@ class DailyLaunch extends Component{
                 fromWhere: 'daily launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
-                myBg: this.props.bgColor,
+                bgColor: this.props.bgColor,
                 myTitle: this.props.title,
-                myTextColor: this.props.textColor,
-                },
+            },
        });
     }
 

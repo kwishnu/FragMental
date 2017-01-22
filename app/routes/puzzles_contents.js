@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage } from 'react-native';
 import moment from 'moment';
-import SectionHeader  from '../components/SectionHeader';
+import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
 
 function invertColor(hex, bw) {
@@ -49,10 +49,32 @@ function shadeColor(color, percent) {
 
         return '#'+RR+GG+BB;
 }
+function formatData(data) {
+        const headings = 'Daily Puzzles*My Puzzles*Recommended Puzzle Packs*Completed Puzzle Packs'.split('*');
+        const keys = 'daily*mypack*forsale*solved'.split('*');
+        const dataBlob = {};
+        const sectionIds = [];
+        const rowIds = [];
+        for (let sectionId = 0; sectionId < headings.length; sectionId++) {
+            const currentHead = headings[sectionId];
+            const currentKey = keys[sectionId];
+            const packs = data.filter((theData) => theData.type == currentKey && theData.show == 'true');
+            if (packs.length > 0) {
+                sectionIds.push(sectionId);
+                dataBlob[sectionId] = { sectionTitle: currentHead };
+                rowIds.push([]);
+                for (let i = 0; i < packs.length; i++) {
+                    const rowId = `${sectionId}:${i}`;
+                    rowIds[rowIds.length - 1].push(rowId);
+                    dataBlob[rowId] = packs[i];
+                }
+            }
+        }
+        return { dataBlob, sectionIds, rowIds };
+    }
 
 var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
-var listening = false;
+var Menu = require('../nav/menu');
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var styles = require('../styles/styles');
@@ -83,7 +105,7 @@ class PuzzleContents extends Component{
           getSectionData,
           getRowData,
         });
-        const { dataBlob, sectionIds, rowIds } = this.formatData(this.props.puzzleData);
+        const { dataBlob, sectionIds, rowIds } = formatData(this.props.puzzleData);
 
         this.state = {
             id: 'puzzles contents',
@@ -102,29 +124,6 @@ class PuzzleContents extends Component{
             this.toggle();
             return true;
         }
-    }
-    formatData(data) {
-        const headings = 'Daily Puzzles*My Puzzles*Recommended Puzzle Packs*Completed Puzzle Packs'.split('*');
-        const keys = 'daily*mypack*forsale*solved'.split('*');
-        const dataBlob = {};
-        const sectionIds = [];
-        const rowIds = [];
-        for (let sectionId = 0; sectionId < headings.length; sectionId++) {
-            const currentHead = headings[sectionId];
-            const currentKey = keys[sectionId];
-            const packs = data.filter((theData) => theData.type == currentKey && theData.show == 'true');
-            if (packs.length > 0) {
-                sectionIds.push(sectionId);
-                dataBlob[sectionId] = { sectionTitle: currentHead };
-                rowIds.push([]);
-                for (let i = 0; i < packs.length; i++) {
-                    const rowId = `${sectionId}:${i}`;
-                    rowIds[rowIds.length - 1].push(rowId);
-                    dataBlob[rowId] = packs[i];
-                }
-            }
-        }
-        return { dataBlob, sectionIds, rowIds };
     }
     componentDidMount() {
 
@@ -172,16 +171,13 @@ class PuzzleContents extends Component{
         });
     }
     componentWillUnmount(){
-        if(listening)BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
-
+        BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {
-            listening = true;
             BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         } else {
-            listening = false;
             BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
         }
     }
@@ -194,60 +190,70 @@ class PuzzleContents extends Component{
         }
     }
     onMenuItemSelected = (item) => {
-        switch (item.link){
-            case 'puzzles contents':
-                this.props.navigator.push({
-                    id: 'puzzles contents',
-                    passProps: {
-                        puzzleData: this.props.puzzleData,
-                    }
-                });
-                break;
-            case 'game board':
-                this.onSelect('16','Today\'s Puzzle', null);
-                break;
-            case 'daily launcher':
-                //check for upgrade, route accordingly todo
-                this.onSelect('17','Last Three Days', null);
-                break;
-            case 'store':
-                this.props.navigator.push({
-                    id: 'store',
-                    passProps: {
-                        dataIndex: item.index,
-                        title: item.title + ' Puzzle Packs',
-                        puzzleData: this.props.puzzleData,
-                    }
-                });
-                break;
-            case 'store3':
-                this.props.navigator.push({
-                    id: 'combo store',
-                    passProps: {
-                        dataIndex: item.index,
-                        title: item.title + ' Value Packs',
-                        puzzleData: this.props.puzzleData,
-                    }
-                });
-                break;
-            case 'settings':
-                this.props.navigator.push({
-                    id: 'settings',
-                    passProps: {
-                        puzzleData: this.props.puzzleData,
-                    }
-                });
-                break;
-
-            case 'app_intro':
-                this.props.navigator.push({
-                    id: 'start scene',
-                    passProps: {
-                        puzzleData: this.props.puzzleData,
-                    }
-                });
-                break;
-        }
+            switch (item.link){
+                case 'puzzles contents':
+                    this.toggle();
+                    break;
+                case 'game board':
+                    this.onSelect('16','Today\'s Puzzle', null);
+                    break;
+                case 'daily launcher':
+                    //check for upgrade, route accordingly todo
+                    this.onSelect('17','Last Three Days', null);
+                    break;
+                case 'store':
+                    this.props.navigator.push({
+                        id: 'store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Puzzle Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'store3':
+                    this.props.navigator.push({
+                        id: 'combo store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Value Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'facebook':
+                    window.alert('Device not configured');
+                    break;
+                case 'twitter':
+                    window.alert('Device not configured');
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'menu',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'settings':
+                    this.props.navigator.push({
+                        id: 'settings',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'about':
+                    this.props.navigator.push({
+                        id: 'about',
+                        passProps: {
+                            destination: 'about',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+            }
     }
     border(color) {
         return {
@@ -322,6 +328,7 @@ class PuzzleContents extends Component{
                         puzzleData: this.props.puzzleData,
                         daily_solvedArray: sArray,
                         title: theTitle,
+                        todayFull: this.state.todayFull,
                         gripeText: gripeText,
                         dataElement: index,
                         bgColor: '#09146d',

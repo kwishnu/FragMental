@@ -69,7 +69,7 @@ function invertColor(hex, bw) {
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var SideMenu = require('react-native-side-menu');
-var Menu = require('./menu');
+var Menu = require('../nav/menu');
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
 var NUM_WIDE = 5;
@@ -154,13 +154,89 @@ class PuzzleLaunch extends Component{
         this.setState({ isOpen: isOpen });
 
     }
-    onMenuItemSelected(item) {
-        this.setState({
-            isOpen: false,
-            selectedItem: item,
-        });
-        window.alert(item);
-}
+    onMenuItemSelected = (item) => {
+            switch (item.link){
+                case 'puzzles contents':
+                    this.props.navigator.replace({
+                        id: 'puzzles contents',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'game board':
+                    this.props.navigator.replace({
+                        id: 'game board',
+                        passProps: {
+                            puzzleData: this.props.puzzleData,
+                            daily_solvedArray: this.props.sArray,
+                            title: this.props.todayFull,
+                            index: '0',
+                            bgColor: '#09146d',
+                            fromWhere: 'puzzles contents',
+                            dataElement: '16',
+                        },
+                    });
+                    return;
+                case 'daily launcher':
+                    //check for upgrade, route accordingly todo
+                    this.onSelect('17','Last Three Days', null);
+                    break;
+                case 'store':
+                    this.props.navigator.push({
+                        id: 'store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Puzzle Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'store3':
+                    this.props.navigator.push({
+                        id: 'combo store',
+                        passProps: {
+                            dataIndex: item.index,
+                            title: item.title + ' Value Packs',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'facebook':
+                    window.alert('Device not configured');
+                    break;
+                case 'twitter':
+                    window.alert('Device not configured');
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'puzzle launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'settings':
+                    this.props.navigator.push({
+                        id: 'settings',
+                        passProps: {
+                            destination: 'puzzle launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+                case 'about':
+                    this.props.navigator.push({
+                        id: 'about',
+                        passProps: {
+                            destination: 'puzzle launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
+                    break;
+            }
+    }
     border(color) {
         return {
             borderColor: color,
@@ -213,12 +289,12 @@ class PuzzleLaunch extends Component{
     }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
-            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-            for(let i=0; i<4; i++){
-                var rand0to9 = randomNum(0, 9);
-                this.state.puzzleData[20 + i].title = '*' + this.props.puzzleData[levels[i]].data[rand0to9].name;
-                this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
-            }
+//            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
+//            for(let i=0; i<4; i++){
+//                var rand0to9 = randomNum(0, 9);
+//                this.state.puzzleData[20 + i].title = '*' + this.props.puzzleData[levels[i]].data[rand0to9].name;
+//                this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
+//            }
         this.props.navigator.replace({
             id: 'game board',
             passProps: {

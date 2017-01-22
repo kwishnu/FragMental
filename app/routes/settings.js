@@ -104,7 +104,6 @@ module.exports = class Settings extends Component {
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
-        //AppState.removeEventListener('change', this.handleAppStateChange);
     }
     handleHardwareBackButton() {
         try {

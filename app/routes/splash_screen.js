@@ -116,6 +116,7 @@ class SplashScreen extends Component {
             id: whichScene,
             passProps: {
                 puzzleData: puzzleData,
+                destination: 'puzzles contents'
                 },
        });
     }

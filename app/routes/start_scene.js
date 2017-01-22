@@ -7,7 +7,8 @@ import {
   Alert,
   Image,
   Dimensions,
-  AsyncStorage
+  AsyncStorage,
+  BackAndroid
 } from 'react-native';
 //import Meteor from 'react-native-meteor';
 const windowsWidth = Dimensions.get('window').width;
@@ -21,21 +22,41 @@ class StartScene extends Component {
         this.state = {
             id: 'start scene',
         };
+        this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
-    gotoContents(){
-        this.props.navigator.replace({
-            id: 'puzzles contents',
-            passProps: {
-                puzzleData: this.props.puzzleData,
-            },
-       });
+    componentDidMount() {
+        BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
+    }
+    componentWillUnmount () {
+        BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+    }
+    handleHardwareBackButton=() => {
+        this.goSomewhere();
+    }
+    goSomewhere(){
+        var goToHere = this.props.destination;
+        if (goToHere == 'puzzles contents'){
+            this.props.navigator.replace({
+                id: goToHere,
+                passProps: {
+                    puzzleData: this.props.puzzleData,
+                },
+           });
+        }else{
+            this.props.navigator.pop({
+                id: goToHere,
+                passProps: {
+                    puzzleData: this.props.puzzleData,
+                },
+           });
+        }
     }
     onSkipBtnHandle = () => {
-        this.gotoContents();
+        this.goSomewhere();
 
     }
     doneBtnHandle = () => {
-        this.gotoContents();
+        this.goSomewhere();
 
     }
     nextBtnHandle = () => {
