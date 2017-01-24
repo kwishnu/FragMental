@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');
@@ -64,8 +64,11 @@ function invertColor(hex, bw) {
     r = (255 - r).toString(16);
     g = (255 - g).toString(16);
     b = (255 - b).toString(16);
+    r= (r.length < 2)?'0' + r:r;
+    g= (g.length < 2)?'0' + g:g;
+    b= (b.length < 2)?'0' + b:b;
     // pad each with zeros and return
-    return "#" + padZero(r) + padZero(g) + padZero(b);
+    return "#" + (r) + (g) + (b);
 }
 
 
@@ -83,7 +86,7 @@ var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 8% of the cell width
 var BORDER_RADIUS = CELL_PADDING * .2;
 var TILE_WIDTH = CELL_WIDTH - CELL_PADDING * 2;
 var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
-var SPRING_CONFIG = {tension: 10, velocity: 10};
+var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
 var timeoutHandle;
 var KEY_Puzzles = 'puzzlesKey';
 var KEY_daily_solved_array = 'solved_array';
@@ -196,7 +199,6 @@ class Game extends Component {
             this.setState({isLoading: false});
         });
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
-
         AsyncStorage.getItem(KEY_Sound).then((sounds) => {
             if (sounds !== null) {
                 useSounds = sounds;
@@ -212,6 +214,7 @@ class Game extends Component {
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+
     }
     handleHardwareBackButton() {
         if (this.state.isOpen) {
@@ -240,6 +243,23 @@ class Game extends Component {
             titleColor: titletextColor,
             textColor: txtColor
         });
+    }
+    getStyle() {
+    return [
+              game_styles.word_container,
+              {opacity: this.state.fadeAnim},
+              {transform: this.state.pan.getTranslateTransform()}
+            ];
+    }
+    darkBorder(color) {
+        var darkerColor = shadeColor2(color, -30);
+            return {borderColor: darkerColor};
+    }
+    border(color) {
+        return {
+            borderColor: color,
+            borderWidth: 2,
+        }
     }
     storeGameVariables(index){
         dsArray = this.state.daily_solvedArray;
@@ -350,11 +370,72 @@ class Game extends Component {
                     break;
             }
     }
-    border(color) {
-        return {
-            borderColor: color,
-            borderWidth: 2,
+    drawTiles() {
+        var result = [];
+        var data = this.state.theData;
+        for (var index = 0; index < data.length; ++index) {
+            var style = {
+                left: (parseInt(data[index].col, 10) * CELL_WIDTH) + CELL_PADDING + 6,
+                top: (parseInt(data[index].row, 10) * CELL_HEIGHT) + CELL_PADDING,
+                opacity: parseInt(data[index].opacity, 10)
+            }
+            var text = data[index].frag;
+        result.push(this.drawTile(index, style, text));
         }
+        return result;
+    }
+    drawTile(key, style, frag ) {
+        return (
+            <View  key={ key } style={ [styles.tile, style] } onStartShouldSetResponder={() => this.guess(key, 1)} >
+                    <Text style={ styles.puzzle_text_large }>{ frag }</Text>
+            </View>
+        );
+    }
+    reset_scene(){
+        var data =  this.state.theData;
+            for(var i=0; i<data.length; i++){
+                data[i].frag = dataBackup[i].frag;
+                data[i].opacity = dataBackup[i].opacity;
+            }
+        var arr = Array(this.state.solvedArray.length).fill('');
+        var resetOpacity = new Animated.Value(1);
+        this.setState({ theData: data,
+                        answer_text: '',
+                        fadeAnim: resetOpacity,
+                        starImage1: require('../images/star_grey.png'),
+                        starImage2: require('../images/star_grey.png'),
+                        fragOpacity: 1,
+                        forwardBackOpacity: 0,
+                        goLeft: 250,
+                        columnSort: -1,
+                        onThisClue: 0,
+                        onThisFrag: 0,
+                        currentClue: this.state.theCluesArray[0],
+                        currentFrags: this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')),
+                        numFrags:  (this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')).split('|')).length,
+                        solvedArray: arr,
+                        score: 10,
+                        score_color: '#ffffff',
+                        answer0: '',
+                        answer1: '',
+                        answer2: '',
+                        answer3: '',
+                        answer4: '',
+                        answer5: '',
+                        answer6: '',
+                        answer7: '',
+                        answer8: '',
+                        answer9: '',
+                        answer10: '',
+                        answer11: '',
+                        answer12: '',
+                        answer13: '',
+                        answer14: '',
+                        puzzle_solved: false,
+                        wentBust: false,
+                        isLoading: false,
+                        bgColor: this.state.bgColor,
+                    });
     }
     closeGame() {
             var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
@@ -383,9 +464,6 @@ class Game extends Component {
             }
     }
     nextGame(){
-
-    window.alert(this.props.fromWhere);
-    return;
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
         if(this.props.fromWhere == 'puzzles contents'){this.closeGame();return;}
         var newIndex = (parseInt(this.state.index, 10) + 1).toString();
@@ -408,27 +486,6 @@ class Game extends Component {
             this.setState({ title: nextTitle, forwardBackOpacity: 0 });
             setTimeout(() => {this.reset_scene()}, 500);
         }
-    }
-    drawTiles() {
-        var result = [];
-        var data = this.state.theData;
-        for (var index = 0; index < data.length; ++index) {
-            var style = {
-                left: (parseInt(data[index].col, 10) * CELL_WIDTH) + CELL_PADDING + 6,
-                top: (parseInt(data[index].row, 10) * CELL_HEIGHT) + CELL_PADDING,
-                opacity: parseInt(data[index].opacity, 10)
-            }
-            var text = data[index].frag;
-        result.push(this.drawTile(index, style, text));
-        }
-        return result;
-    }
-    drawTile(key, style, frag ) {
-        return (
-            <View  key={ key } style={ [styles.tile, style] } onStartShouldSetResponder={() => this.guess(key, 1)} >
-                    <Text style={ styles.puzzle_text_large }>{ frag }</Text>
-            </View>
-        );
     }
     guess(which, howMuchToScore) {
         var solved = this.state.puzzle_solved;
@@ -518,9 +575,17 @@ class Game extends Component {
                             window.alert('AsyncStorage error: ' + error.message);
                         }
                     }
-
-
-                    currClue = (this.state.score < 20)?'1':'2';
+                    if(useSounds == 'true')fanfare.play();
+                    try {
+                        AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                   if (this.state.score < 20){
+                        currClue = 'Congratulations...one star for solving the puzzle!';
+                    }else{
+                        currClue = 'You get both stars for solving the puzzle with ' + this.state.score + ' points!';
+                    }
                 }
             }
             this.setState({ theData: data,
@@ -534,6 +599,7 @@ class Game extends Component {
                             solvedArray: sArray,
                             goLeft: gl,
                             columnSort: colSort,
+                            currentClue: currClue
                         });
             if(howMuchToScore>0) {
                 this.score_increment(scoreToAdd);
@@ -546,52 +612,95 @@ class Game extends Component {
             this.score_decrement(1);
         }
         if (solved){
-            if(useSounds == 'true')slide.play();
-            setTimeout(() => {this.animate_word(currClue)}, 20);
+            if(useSounds == 'true' && !entire_puzzle_solved)slide.play();
+            this.animate_word(currClue, theWord, colSort, gl, entire_puzzle_solved);
         };
     }
-    reset_scene(){
-        var data =  this.state.theData;
-            for(var i=0; i<data.length; i++){
-                data[i].frag = dataBackup[i].frag;
-                data[i].opacity = dataBackup[i].opacity;
-            }
-        var arr = Array(this.state.solvedArray.length).fill('');
-        var resetOpacity = new Animated.Value(1);
-        setTimeout(() => {this.changeStarImage(0)}, 50);
-        this.setState({ theData: data,
-                        answer_text: '',
-                        fadeAnim: resetOpacity,
-                        goLeft: 100,
-                        columnSort: -1,
-                        onThisClue: 0,
-                        onThisFrag: 0,
-                        currentClue: this.state.theCluesArray[0],
-                        currentFrags: this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')),
-                        numFrags:  (this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')).split('|')).length,
-                        solvedArray: arr,
-                        score: 10,
-                        score_color: '#ffffff',
-                        answer0: '',
-                        answer1: '',
-                        answer2: '',
-                        answer3: '',
-                        answer4: '',
-                        answer5: '',
-                        answer6: '',
-                        answer7: '',
-                        answer8: '',
-                        answer9: '',
-                        answer10: '',
-                        answer11: '',
-                        answer12: '',
-                        answer13: '',
-                        answer14: '',
-                        puzzle_solved: false,
-                        wentBust: false,
-                        isLoading: false,
-                        bgColor: this.state.bgColor,
-                    });
+    animate_word(newClue, ansWord, whichCol, direction, endOfGame){
+        this.set_column_word(newClue, ansWord, whichCol)
+        Animated.parallel([
+            Animated.spring(
+                this.state.pan, {
+                    ...SPRING_CONFIG,
+                    overshootClamping: true,
+                    easing: Easing.linear,
+                    toValue: {x: direction, y: -200}
+                }),
+            Animated.timing(
+                this.state.fadeAnim, {
+                    toValue: 0,
+                    easing: Easing.linear,
+                    duration: 750,
+                }),
+        ]).start(() => this.restore_word(newClue, ansWord, whichCol, endOfGame));
+    }
+    restore_word(newClue, ansWord, whichCol, endOfGame){
+        this.setState({ answer_text:''});
+        Animated.sequence([
+            Animated.spring(
+                this.state.pan, {
+                    ...SPRING_CONFIG,
+                    overshootClamping: true,
+                    easing: Easing.linear,
+                    toValue: {x: 0, y: 0}
+                }),
+            Animated.timing(
+                this.state.fadeAnim, {
+                    toValue: 1,
+                    easing: Easing.linear,
+                    duration: 0,
+                }),
+        ]).start(()=>this.changeStarImage(2, endOfGame));
+    }
+    set_column_word(newClue, ansWord, whichCol){
+        switch(whichCol){
+            case 0:
+                this.setState({ answer0: ansWord, currentClue: newClue});
+                break;
+            case 1:
+                this.setState({ answer1: ansWord, currentClue: newClue});
+                break;
+            case 2:
+                this.setState({ answer2: ansWord, currentClue: newClue});
+                break;
+            case 3:
+                this.setState({ answer3: ansWord, currentClue: newClue});
+                break;
+            case 4:
+                this.setState({ answer4: ansWord, currentClue: newClue});
+                break;
+            case 5:
+                this.setState({ answer5: ansWord, currentClue: newClue});
+                break;
+            case 6:
+                this.setState({ answer6: ansWord, currentClue: newClue});
+                break;
+            case 7:
+                this.setState({ answer7: ansWord, currentClue: newClue});
+                break;
+            case 8:
+                this.setState({ answer8: ansWord, currentClue: newClue});
+                break;
+            case 9:
+                this.setState({ answer9: ansWord, currentClue: newClue});
+                break;
+            case 10:
+                this.setState({ answer10: ansWord, currentClue: newClue});
+                break;
+            case 11:
+                this.setState({ answer11: ansWord, currentClue: newClue});
+                break;
+            case 12:
+                this.setState({ answer12: ansWord, currentClue: newClue});
+                break;
+            case 13:
+                this.setState({ answer13: ansWord, currentClue: newClue});
+                break;
+            case 14:
+                this.setState({ answer14: ansWord, currentClue: newClue});
+                break;
+            default:
+        }
     }
     score_increment(howMuch){
         var score = parseInt(this.state.score, 10);
@@ -662,150 +771,33 @@ class Game extends Component {
             }
         }
     }
-    getStyle() {
-    return [
-              game_styles.word_container,
-              {opacity: this.state.fadeAnim},
-              {transform: this.state.pan.getTranslateTransform()}
-            ];
-    }
-//    clueContainerBg(color){
-//         var strToReturn = shadeColor2(color, 40);
-//         return {backgroundColor: strToReturn};
-//    }
-    darkBorder(color) {
-        var darkerColor = shadeColor2(color, -80);
-            return {borderColor: darkerColor};
-    }
-    animate_word(newClue){
-        Animated.parallel([
-            Animated.spring(
-                this.state.pan, {
-                    ...SPRING_CONFIG,
-                    toValue: {x: this.state.goLeft, y: -300}
-                }),
-            Animated.timing(
-                this.state.fadeAnim, {
-                    toValue: 0,
-                    duration: 200,
-                }),
-        ]).start(this.call_set_column(newClue));
-
-        setTimeout(() => {this.restore_word()}, 400);
-    }
-    restore_word(){
-        this.setState({ answer_text:''});
-        Animated.sequence([
-            Animated.spring(
-                this.state.pan, {
-                    ...SPRING_CONFIG,
-                    toValue: {x: 0, y: 0}
-                }),
-            Animated.timing(
-                this.state.fadeAnim, {
-                    toValue: 1,
-                    duration: 0,
-                }),
-        ]).start();
-    }
-    call_set_column(newClue){
-        setTimeout(() => {this.set_column_word(newClue)}, 200);
-
-    }
-    set_column_word(newClue){
-        switch(this.state.columnSort){
-            case 0:
-                this.setState({ answer0: this.state.answer_text, currentClue: newClue});
-                break;
-            case 1:
-                this.setState({ answer1: this.state.answer_text, currentClue: newClue});
-                break;
-            case 2:
-                this.setState({ answer2: this.state.answer_text, currentClue: newClue});
-                break;
-            case 3:
-                this.setState({ answer3: this.state.answer_text, currentClue: newClue});
-                break;
-            case 4:
-                this.setState({ answer4: this.state.answer_text, currentClue: newClue});
-                break;
-            case 5:
-                this.setState({ answer5: this.state.answer_text, currentClue: newClue});
-                break;
-            case 6:
-                this.setState({ answer6: this.state.answer_text, currentClue: newClue});
-                break;
-            case 7:
-                this.setState({ answer7: this.state.answer_text, currentClue: newClue});
-                break;
-            case 8:
-                this.setState({ answer8: this.state.answer_text, currentClue: newClue});
-                break;
-            case 9:
-                this.setState({ answer9: this.state.answer_text, currentClue: newClue});
-                break;
-            case 10:
-                this.setState({ answer10: this.state.answer_text, currentClue: newClue});
-                break;
-            case 11:
-                this.setState({ answer11: this.state.answer_text, currentClue: newClue});
-                break;
-            case 12:
-                this.setState({ answer12: this.state.answer_text, currentClue: newClue});
-                break;
-            case 13:
-                this.setState({ answer13: this.state.answer_text, currentClue: newClue});
-                break;
-            case 14:
-                this.setState({ answer14: this.state.answer_text, currentClue: newClue});
-                break;
-            default:
-        }
-    }
     getClueText(which){
         var textToReturn = '';
         var currClue = this.state.currentClue;
-
-        if (currClue.indexOf(':') > 0){
-            var counter = 0;
-            for (var letter = 0; letter < this.state.currentFrags.length; letter++){
-                if (currClue[letter] == '|')continue;
-                if (currClue[letter] == '^'){counter = counter + this.state.keyFrag.length; continue;}
-                counter++;
-            }
-
-            var nl_text = (this.state.useNumLetters == true)?(counter.toString() + '  letters'):'';
-            var prefix = (this.state.useNumLetters == true)?'':(parseInt(this.state.onThisClue + 1, 10) + ':  ');
-            textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
-            switch (which){
-                case 'clue':
-                    return textToReturn;
-                case 'num':
+        var solved = this.state.puzzle_solved;
+        var counter = 0;
+        for (var letter = 0; letter < this.state.currentFrags.length; letter++){
+            if (currClue[letter] == '|')continue;
+            if (currClue[letter] == '^'){counter = counter + this.state.keyFrag.length; continue;}
+            counter++;
+        }
+        var nl_text = (this.state.useNumLetters == true)?(counter.toString() + '  letters'):'';
+        var prefix = (this.state.useNumLetters == true)?'':(parseInt(this.state.onThisClue + 1, 10) + ':  ');
+        textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
+        switch (which){
+            case 'clue':
+                return textToReturn;
+            case 'num':
+                if(!solved){
                     return nl_text;
-            }
-        }else{
-            if(useSounds == 'true')fanfare.play();
-            try {
-                AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
-            } catch (error) {
-                window.alert('AsyncStorage error: ' + error.message);
-            }
-           if (currClue == '1'){
-                textToReturn = 'Congratulations...one star for solving the puzzle!';
-                timeoutHandle = setTimeout(() => {this.changeStarImage(1)}, 50);
-            }else{
-                textToReturn = 'Excellent:  you get both stars for solving the puzzle with ' + this.state.score + ' points!';
-                timeoutHandle = setTimeout(() => {this.changeStarImage(2)}, 50);
-            }
-            switch (which){
-                case 'clue':
-                    return textToReturn;
-                case 'num':
+                }else{
                     return '';
-            }
+                }
+            default:
         }
     }
-    changeStarImage(howMany){
+    changeStarImage(howMany, endOfGame){
+        if(!endOfGame)return;
         var onLastGameInPack=(this.props.fromWhere == 'puzzles contents' || parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
         switch(howMany){
             case 0:
@@ -854,7 +846,7 @@ class Game extends Component {
                 break;
             default:
         }
-        clearTimeout(timeoutHandle);
+        //clearTimeout(timeoutHandle);
 
     }
 
@@ -884,7 +876,7 @@ class Game extends Component {
                             </Button>
                         </View>
 
-                        <View style={ game_styles.display_area }>
+                        <View style={ [game_styles.display_area, this.darkBorder(this.state.bgColor)] }>
                             <View style={ game_styles.answers_container }>
                                 <View style={ game_styles.answers_column }>
                                     <Text style={[styles.answer_column_text, {color: this.state.textColor}]}>{this.state.answer0}</Text>
@@ -919,12 +911,12 @@ class Game extends Component {
                             </View>
 
                             <View style={ game_styles.word_and_frag }>
-                                <View style={ [game_styles.frag_container, {opacity: this.state.fragOpacity}] } onStartShouldSetResponder={() => this.guess(100, 1)}>
+                                <View style={ [game_styles.frag_container, {opacity: this.state.fragOpacity}, this.darkBorder(this.state.bgColor)] } onStartShouldSetResponder={() => this.guess(100, 1)}>
                                     <Text style={styles.keyfrag_text} >{this.state.keyFrag}
                                     </Text>
                                 </View>
                                 <Animated.View style={this.getStyle()}>
-                                    <Text style={styles.answer_text} >{this.state.answer_text}
+                                    <Text style={[styles.answer_text, {color: this.state.textColor}]} >{this.state.answer_text}
                                     </Text>
                                 </Animated.View>
                             </View>
@@ -943,10 +935,10 @@ class Game extends Component {
                                 </Text>
                             </View>
                             <View style={ game_styles.buttons_container }>
-                                <Button style={styles.skip_button} onPress={ () => this.skip_to_next() }>
+                                <Button style={[styles.skip_button, this.darkBorder('#64aefa')]} onPress={ () => this.skip_to_next() }>
                                     <Image source={ require('../images/skip.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
-                                <Button style={styles.hint_button} onPress={ () => this.give_hint() }>
+                                <Button style={[styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint() }>
                                     <Image source={ require('../images/question.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
                             </View>
@@ -985,7 +977,6 @@ var game_styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'transparent',
         borderTopWidth: 2,
-        borderTopColor: '#000',
     },
     answers_container: {
         flex: 14,
@@ -1035,8 +1026,8 @@ var game_styles = StyleSheet.create({
         flex: 4,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#dedffa',
-        borderWidth: 2,
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
         borderColor: '#000',
         borderRadius: 2,
         padding: 6,

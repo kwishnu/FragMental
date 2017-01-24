@@ -719,9 +719,9 @@ module.exports = [
 	{
 		title:'',
 		index: '20',
-		type:'forsale',
+		type:'mypack',//forsale
 		show:'true',
-		num_puzzles:'0',
+		num_puzzles:'1',
 		num_solved:'0',
 		solved:'false',
 		bg_color:'',
@@ -732,9 +732,9 @@ module.exports = [
 	{
 		title:'',
 		index: '21',
-		type:'forsale',
+		type:'mypack',
 		show:'true',
-		num_puzzles:'0',
+		num_puzzles:'1',
 		num_solved:'0',
 		solved:'false',
 		bg_color:'',
@@ -745,9 +745,9 @@ module.exports = [
 	{
 		title:'',
 		index: '22',
-		type:'forsale',
+		type:'mypack',
 		show:'true',
-		num_puzzles:'0',
+		num_puzzles:'1',
 		num_solved:'0',
 		solved:'false',
 		bg_color:'',
@@ -758,9 +758,9 @@ module.exports = [
 	{
 		title:'',
 		index: '23',
-		type:'forsale',
+		type:'mypack',
 		show:'true',
-		num_puzzles:'0',
+		num_puzzles:'1',
 		num_solved:'0',
 		solved:'false',
 		bg_color:'',

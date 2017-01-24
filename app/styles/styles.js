@@ -23,7 +23,7 @@ module.exports = StyleSheet.create({
         borderRadius: BORDER_RADIUS,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#dedffa',
+        backgroundColor: '#ffffff',
         padding: 8,
     },
     skip_button: {
@@ -31,6 +31,7 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#64aefa',
+        borderWidth: 1,
         borderRadius: 12,
         marginRight: 3,
         padding: 12,
@@ -40,6 +41,7 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#4aeeb2',
+        borderWidth: 1,
         borderRadius: 12,
         marginLeft: 3,
         padding: 12,
@@ -53,7 +55,6 @@ module.exports = StyleSheet.create({
         fontSize: LETTER_SIZE,
     },
     answer_text: {
-        color: 'white',
         fontSize: LETTER_SIZE * 5/3,
         fontWeight: 'bold',
     },
