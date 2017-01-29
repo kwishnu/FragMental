@@ -13,7 +13,8 @@
     "react-native-app-intro": "^1.1.5",
     "react-native-meteor": "^1.0.3",
     "react-native-side-menu": "^0.20.1",
-    "react-native-sound": "^0.8.3"
+    "react-native-sound": "^0.8.3",
+    "react-native-push-notification": "^2.2.1"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
