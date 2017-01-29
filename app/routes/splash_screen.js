@@ -67,11 +67,10 @@ class SplashScreen extends Component {
             return NetInfo.isConnected.fetch();
         }).then((isConnected) => {
             if(isConnected){
-//'ws://52.9.147.169:80/websocket'; <= bbg2...publication PuzzlesList, collection puzzles (field "name")
 //'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
 //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
 //'ws://10.0.0.207:3000/websocket'; <= localhost
-                let METEOR_URL = 'ws://52.52.205.96:80/websocket';////'ws://52.9.147.169:80/websocket';//'ws://52.8.88.93:80/websocket';'ws://10.0.0.207:3000/websocket';//'ws://52.52.205.96:80/websocket';
+                let METEOR_URL = 'ws://52.52.205.96:80/websocket';
                 Meteor.connect(METEOR_URL);
                 const handle = Meteor.subscribe('AllData', {
                     onReady: function () {
