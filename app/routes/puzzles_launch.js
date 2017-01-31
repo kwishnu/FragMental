@@ -175,6 +175,7 @@ class PuzzleLaunch extends Component{
                             bgColor: '#09146d',
                             fromWhere: 'puzzles contents',
                             dataElement: '16',
+                            isPremium: this.props.isPremium
                         },
                     });
                     return;
@@ -289,12 +290,6 @@ class PuzzleLaunch extends Component{
     }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
-//            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-//            for(let i=0; i<4; i++){
-//                var rand0to9 = randomNum(0, 9);
-//                this.state.puzzleData[20 + i].title = '*' + this.props.puzzleData[levels[i]].data[rand0to9].name;
-//                this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
-//            }
         this.props.navigator.replace({
             id: 'game board',
             passProps: {
@@ -304,8 +299,9 @@ class PuzzleLaunch extends Component{
                 fromWhere: 'puzzle launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
+                isPremium: this.props.isPremium,
                 bgColor: this.props.bgColor,
-                myTitle: this.props.title,
+                myTitle: this.props.title
             },
        });
     }
@@ -350,9 +346,6 @@ class PuzzleLaunch extends Component{
                                              </TouchableHighlight>
                                          </View>}
                              />
-                        </View>
-                        <View style={ [container_styles.footer, {backgroundColor: this.state.headerColor}]}>
-                            <Text style={{fontSize: 11, color: '#fff'}}>Some fine print...</Text>
                         </View>
                      </View>
                 </SideMenu>

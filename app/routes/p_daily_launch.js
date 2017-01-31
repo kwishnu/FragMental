@@ -105,6 +105,7 @@ class DailyLaunch extends Component{
                             bgColor: '#09146d',
                             fromWhere: 'puzzles contents',
                             dataElement: '16',
+                            isPremium: this.props.isPremium
                         },
                     });
                     return;
@@ -231,8 +232,9 @@ class DailyLaunch extends Component{
                 fromWhere: 'daily launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
+                isPremium: this.props.isPremium,
                 bgColor: this.props.bgColor,
-                myTitle: this.props.title,
+                myTitle: this.props.title
             },
        });
     }

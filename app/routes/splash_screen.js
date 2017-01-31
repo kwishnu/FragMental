@@ -13,6 +13,9 @@ var seenStart = false;
 var puzzleData = {};
 var ready = false;
 var nowISO = moment().valueOf();
+var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
+var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
+var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 function randomNum(low, high) {
     high++;
@@ -74,15 +77,26 @@ class SplashScreen extends Component {
                 Meteor.connect(METEOR_URL);
                 const handle = Meteor.subscribe('AllData', {
                     onReady: function () {
-                        const messages = Meteor.collection('dataJ').find();
-                        for (var key in messages) {
-                            if (!messages.hasOwnProperty(key)) continue;
-                            var obj = messages[key];
+                        const d_puzzles = Meteor.collection('dataA').find();
+                             var flag = 'skip';
+
+                        for (var key in d_puzzles) {
+                            if (!d_puzzles.hasOwnProperty(key)) continue;
+                            var obj = d_puzzles[key];
                             for (var prop in obj) {
                                 if(!obj.hasOwnProperty(prop)) continue;//Modify daily puzzle info here...todo
-                                if(prop=='text'){;}
+                                if(prop=='pnum' && obj[prop] > 4 && obj[prop] < 9){
+                                    flag = 'enter this one'
+                                    }
+                                if(prop=='puzz' && flag == 'enter this one'){
+
+                                    console.log(prop + " = " + obj[prop]);
+                                    flag = 'skip';
+                                }
+
+//                                     window.alert(obj['puzz'] + ' something else');
+
                                 //window.alert(prop + " = " + obj[prop]);
-                                //window.alert(obj[prop]);
                             }
                         }
                     },

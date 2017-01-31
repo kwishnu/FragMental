@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, Li
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
+import Meteor from 'react-native-meteor';
 
 function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
@@ -86,9 +87,10 @@ var BORDER_RADIUS = CELL_PADDING * .3;
 var KEY_daily_solved_array = 'solved_array';
 var KEY_Color = 'colorKey';
 var KEY_midnight = 'midnight';
+var KEY_Premium = 'premiumOrNot';
 var nowISO = moment().valueOf();
-var launchDay = moment('2016 10', 'YYYY-MM');//November 1, 2016
-var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 11/1/2016
+var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
+var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
 var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 var sArray = [];
@@ -111,10 +113,7 @@ class PuzzleContents extends Component{
             id: 'puzzles contents',
             isOpen: false,
             todayFull: null,
-//            headerColor: '#050e59',
-//            bgColor: '#09146d',
-//            cluesBgColor: '#0000ff',
-//            textColor: '#ffffff',
+            isPremium: false,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
@@ -129,6 +128,20 @@ class PuzzleContents extends Component{
 
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
+        AsyncStorage.getItem(KEY_Premium).then((premium) => {
+            if (premium !== null) {
+                var boolToUse = (premium == 'true')?true:false;
+                this.setState({
+                    isPremium: boolToUse
+                });
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_Premium, 'false');//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+        });
         AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
@@ -314,6 +327,7 @@ class PuzzleContents extends Component{
                         bgColor: '#09146d',
                         fromWhere: 'puzzles contents',
                         dataElement: index,
+                        isPremium: this.state.isPremium
                     },
                 });
                 return;
@@ -331,7 +345,8 @@ class PuzzleContents extends Component{
                         todayFull: this.state.todayFull,
                         gripeText: gripeText,
                         dataElement: index,
-                        bgColor: '#09146d',
+                        isPremium: this.state.isPremium,
+                        bgColor: '#09146d'
                     },
                 });
                 return;
@@ -357,7 +372,8 @@ class PuzzleContents extends Component{
                     title: theTitle,
                     gripeText: gripeText,
                     dataElement: index,
-                    bgColor: bgColorToSend,
+                    isPremium: this.state.isPremium,
+                    bgColor: bgColorToSend
                 },
             });
         });

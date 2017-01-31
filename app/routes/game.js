@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');
@@ -175,8 +175,16 @@ class Game extends Component {
             isOpen: false,
             puzzle_solved: false,
             wentBust: false,
-            useNumLetters: true,
             score_color: '#ffffff',
+            hint1Color: '#ffffff',
+            hint2Color: '#ffffff',
+            hint3Color: '#ffffff',
+            hint4Color: '#ffffff',
+            hint5Color: '#ffffff',
+            hint6Color: '#ffffff',
+            hintOpacity: 0,
+            numHints: 0,
+            useNumLetters: true,
             bgColor: this.props.bgColor,
             headerColor: '',
             cluesBgColor: '',
@@ -186,12 +194,14 @@ class Game extends Component {
             starImage1: require('../images/star_grey.png'),
             starImage2: require('../images/star_grey.png'),
             arrowImage: require('../images/arrow_forward.png'),
+            isPremium: this.props.isPremium
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount() {
         puzzleData = this.state.puzzleData;
         this.setColors();
+        this.setPremium();
         AsyncStorage.getItem(KEY_UseNumLetters).then((value) => {
             var valueToBool = (value == 'true')?true:false;
             this.setState({useNumLetters: valueToBool});
@@ -223,6 +233,14 @@ class Game extends Component {
             this.closeGame();
         }
         return true;
+    }
+    setPremium(){
+        var numToUse = (this.props.isPremium == true)?6:2;
+        var opacityToUse = (this.props.isPremium == true)?1:0;
+        this.setState({hintOpacity: opacityToUse,
+            numHints: numToUse,
+            hintOpacity: this.state.hintOpacity,
+                      });
     }
     setColors(){
         var bgC = this.props.bgColor;
@@ -392,6 +410,7 @@ class Game extends Component {
         );
     }
     reset_scene(){
+        this.setPremium();
         var data =  this.state.theData;
             for(var i=0; i<data.length; i++){
                 data[i].frag = dataBackup[i].frag;
@@ -416,6 +435,14 @@ class Game extends Component {
                         solvedArray: arr,
                         score: 10,
                         score_color: '#ffffff',
+                        hint1Color: '#ffffff',
+                        hint2Color: '#ffffff',
+                        hint3Color: '#ffffff',
+                        hint4Color: '#ffffff',
+                        hint5Color: '#ffffff',
+                        hint6Color: '#ffffff',
+                        hintOpacity: this.state.hintOpacity,
+                        numHints: this.state.numHints,
                         answer0: '',
                         answer1: '',
                         answer2: '',
@@ -434,7 +461,7 @@ class Game extends Component {
                         puzzle_solved: false,
                         wentBust: false,
                         isLoading: false,
-                        bgColor: this.state.bgColor,
+                        bgColor: this.props.bgColor,
                     });
     }
     closeGame() {
@@ -451,6 +478,7 @@ class Game extends Component {
                     puzzleData: this.props.puzzleData,
                     daily_solvedArray: this.state.daily_solvedArray,
                     dataElement: this.props.dataElement,
+                    isPremium: this.state.isPremium,
                     puzzleArray: this.props.puzzleArray,
                     textColor: this.props.textColor,
                     bgColor: this.props.bgColor,
@@ -581,10 +609,16 @@ class Game extends Component {
                     } catch (error) {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
-                   if (this.state.score < 20){
-                        currClue = 'Congratulations...one star for solving the puzzle!';
+                    var accolades = 'Right on!*You\'re so smart!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
+                    var accolade = accolades[Math.floor(Math.random()*accolades.length)];
+
+
+                   if (this.state.score < 40){
+                        currClue = accolade;
                     }else{
-                        currClue = 'You get both stars for solving the puzzle with ' + this.state.score + ' points!';
+                        var toAdd = this.state.score;
+                        if(howMuchToScore>0)toAdd = toAdd + scoreToAdd;
+                        currClue = accolade.replace('!', '...' + toAdd + ' points!');
                     }
                 }
             }
@@ -611,8 +645,8 @@ class Game extends Component {
             if(useSounds == 'true')blat.play();
             this.score_decrement(1);
         }
-        if (solved){
-            if(useSounds == 'true' && !entire_puzzle_solved)slide.play();
+        if (solved){//at least one clue is solved
+            if(useSounds == 'true' && !entire_puzzle_solved)slide.play();//only a word, not the entire puzzle
             this.animate_word(currClue, theWord, colSort, gl, entire_puzzle_solved);
         };
     }
@@ -650,7 +684,7 @@ class Game extends Component {
                     easing: Easing.linear,
                     duration: 0,
                 }),
-        ]).start(()=>this.changeStarImage(2, endOfGame));
+        ]).start(()=>this.endOfGame(endOfGame));
     }
     set_column_word(newClue, ansWord, whichCol){
         switch(whichCol){
@@ -727,7 +761,7 @@ class Game extends Component {
             if(solved || bust){return}
         var onFrag = this.state.onThisFrag;
         if(onFrag > 0){
-            this.give_hint();
+            this.give_hint(false);
         }else{
             var onClue = this.state.onThisClue;
             var currClue = this.state.currentClue;
@@ -752,23 +786,81 @@ class Game extends Component {
                             });
         }
     }
-    give_hint(){
-        var solved = this.state.puzzle_solved;
-        var bust = this.state.wentBust;
-            if(solved || bust)return;
-        var data =  this.state.theData;
-        var guessFragsArray = this.state.currentFrags.split('|');
-        var onFrag = this.state.onThisFrag;
-
-        if(guessFragsArray[onFrag] == '^'){
-            this.guess(100, -1);
-            return;
-        }
-        for(var goThruData = 0; goThruData<data.length; goThruData++){
-            if(data[goThruData].frag == guessFragsArray[onFrag]){
-            this.guess(goThruData, -1);
-            return;
+    give_hint(fromHintButton){
+        if(this.state.numHints > 0 || !fromHintButton){
+            var remainingHints = this.state.numHints - 1;
+            if(fromHintButton){
+                if(this.state.isPremium == true){
+                    switch(remainingHints){
+                        case 5:
+                            this.setState({hint6Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 4:
+                            this.setState({hint5Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 3:
+                            this.setState({hint4Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 2:
+                            this.setState({hint3Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 1:
+                            this.setState({hint2Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 0:
+                            this.setState({hint1Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        default:
+                    }
+                }else{
+                    switch(remainingHints){
+                        case 1:
+                            this.setState({hint2Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        case 0:
+                            this.setState({hint1Color: '#000',
+                                           numHints: remainingHints
+                                    });
+                            break;
+                        default:
+                    }
+                }
             }
+            var solved = this.state.puzzle_solved;
+            var bust = this.state.wentBust;
+                if(solved || bust)return;
+            var data =  this.state.theData;
+            var guessFragsArray = this.state.currentFrags.split('|');
+            var onFrag = this.state.onThisFrag;
+
+            if(guessFragsArray[onFrag] == '^'){
+                this.guess(100, -1);
+                return;
+            }
+            for(var goThruData = 0; goThruData<data.length; goThruData++){
+                if(data[goThruData].frag == guessFragsArray[onFrag]){
+                this.guess(goThruData, -1);
+                return;
+                }
+            }
+        }else if(this.state.isPremium != true){
+            Alert.alert('No more hints', 'Sorry, only 2 hints per puzzle! Purchase just one puzzle pack, and always get 6 hints per game.');
+        }else{
+            Alert.alert('No more hints', 'No more hints!');
         }
     }
     getClueText(which){
@@ -784,6 +876,8 @@ class Game extends Component {
         var nl_text = (this.state.useNumLetters == true)?(counter.toString() + '  letters'):'';
         var prefix = (this.state.useNumLetters == true)?'':(parseInt(this.state.onThisClue + 1, 10) + ':  ');
         textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
+        textToReturn = (this.state.wentBust == true)?'Oops, try again!':textToReturn;
+        solved = (solved == true || this.state.wentBust == true)?true:false;
         switch (which){
             case 'clue':
                 return textToReturn;
@@ -796,58 +890,22 @@ class Game extends Component {
             default:
         }
     }
-    changeStarImage(howMany, endOfGame){
+    endOfGame(endOfGame){
         if(!endOfGame)return;
         var onLastGameInPack=(this.props.fromWhere == 'puzzles contents' || parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
-        switch(howMany){
-            case 0:
-                this.setState({
-                    starImage1: require('../images/star_grey.png'),
-                    starImage2: require('../images/star_grey.png'),
-                    fragOpacity: 1,
-                    forwardBackOpacity: 0,
+        if (onLastGameInPack){
+            this.setState({
+                fragOpacity: 0,
+                arrowImage: require('../images/arrow_backward.png'),
+                forwardBackOpacity: 1,
                 });
-                break;
-            case 1:
-                if (onLastGameInPack){
-                    this.setState({
-                        starImage1: require('../images/star_green.png'),
-                        fragOpacity: 0,
-                        arrowImage: require('../images/arrow_backward.png'),
-                        forwardBackOpacity: 1,
-                        });
-                }else{
-                    this.setState({
-                        starImage1: require('../images/star_green.png'),
-                        fragOpacity: 0,
-                        arrowImage: require('../images/arrow_forward.png'),
-                        forwardBackOpacity: 1,
-                        });
-                }
-                break;
-            case 2:
-                if (onLastGameInPack){
-                    this.setState({
-                        starImage1: require('../images/star_green.png'),
-                        starImage2: require('../images/star_green.png'),
-                        fragOpacity: 0,
-                        arrowImage: require('../images/arrow_backward.png'),
-                        forwardBackOpacity: 1,
-                        });
-                }else{
-                    this.setState({
-                        starImage1: require('../images/star_green.png'),
-                        starImage2: require('../images/star_green.png'),
-                        fragOpacity: 0,
-                        arrowImage: require('../images/arrow_forward.png'),
-                        forwardBackOpacity: 1,
-                        });
-                }
-                break;
-            default:
+        }else{
+            this.setState({
+                fragOpacity: 0,
+                arrowImage: require('../images/arrow_forward.png'),
+                forwardBackOpacity: 1,
+                });
         }
-        //clearTimeout(timeoutHandle);
-
     }
 
     render() {
@@ -923,8 +981,8 @@ class Game extends Component {
                         </View>
 
                         <View style={ game_styles.tiles_container }>
-                                <View style={{width: 96, height: 96}} onStartShouldSetResponder={ () => this.nextGame() }>
-                                    <Image style={{ width: 60, height: 60, opacity: this.state.forwardBackOpacity, marginBottom: 30 }} source={this.state.arrowImage} />
+                                <View style={{width: 80, height: 80}} onStartShouldSetResponder={ () => this.nextGame() }>
+                                    <Image style={{ width: 80, height: 80, opacity: this.state.forwardBackOpacity, marginBottom: 30 }} source={this.state.arrowImage} />
                                 </View>
                             { this.drawTiles() }
                         </View>
@@ -938,13 +996,29 @@ class Game extends Component {
                                 <Button style={[styles.skip_button, this.darkBorder('#64aefa')]} onPress={ () => this.skip_to_next() }>
                                     <Image source={ require('../images/skip.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
-                                <Button style={[styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint() }>
+                                <Button style={[styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint(true) }>
                                     <Image source={ require('../images/question.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
                             </View>
-                            <View style={ game_styles.stars_container }>
-                                <Image source={this.state.starImage1} style={ game_styles.star } />
-                                <Image source={this.state.starImage2} style={ game_styles.star } />
+                            <View style={ game_styles.hints_container }>
+                                <View style={ game_styles.hint_row }>
+                                        <Text style={[game_styles.hint, {color: this.state.hint5Color, opacity: this.state.hintOpacity}]}>*</Text>
+                                        <Text style={[game_styles.hint, {color: this.state.hint6Color, opacity: this.state.hintOpacity}]}>*</Text>
+                                </View>
+                                <View style={ game_styles.hint_row }>
+                                        <Text style={[game_styles.hint, {color: this.state.hint3Color, opacity: this.state.hintOpacity}]}>*</Text>
+                                        <Text style={[game_styles.hint, {color: this.state.hint5Color, opacity: this.state.hintOpacity}]}>*</Text>
+                                </View>
+                                <View style={ game_styles.hint_row }>
+                                        <Text style={[game_styles.hint, {color: this.state.hint1Color}]}>*</Text>
+                                        <Text style={[game_styles.hint, {color: this.state.hint2Color}]}>*</Text>
+                                </View>
+                                <View style={ [game_styles.hint_row, {marginTop: 6}]}>
+                                        <Text style={{fontSize: 14, color: '#ffffff'}}>hints</Text>
+                                </View>
+
+
+
                             </View>
                         </View>
                     </View>
@@ -1064,13 +1138,27 @@ var game_styles = StyleSheet.create({
         backgroundColor: 'transparent',
         padding: 12,
     },
-    stars_container: {
-        flexDirection: 'row',
+    hints_container: {
+        flexDirection: 'column',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
         paddingRight: 10,
+    },
+    hint_row: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 50,
+        height: 10,
+        backgroundColor: 'transparent',
+    },
+    hint: {
+        fontSize: 14,
+        marginBottom: 4,
+        marginLeft: 6,
+        marginRight: 6,
     },
     score_container: {
         flexDirection: 'row',
@@ -1079,14 +1167,6 @@ var game_styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'transparent',
         paddingLeft: 15,
-    },
-    star: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        width: 20,
-        height: 20,
     },
 });
 
