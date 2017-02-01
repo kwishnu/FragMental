@@ -36,7 +36,19 @@ class SplashScreen extends Component {
 //    window.alert(startNum);
         puzzleData = seedPuzzleData;
         let boolToUse = 'false';
-        AsyncStorage.getItem(KEY_Premium).then((premium) => {
+        AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
+            if (puzzles !== null) {//get current Puzzle data:
+                puzzleData = JSON.parse(puzzles)
+            }else{//store seed Puzzle data:
+                puzzleData = seedPuzzleData;
+                try {
+                    AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+            return AsyncStorage.getItem(KEY_Premium);
+        }).then((premium) => {
             if (premium !== null) {
                 if(premium == 'true'){
                     puzzleData[17].show = 'false';
@@ -55,19 +67,7 @@ class SplashScreen extends Component {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
-        });
-        AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
-            if (puzzles !== null) {//get current Puzzle data:
-                puzzleData = JSON.parse(puzzles)
-            }else{//store seed Puzzle data:
-                puzzleData = seedPuzzleData;
-                try {
-                    AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-            return AsyncStorage.getItem(KEY_Notifs)
+            return AsyncStorage.getItem(KEY_Notifs);
         }).then((notifDetails) => {
             if (notifDetails !== null) {
                 this.setState({notif_time: notifDetails});
