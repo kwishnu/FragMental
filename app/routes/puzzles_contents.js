@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, AppState } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -131,6 +131,7 @@ class PuzzleContents extends Component{
         }
     }
     componentDidMount() {
+        AppState.addEventListener('change', this.handleAppStateChange);
         puzzleData = this.state.puzzleData;
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
@@ -208,8 +209,16 @@ class PuzzleContents extends Component{
             });
     }
     componentWillUnmount(){
+        AppState.removeEventListener('change', this.handleAppStateChange);
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
+    handleAppStateChange = (appState) => {
+        if(appState == 'active'){
+            this.props.navigator.replace({
+                id: 'splash screen',
+            });
+        }
+     };
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {
