@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -89,6 +89,7 @@ var KEY_Color = 'colorKey';
 var KEY_midnight = 'midnight';
 var KEY_Premium = 'premiumOrNot';
 var KEY_Puzzles = 'puzzlesKey';
+var KEY_solvedTP = 'solvedTP';
 var nowISO = moment().valueOf();
 var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
 var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
@@ -96,6 +97,7 @@ var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
 var puzzleData = {};
 var sArray = [];
+var solvedTodayOrNot = false;
 
 
 class PuzzleContents extends Component{
@@ -113,6 +115,7 @@ class PuzzleContents extends Component{
 
         this.state = {
             id: 'puzzles contents',
+            isLoading: true,
             isOpen: false,
             todayFull: null,
             isPremium: false,
@@ -145,6 +148,18 @@ class PuzzleContents extends Component{
                 }
             }
         });
+        AsyncStorage.getItem(KEY_solvedTP).then((solvedTodays) => {
+            if (solvedTodays !== null) {
+                solvedTodayOrNot = (solvedTodays == 'true')?true:false;
+            }else{
+                solvedTodayOrNot = false;
+                try {
+                    AsyncStorage.setItem(KEY_solvedTP, 'false');//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+        });
         AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
@@ -164,6 +179,7 @@ class PuzzleContents extends Component{
                 var milliSecsOver = nowISO - storedMidnight;
 
                 if(milliSecsOver > 0){//at least the next day, update daily solved array
+                    solvedTodayOrNot = false;
                     var numDays = Math.ceil(milliSecsOver/86400000);
                     numDays=(numDays>30)?30:numDays;
                     for (var shiftArray=0; shiftArray<numDays; shiftArray++){
@@ -173,6 +189,7 @@ class PuzzleContents extends Component{
                     try {
                         AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(sArray));
                         AsyncStorage.setItem(KEY_midnight, JSON.stringify(tonightMidnight));
+                        AsyncStorage.setItem(KEY_solvedTP, 'false');
                     } catch (error) {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
@@ -184,7 +201,11 @@ class PuzzleContents extends Component{
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
-        });
+            var ready = 'loaded';
+            return ready;
+            }).then((ready)=>{
+                this.setState({isLoading: false});
+            });
     }
     componentWillUnmount(){
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
@@ -292,8 +313,15 @@ class PuzzleContents extends Component{
         };
 
     }
-    getTextColor(bg){
+    getTextColor(bg, index){
         var strToReturn = invertColor(bg, true);
+        if(index == '16' && solvedTodayOrNot){
+            strToReturn = '#555';
+            return {
+                color: strToReturn,
+                fontWeight: 'bold'
+            };
+        }
         return {
             color: strToReturn,
         };
@@ -384,47 +412,50 @@ class PuzzleContents extends Component{
 
     render() {
         const menu = <Menu onItemSelected={this.onMenuItemSelected} data = {this.props.puzzleData} />;
+        if(this.state.isLoading == true){
+            return(
+                <View style={container_styles.loading}>
+                    <ActivityIndicator animating={true} size={'large'}/>
+                </View>
+            )
+        }else{
+            return (
+                <SideMenu
+                    menu={ menu }
+                    isOpen={ this.state.isOpen }
+                    onChange={ (isOpen) => this.updateMenuState(isOpen) }>
 
-        return (
-            <SideMenu
-                menu={ menu }
-                isOpen={ this.state.isOpen }
-                onChange={ (isOpen) => this.updateMenuState(isOpen) }>
-
-                <View style={ [container_styles.container, this.border('#070f4e')] }>
-                    <View style={ container_styles.header }>
-                        <Button style={{left: 15}} onPress={ () => this.toggle() }>
-                            <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                        <Text style={styles.header_text} >Contents
-                        </Text>
-                        <Button style={{right: 15}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
-                        </Button>
-                    </View>
-                    <View style={ container_styles.puzzles_container }>
-                         <ListView  showsVerticalScrollIndicator ={false}
-                                    contentContainerStyle={ container_styles.listview }
-                                    dataSource={this.state.dataSource}
-                                    renderRow={(rowData) =>
-                                         <View>
-                                             <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color)}
-                                                                 style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
-                                                                 underlayColor={rowData.bg_color} >
-                                                 <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color)]}>{this.getTitle(rowData.title)}</Text>
-                                             </TouchableHighlight>
-                                         </View>
-                                     }
-                                     renderSectionHeader={(sectionData) => <SectionHeader {...sectionData} />}
-                         />
-                    </View>
-                    <View style={ container_styles.footer }>
-                        <Text style={ styles.copyright }>Some fine print...</Text>
-                    </View>
-
-                 </View>
-            </SideMenu>
-        );
+                    <View style={ [container_styles.container, this.border('#070f4e')] }>
+                        <View style={ container_styles.header }>
+                            <Button style={{left: 15}} onPress={ () => this.toggle() }>
+                                <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
+                            </Button>
+                            <Text style={styles.header_text} >Contents
+                            </Text>
+                            <Button style={{right: 15}}>
+                                <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                            </Button>
+                        </View>
+                        <View style={ container_styles.puzzles_container }>
+                             <ListView  showsVerticalScrollIndicator ={false}
+                                        contentContainerStyle={ container_styles.listview }
+                                        dataSource={this.state.dataSource}
+                                        renderRow={(rowData) =>
+                                             <View>
+                                                 <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color)}
+                                                                     style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
+                                                                     underlayColor={rowData.bg_color} >
+                                                     <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title)}</Text>
+                                                 </TouchableHighlight>
+                                             </View>
+                                         }
+                                         renderSectionHeader={(sectionData) => <SectionHeader {...sectionData} />}
+                             />
+                        </View>
+                     </View>
+                </SideMenu>
+            );
+        }
     }
 }
 
@@ -432,6 +463,12 @@ class PuzzleContents extends Component{
 var container_styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#09146d'
     },
     listview: {
         flexDirection: 'row',

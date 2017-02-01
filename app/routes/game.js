@@ -89,6 +89,7 @@ var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
 var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
 var timeoutHandle;
 var KEY_Puzzles = 'puzzlesKey';
+var KEY_solvedTP = 'solvedTP';
 var KEY_daily_solved_array = 'solved_array';
 var KEY_Sound = 'soundKey';
 var KEY_UseNumLetters = 'numLetters';
@@ -591,6 +592,7 @@ class Game extends Component {
                     }
                 }
                 if (entire_puzzle_solved){
+                    if(useSounds == 'true')fanfare.play();
                     if(this.props.fromWhere == 'daily launcher'){
                         dsArray[this.state.index] = '1';
                     }
@@ -603,17 +605,23 @@ class Game extends Component {
                             window.alert('AsyncStorage error: ' + error.message);
                         }
                     }
-                    if(useSounds == 'true')fanfare.play();
                     try {
                         AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
                     } catch (error) {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
+                    if(this.props.fromWhere == 'puzzles contents'){
+                        try {
+                            AsyncStorage.setItem(KEY_solvedTP, 'true');
+                        } catch (error) {
+                            window.alert('AsyncStorage error: ' + error.message);
+                        }
+                    }
                     var accolades = 'Right on!*You\'re so smart!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
                     var accolade = accolades[Math.floor(Math.random()*accolades.length)];
 
 
-                   if (this.state.score < 40){
+                    if(this.state.score < 40){
                         currClue = accolade;
                     }else{
                         var toAdd = this.state.score;
