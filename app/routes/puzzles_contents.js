@@ -88,11 +88,13 @@ var KEY_daily_solved_array = 'solved_array';
 var KEY_Color = 'colorKey';
 var KEY_midnight = 'midnight';
 var KEY_Premium = 'premiumOrNot';
+var KEY_Puzzles = 'puzzlesKey';
 var nowISO = moment().valueOf();
 var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
 var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
 var daysToSkip = parseInt(dayDiff, 10) - 31;
 var tonightMidnight = moment().endOf('day').valueOf();
+var puzzleData = {};
 var sArray = [];
 
 
@@ -114,6 +116,7 @@ class PuzzleContents extends Component{
             isOpen: false,
             todayFull: null,
             isPremium: false,
+            puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
@@ -125,7 +128,7 @@ class PuzzleContents extends Component{
         }
     }
     componentDidMount() {
-
+        puzzleData = this.state.puzzleData;
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
         AsyncStorage.getItem(KEY_Premium).then((premium) => {

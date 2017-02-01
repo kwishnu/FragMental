@@ -375,7 +375,7 @@ class Game extends Component {
                     });
                     break;
                 case 'settings':
-                    window.alert('Settings may not be changed from within a game');
+                    window.alert('Please close the puzzle first in order to change settings');
                     break;
                 case 'about':
                     this.props.navigator.push({

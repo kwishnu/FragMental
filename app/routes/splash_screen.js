@@ -5,6 +5,7 @@ import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
 var seedPuzzleData = require('../data/data.js');
+var KEY_Premium = 'premiumOrNot';
 var KEY_Puzzles = 'puzzlesKey';
 var KEY_SeenStart = 'seenStartKey';
 var KEY_Notifs = 'notifsKey';
@@ -13,9 +14,9 @@ var seenStart = false;
 var puzzleData = {};
 var ready = false;
 var nowISO = moment().valueOf();
-var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
-var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
-var daysToSkip = parseInt(dayDiff, 10) - 31;
+var launchDay = moment('2017 01', 'YYYY-MM');//January 1, 2017
+var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 1/1/2017
+var startNum = parseInt(dayDiff, 10) - 28;
 var tonightMidnight = moment().endOf('day').valueOf();
 function randomNum(low, high) {
     high++;
@@ -32,6 +33,29 @@ class SplashScreen extends Component {
         };
     }
     componentDidMount() {
+//    window.alert(startNum);
+        puzzleData = seedPuzzleData;
+        let boolToUse = 'false';
+        AsyncStorage.getItem(KEY_Premium).then((premium) => {
+            if (premium !== null) {
+                if(premium == 'true'){
+                    puzzleData[17].show = 'false';
+                    puzzleData[18].show = 'true';
+                    boolToUse = 'true';
+                }else{
+                    puzzleData[17].show = 'true';
+                    puzzleData[18].show = 'false';
+                }
+            }else{
+                puzzleData[17].show = 'true';
+                puzzleData[18].show = 'false';
+                try {
+                    AsyncStorage.setItem(KEY_Premium, 'false');
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+        });
         AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
             if (puzzles !== null) {//get current Puzzle data:
                 puzzleData = JSON.parse(puzzles)
@@ -77,27 +101,30 @@ class SplashScreen extends Component {
                 Meteor.connect(METEOR_URL);
                 const handle = Meteor.subscribe('AllData', {
                     onReady: function () {
-                        const d_puzzles = Meteor.collection('dataA').find();
-                             var flag = 'skip';
+                        const d_puzzles = Meteor.collection('dataC').find();
+                        var flag = 'skip';
+                        var i = 30;
+                        var puzzStringArray = [];
 
                         for (var key in d_puzzles) {
                             if (!d_puzzles.hasOwnProperty(key)) continue;
                             var obj = d_puzzles[key];
                             for (var prop in obj) {
-                                if(!obj.hasOwnProperty(prop)) continue;//Modify daily puzzle info here...todo
-                                if(prop=='pnum' && obj[prop] > 4 && obj[prop] < 9){
-                                    flag = 'enter this one'
-                                    }
-                                if(prop=='puzz' && flag == 'enter this one'){
-
-                                    console.log(prop + " = " + obj[prop]);
+                                if(!obj.hasOwnProperty(prop)) continue;
+                                if(prop=='pnum' && (obj[prop] >= startNum) && (obj[prop] < (startNum + 31))){
+                                    flag = 'load'
+                                }
+                                if(prop=='puzz' && flag == 'load'){
+                                    puzzStringArray.unshift(obj[prop]);
                                     flag = 'skip';
                                 }
-
-//                                     window.alert(obj['puzz'] + ' something else');
-
-                                //window.alert(prop + " = " + obj[prop]);
                             }
+                        }
+                        puzzleData[16].puzzles[0] = puzzStringArray[0];
+                        puzzStringArray.shift();
+                        for(var j=0; j<puzzStringArray.length; j++){
+                            if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}
+                            puzzleData[18].puzzles[j] = puzzStringArray[j];
                         }
                     },
                     onStop: function () {
@@ -117,6 +144,13 @@ class SplashScreen extends Component {
             window.alert(error.message);
             throw error;
         });
+
+        try {
+            AsyncStorage.setItem(KEY_Premium, boolToUse);
+            AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(puzzleData));
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
     }
     gotoScene(whichScene){
         var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
