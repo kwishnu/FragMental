@@ -517,6 +517,7 @@ class Game extends Component {
         }
     }
     guess(which, howMuchToScore) {
+        if(this.state.puzzle_solved == true){this.nextGame();}
         var solved = this.state.puzzle_solved;
         var bust = this.state.wentBust;
             if(solved || bust){return}
@@ -1024,6 +1025,7 @@ class Game extends Component {
                                 <View style={ [game_styles.hint_row, {marginTop: 6}]}>
                                         <Text style={{fontSize: 14, color: '#ffffff'}}>hints</Text>
                                 </View>
+
 
 
 
