@@ -72,11 +72,17 @@ var strToReturn = this.invertColor(bg, true);
         borderStyle: 'solid'
     };
 }
-startPurchase=(item_name)=>{
-    window.alert(item_name);
+buy=(product_id, navigator)=>{
+    navigator.replace({
+        id: 'splash screen',
+        passProps: {
+            motive: 'purchase',
+            packID: product_id
+        }
+    });
 }
 const Row = (props) => (
-    <TouchableHighlight onPress={()=>this.startPurchase(props.name)} style={[styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
+    <TouchableHighlight style={[styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
         <View style={styles.row_view}>
             <Text style={[styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}
