@@ -216,6 +216,7 @@ class PuzzleContents extends Component{
         if(appState == 'active'){
             this.props.navigator.replace({
                 id: 'splash screen',
+                passProps: {motive: 'initialize'}
             });
         }
      };
@@ -340,14 +341,20 @@ class PuzzleContents extends Component{
         return titleToReturn;
     }
     startPurchase=(item_name)=>{
-        window.alert(item_name);
+        this.props.navigator.replace({
+            id: 'splash screen',
+            passProps: {
+                motive: 'purchase',
+                packID: item_name
+            }
+        });
     }
 
     onSelect(index, title, bg) {
-//        if (title.indexOf('*') > -1){
-//            this.startPurchase(title.substring(1));
-//            return;
-//        }
+        if (title.indexOf('*') > -1){
+            this.startPurchase(title.substring(1));
+            return;
+        }
         var theDestination = 'puzzle launcher';
         var theTitle = title;
         var gripeText = '';

@@ -78,11 +78,11 @@ var strToReturn = color;
          };
 }
 
-startPurchase=(item_name)=>{
-    window.alert(item_name);
-}
-const Row = (props) => (
-    <TouchableHighlight onPress={()=>this.startPurchase(props.name)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
+//startPurchase=(product_id)=>{
+//    window.alert('test');
+//}
+const Row3 = (props) => (
+    <TouchableHighlight onPress={()=>this.startPurchase(props.product_id)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
                 <Text style={[{fontSize: 10}, this.getTextColor(props.color[0])]}>
@@ -168,4 +168,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Row;
+export default Row3;

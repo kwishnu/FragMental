@@ -33,123 +33,129 @@ class SplashScreen extends Component {
         };
     }
     componentDidMount() {
-//    window.alert(startNum);
-        puzzleData = seedPuzzleData;
-        let boolToUse = 'false';
-        AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
-            if (puzzles !== null) {//get current Puzzle data:
-                puzzleData = JSON.parse(puzzles)
-            }else{//store seed Puzzle data:
-                puzzleData = seedPuzzleData;
-                try {
-                    AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
+        if(this.props.motive == 'initialize'){
+            puzzleData = seedPuzzleData;
+            let boolToUse = 'false';
+            AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
+                if (puzzles !== null) {//get current Puzzle data:
+                    puzzleData = JSON.parse(puzzles)
+                }else{//store seed Puzzle data:
+                    puzzleData = seedPuzzleData;
+                    try {
+                        AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
-            }
-            return AsyncStorage.getItem(KEY_Premium);
-        }).then((premium) => {
-            if (premium !== null) {
-                if(premium == 'true'){
-                    puzzleData[17].show = 'false';
-                    puzzleData[18].show = 'true';
-                    boolToUse = 'true';
+                return AsyncStorage.getItem(KEY_Premium);
+            }).then((premium) => {
+                if (premium !== null) {
+                    if(premium == 'true'){
+                        puzzleData[17].show = 'false';
+                        puzzleData[18].show = 'true';
+                        boolToUse = 'true';
+                    }else{
+                        puzzleData[17].show = 'true';
+                        puzzleData[18].show = 'false';
+                    }
                 }else{
                     puzzleData[17].show = 'true';
                     puzzleData[18].show = 'false';
+                    try {
+                        AsyncStorage.setItem(KEY_Premium, 'false');
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
-            }else{
-                puzzleData[17].show = 'true';
-                puzzleData[18].show = 'false';
-                try {
-                    AsyncStorage.setItem(KEY_Premium, 'false');
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
+                return AsyncStorage.getItem(KEY_Notifs);
+            }).then((notifDetails) => {
+                if (notifDetails !== null) {
+                    this.setState({notif_time: notifDetails});
+                }else{
+                    this.setState({notif_time: '7'});
+                    try {
+                        AsyncStorage.setItem(KEY_Notifs, '7');
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
-            }
-            return AsyncStorage.getItem(KEY_Notifs);
-        }).then((notifDetails) => {
-            if (notifDetails !== null) {
-                this.setState({notif_time: notifDetails});
-            }else{
-                this.setState({notif_time: '7'});
-                try {
-                    AsyncStorage.setItem(KEY_Notifs, '7');
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
+                return AsyncStorage.getItem(KEY_SeenStart);
+            }).then((seenIntro) => {
+                if (seenIntro !== null) {  //has already seen app intro
+                    this.setState({seenStart: seenIntro});
+                }else{    //hasn't seen app intro...
+                    this.setState({seenStart: 'false'});
+                    try {
+                        AsyncStorage.setItem(KEY_SeenStart, 'true');//
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
-            }
-            return AsyncStorage.getItem(KEY_SeenStart);
-        }).then((seenIntro) => {
-            if (seenIntro !== null) {  //has already seen app intro
-                this.setState({seenStart: seenIntro});
-            }else{    //hasn't seen app intro...
-                this.setState({seenStart: 'false'});
-                try {
-                    AsyncStorage.setItem(KEY_SeenStart, 'true');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-            return NetInfo.isConnected.fetch();
-        }).then((isConnected) => {
-            if(isConnected){
-//'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
-//'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
-//'ws://10.0.0.207:3000/websocket'; <= localhost
-                let METEOR_URL = 'ws://52.52.205.96:80/websocket';
-                Meteor.connect(METEOR_URL);
-                const handle = Meteor.subscribe('AllData', {
-                    onReady: function () {
-                        const d_puzzles = Meteor.collection('dataC').find();
-                        var flag = 'skip';
-                        var i = 30;
-                        var puzzStringArray = [];
+                return NetInfo.isConnected.fetch();
+            }).then((isConnected) => {
+                if(isConnected){
+    //'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
+    //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
+    //'ws://10.0.0.207:3000/websocket'; <= localhost
+                    let METEOR_URL = 'ws://52.52.205.96:80/websocket';
+                    Meteor.connect(METEOR_URL);
+                    const handle = Meteor.subscribe('AllData', {
+                        onReady: function () {
+                            const d_puzzles = Meteor.collection('dataC').find();
+                            var flag = 'skip';
+                            var i = 30;
+                            var puzzStringArray = [];
 
-                        for (var key in d_puzzles) {
-                            if (!d_puzzles.hasOwnProperty(key)) continue;
-                            var obj = d_puzzles[key];
-                            for (var prop in obj) {
-                                if(!obj.hasOwnProperty(prop)) continue;
-                                if(prop=='pnum' && (obj[prop] >= startNum) && (obj[prop] < (startNum + 31))){
-                                    flag = 'load'
-                                }
-                                if(prop=='puzz' && flag == 'load'){
-                                    puzzStringArray.unshift(obj[prop]);
-                                    flag = 'skip';
+                            for (var key in d_puzzles) {
+                                if (!d_puzzles.hasOwnProperty(key)) continue;
+                                var obj = d_puzzles[key];
+                                for (var prop in obj) {
+                                    if(!obj.hasOwnProperty(prop)) continue;
+                                    if(prop=='pnum' && (obj[prop] >= startNum) && (obj[prop] < (startNum + 31))){
+                                        flag = 'load'
+                                    }
+                                    if(prop=='puzz' && flag == 'load'){
+                                        puzzStringArray.unshift(obj[prop]);
+                                        flag = 'skip';
+                                    }
                                 }
                             }
+                            puzzleData[16].puzzles[0] = puzzStringArray[0];
+                            puzzStringArray.shift();
+                            for(var j=0; j<puzzStringArray.length; j++){
+                                if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}
+                                puzzleData[18].puzzles[j] = puzzStringArray[j];
+                            }
+                        },
+                        onStop: function () {
+                            window.alert('Sorry, can\'t connect to our server right now');
                         }
-                        puzzleData[16].puzzles[0] = puzzStringArray[0];
-                        puzzStringArray.shift();
-                        for(var j=0; j<puzzStringArray.length; j++){
-                            if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}
-                            puzzleData[18].puzzles[j] = puzzStringArray[j];
-                        }
-                    },
-                    onStop: function () {
-                        window.alert('Sorry, can\'t connect to our server right now');
-                    }
-                });
-                return {
-                    ready: handle.ready(),
-                };
-            }
-        }).then((disregard) => {
-            var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
-            this.setNotifications();
-            this.gotoScene(whereToGo);
-        })
-        .catch(function(error) {
-            window.alert(error.message);
-            throw error;
-        });
+                    });
+                    return {
+                        ready: handle.ready(),
+                    };
+                }
+            }).then((disregard) => {
+                var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
+                this.setNotifications();
+                this.gotoScene(whereToGo);
+            })
+            .catch(function(error) {
+                window.alert(error.message);
+                throw error;
+            });
 
-        try {
-            AsyncStorage.setItem(KEY_Premium, boolToUse);
-            AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(puzzleData));
-        } catch (error) {
-            window.alert('AsyncStorage error: ' + error.message);
+            try {
+                AsyncStorage.setItem(KEY_Premium, boolToUse);
+                AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(puzzleData));
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+        }else{//purchased puzzle pack...
+            window.alert(this.props.packID);
+
+
+            this.gotoScene('puzzles contents');
         }
     }
     gotoScene(whichScene){

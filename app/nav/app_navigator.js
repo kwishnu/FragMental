@@ -47,7 +47,7 @@ class AppNavigator extends React.Component {
     render() {
         return (
             <Navigator
-              initialRoute={ { id: 'splash screen' } }
+              initialRoute={ { id: 'splash screen',  passProps: {motive: 'initialize'} } }
               renderScene={(route, navigator) => {
                 return React.createElement(this.navigatorRenderScene(route.id), { ...this.props, ...route.passProps, navigator, route } );
               }} />

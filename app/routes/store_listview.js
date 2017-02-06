@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage } from 'react-native';
-import Row from '../components/Row';
+//import Row from '../components/Row';
 import Button from '../components/Button';
 var styles = require('../styles/styles');
+var { width, height } = require('Dimensions').get('window');
+var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
+var CELL_HEIGHT = CELL_WIDTH * .5;
+var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
+var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
+var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
+var BORDER_RADIUS = CELL_PADDING * .3;
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
 }
-
 
 module.exports = class StoreListView extends Component {
     constructor(props) {
@@ -59,16 +65,42 @@ module.exports = class StoreListView extends Component {
                     </View>
                     <View style={ store_styles.listview_container }>
                         <ListView  showsVerticalScrollIndicator ={false}
-                                initialListSize ={100}
                                 contentContainerStyle={ store_styles.listview }
                                 dataSource={rows}
-                                renderRow={(data) => <Row {...data} />}
+                                renderRow={(data) => <Row props= {data} navigator= {this.props.navigator} /> }
                         />
                     </View>
                 </View>
     );
   }
 };
+
+startPurchase=(product_id, nav)=>{
+    nav.replace({
+        id: 'splash screen',
+        passProps: {
+            motive: 'purchase',
+            packID: product_id
+        }
+    });
+
+}
+
+const Row = ({props, navigator}) => (
+    <TouchableHighlight onPress={()=>startPurchase(props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
+        <View style={store_styles.row_view}>
+            <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
+              {`${props.num_puzzles}`}
+            </Text>
+            <Text style={[{fontSize: 20}, this.getTextColor(props.color)]}>
+              {`${props.name}`}
+            </Text>
+            <Text style={[store_styles.text_small, {color: props.color}]}>
+              {`${props.difficulty}`}
+            </Text>
+        </View>
+    </TouchableHighlight>
+);
 
 
 const store_styles = StyleSheet.create({
@@ -97,6 +129,23 @@ const store_styles = StyleSheet.create({
         paddingBottom: 40,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    row_view: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    text_small: {
+        fontSize: 10,
+        marginLeft: 10
+    },
+    launcher: {
+        width: TILE_WIDTH,
+        height: TILE_WIDTH * .25,
+        borderRadius: BORDER_RADIUS,
+        marginTop: 6,
+        marginBottom: 1,
     },
 });
 
