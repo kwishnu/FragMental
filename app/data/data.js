@@ -25,7 +25,7 @@ module.exports = [
         data:[
                     {
                     name: 'Capri',
-                    product_id: 'fragmental.e.capri50',
+                    product_id: 'fm.e.capri.50.00BFFF',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -34,7 +34,7 @@ module.exports = [
                     },
                     {
                     name: 'Chartreuse',
-                    product_id: 'fragmental.e.chartreuse50',
+                    product_id: 'fm.e.chartreuse.50.DFFF00',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -43,7 +43,7 @@ module.exports = [
                     },
                     {
                     name: 'Electric Indigo',
-                    product_id: 'fragmental.e.electric_indigo50',
+                    product_id: 'fm.e.electric_indigo.50.6F00FF',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -52,7 +52,7 @@ module.exports = [
                     },
                     {
                     name: 'Ferrari Red',
-                    product_id: 'fragmental.e.ferrari_red50',
+                    product_id: 'fm.e.ferrari_red.50.FF2800',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -61,7 +61,7 @@ module.exports = [
                     },
                     {
                     name: 'Guppie Green',
-                    product_id: 'fragmental.e.guppie_green50',
+                    product_id: 'fm.e.guppie_green.50.00FF7F',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -70,7 +70,7 @@ module.exports = [
                     },
                     {
                     name: 'Lavender Blue',
-                    product_id: 'fragmental.e.lavender_blue50',
+                    product_id: 'fm.e.lavender_blue.50.CCCCFF',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -79,7 +79,7 @@ module.exports = [
                     },
                     {
                     name: 'Mango Tango',
-                    product_id: 'fragmental.e.mango_tango100',
+                    product_id: 'fm.e.mango_tango.100.FF8243',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -88,7 +88,7 @@ module.exports = [
                     },
                     {
                     name: 'Hot Phlox',
-                    product_id: 'fragmental.e.hot_phlox100',
+                    product_id: 'fm.e.hot_phlox.100.DF00FF',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -97,7 +97,7 @@ module.exports = [
                     },
                     {
                     name: 'Tasty Turquoise',
-                    product_id: 'fragmental.e.tasty_turquoise100',
+                    product_id: 'fm.e.tasty_turquoise.100.00FFEF',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -106,7 +106,7 @@ module.exports = [
                     },
                     {
                     name: 'Wild Strawberry',
-                    product_id: 'fragmental.e.wild_strawberry100',
+                    product_id: 'fm.e.wild_strawberry.100.FF43A4',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -123,7 +123,7 @@ module.exports = [
         data:[
                     {
                     name: 'Bungalow',
-                    product_id: 'fragmental.m.bungalow50',
+                    product_id: 'fm.m.bungalow.50.138808',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -132,7 +132,7 @@ module.exports = [
                     },
                     {
                     name: 'Cruise',
-                    product_id: 'fragmental.m.cruise50',
+                    product_id: 'fm.m.cruise.50.2A52BE',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -141,7 +141,7 @@ module.exports = [
                     },
                     {
                     name: 'Getaway',
-                    product_id: 'fragmental.m.getaway50',
+                    product_id: 'fm.m.getaway.50.800000',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -150,7 +150,7 @@ module.exports = [
                     },
                     {
                     name: 'Holiday',
-                    product_id: 'fragmental.m.holiday50',
+                    product_id: 'fm.m.holiday.50.FEFE22',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -159,7 +159,7 @@ module.exports = [
                     },
                     {
                     name: 'Road Trip',
-                    product_id: 'fragmental.m.road_trip50',
+                    product_id: 'fm.m.road_trip.50.98817B',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -168,7 +168,7 @@ module.exports = [
                     },
                     {
                     name: 'Siesta',
-                    product_id: 'fragmental.m.siesta50',
+                    product_id: 'fm.m.siesta.50.082567',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -177,7 +177,7 @@ module.exports = [
                     },
                     {
                     name: 'Tropics',
-                    product_id: 'fragmental.m.tropics100',
+                    product_id: 'fm.m.tropics.100.C71585',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -186,7 +186,7 @@ module.exports = [
                     },
                     {
                     name: 'Vacation',
-                    product_id: 'fragmental.m.vacation100',
+                    product_id: 'fm.m.vacation.100.CBA135',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -195,7 +195,7 @@ module.exports = [
                     },
                     {
                     name: 'Villa',
-                    product_id: 'fragmental.m.villa100',
+                    product_id: 'fm.m.villa.100.FFC40C',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -204,7 +204,7 @@ module.exports = [
                     },
                     {
                     name: 'Weekender',
-                    product_id: 'fragmental.m.weekender100',
+                    product_id: 'fm.m.weekender.100.195905',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -221,7 +221,7 @@ module.exports = [
         data:[
                     {
                     name: 'Blizzard',
-                    product_id: 'fragmental.h.blizzard50',
+                    product_id: 'fm.h.blizzard.50.E7FEFF',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -230,7 +230,7 @@ module.exports = [
                     },
                     {
                     name: 'Cyclone',
-                    product_id: 'fragmental.h.cyclone50',
+                    product_id: 'fm.h.cyclone.50.DE3163',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -239,7 +239,7 @@ module.exports = [
                     },
                     {
                     name: 'Scirocco',
-                    product_id: 'fragmental.h.dust50',
+                    product_id: 'fm.h.scirocco.50.FFCBA4',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -248,7 +248,7 @@ module.exports = [
                     },
                     {
                     name: 'Deluge',
-                    product_id: 'fragmental.h.electrical50',
+                    product_id: 'fm.h.deluge.50.663854',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -257,7 +257,7 @@ module.exports = [
                     },
                     {
                     name: 'Hurricane',
-                    product_id: 'fragmental.h.hurricane50',
+                    product_id: 'fm.h.hurricane.50.8F00FF',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -266,7 +266,7 @@ module.exports = [
                     },
                     {
                     name: 'Southwester',
-                    product_id: 'fragmental.h.southwester50',
+                    product_id: 'fm.h.southwester.50.FFCC33',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -275,7 +275,7 @@ module.exports = [
                     },
                     {
                     name: 'Squall',
-                    product_id: 'fragmental.h.squall100',
+                    product_id: 'fm.h.squall.100.A52A2A',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -284,7 +284,7 @@ module.exports = [
                     },
                     {
                     name: 'Tempest',
-                    product_id: 'fragmental.h.tempest100',
+                    product_id: 'fm.h.tempest.100.007BA7',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -293,7 +293,7 @@ module.exports = [
                     },
                     {
                     name: 'Thunderstorm',
-                    product_id: 'fragmental.h.thunderstorm100',
+                    product_id: 'fm.h.thunderstorm.100.3B444B',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -302,7 +302,7 @@ module.exports = [
                     },
                     {
                     name: 'Typhoon',
-                    product_id: 'fragmental.h.typhoon100',
+                    product_id: 'fm.h.typhoon.100.5D8AA8',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -319,7 +319,7 @@ module.exports = [
         data:[
                     {
                     name: 'Art',
-                    product_id: 'fragmental.t.art50',
+                    product_id: 'fm.t.art.50.A50B5E',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -328,7 +328,7 @@ module.exports = [
                     },
                     {
                     name: 'Business',
-                    product_id: 'fragmental.t.business50',
+                    product_id: 'fm.t.business.50.087830',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -337,7 +337,7 @@ module.exports = [
                     },
                     {
                     name: 'Entertainment',
-                    product_id: 'fragmental.t.entertainment50',
+                    product_id: 'fm.t.entertainment.50.9457EB',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -346,7 +346,7 @@ module.exports = [
                     },
                     {
                     name: 'Explorers',
-                    product_id: 'fragmental.t.explorers50',
+                    product_id: 'fm.t.explorers.50.29AB87',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -355,7 +355,7 @@ module.exports = [
                     },
                     {
                     name: 'Food and Drink',
-                    product_id: 'fragmental.t.food_and_drink50',
+                    product_id: 'fm.t.food_and_drink.50.AAF0D1',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -364,7 +364,7 @@ module.exports = [
                     },
                     {
                     name: 'Geography',
-                    product_id: 'fragmental.t.geography50',
+                    product_id: 'fm.t.geography.50.FADA5E',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -373,7 +373,7 @@ module.exports = [
                     },
                     {
                     name: 'History',
-                    product_id: 'fragmental.t.history50',
+                    product_id: 'fm.t.history.50.796878',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -382,7 +382,7 @@ module.exports = [
                     },
                     {
                     name: 'Music',
-                    product_id: 'fragmental.t.music50',
+                    product_id: 'fm.t.music.50.B784A7',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -391,7 +391,7 @@ module.exports = [
                     },
                     {
                     name: 'Quotations',
-                    product_id: 'fragmental.t.quotations50',
+                    product_id: 'fm.t.quotations.50.FDF5E6',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -400,7 +400,7 @@ module.exports = [
                     },
                     {
                     name: 'Science',
-                    product_id: 'fragmental.t.science50',
+                    product_id: 'fm.t.science.50.FF4500',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -418,7 +418,7 @@ module.exports = [
         data:[
                     {
                     name: ['Capri', 'Chartreuse', 'Electric Indigo'],
-                    product_id: 'fragmental.ec.capri150',
+                    product_id: 'fm.ec.capri.chartreuse.electric_indigo',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -427,7 +427,7 @@ module.exports = [
                     },
                     {
                     name: ['Ferrari Red','Guppie Green','Lavender Blue'],
-                    product_id: 'fragmental.ec.ferrari_red150',
+                    product_id: 'fm.ec.ferrari_red.guppie_green.lavender_blue',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -436,7 +436,7 @@ module.exports = [
                     },
                     {
                     name: ['Mango Tango','Hot Phlox','Tasty Turquoise'],
-                    product_id: 'fragmental.ec.mango_tango300',
+                    product_id: 'fm.ec.mango_tango.hot_phlox.tasty_turquoise',
                     price: '$3.99',
                     show: 'true',
                     num_puzzles: ['100','100','100'],
@@ -453,7 +453,7 @@ module.exports = [
         data:[
                     {
                     name: ['Bungalow', 'Cruise', 'Getaway'],
-                    product_id: 'fragmental.mc.bungalow150',
+                    product_id: 'fm.mc.bungalow.cruise.getaway',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -462,7 +462,7 @@ module.exports = [
                     },
                     {
                     name: ['Holiday','Road Trip','Siesta'],
-                    product_id: 'fragmental.mc.holiday150',
+                    product_id: 'fm.mc.holiday.road_trip.siesta',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -471,7 +471,7 @@ module.exports = [
                     },
                     {
                     name: ['Tropics','Vacation','Villa'],
-                    product_id: 'fragmental.mc.tropics300',
+                    product_id: 'fm.mc.tropics.vacation.villa',
                     price: '$3.99',
                     show: 'true',
                     num_puzzles: ['100','100','100'],
@@ -489,7 +489,7 @@ module.exports = [
         data:[
                     {
                     name: ['Blizzard', 'Cyclone', 'Scirocco'],
-                    product_id: 'fragmental.hc.blizzard150',
+                    product_id: 'fm.hc.blizzard.cyclone.scirocco',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -498,7 +498,7 @@ module.exports = [
                     },
                     {
                     name: ['Deluge','Hurricane','Southwester'],
-                    product_id: 'fragmental.hc.electrical150',
+                    product_id: 'fm.hc.deluge.hurricane.southwester',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -507,7 +507,7 @@ module.exports = [
                     },
                     {
                     name: ['Squall','Tempest','Thunderstorm'],
-                    product_id: 'fragmental.hc.squall300',
+                    product_id: 'fm.hc.squall.tempest.thunderstorm',
                     price: '$3.99',
                     show: 'true',
                     num_puzzles: ['100','100','100'],
@@ -525,7 +525,7 @@ module.exports = [
         data:[
                     {
                     name: ['Electric Indigo', 'Mango Tango', 'Cruise'],
-                    product_id: 'fragmental.mix.electric_indigo150',
+                    product_id: 'fm.mix.electric_indigo.mango_tango.cruise',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
@@ -533,17 +533,17 @@ module.exports = [
                     color: ['#6F00FF','#FF8243','#2A52BE']
                     },
                     {
-                    name: ['Deluge','Hurricane','Southwester'],
-                    product_id: 'fragmental.mix.electrical150',
+                    name: ['Siesta','Road Trip','Southwester'],
+                    product_id: 'fm.mix.siesta.road_trip.southwester',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: ['50','50','50'],
-                    difficulty: ['E','M','H'],
-                    color: ['#663854','#8F00FF','#FFCC33']
+                    difficulty: ['M','M','H'],
+                    color: ['#082567','#98817B','#FFCC33']
                     },
                     {
                     name: ['Wild Strawberry','Villa','Tempest'],
-                    product_id: 'fragmental.mix.wild_strawberry300',
+                    product_id: 'fm.mix.wild_strawberry.villa.tempest',
                     price: '$3.99',
                     show: 'true',
                     num_puzzles: ['100','100','100'],
@@ -583,7 +583,6 @@ module.exports = [
 		type:'about',
         link: 'about',
     },
-
 	{
 		title:'Today\'s Puzzle',
 		index: '16',
@@ -592,6 +591,7 @@ module.exports = [
 		num_puzzles:'1',
 		num_solved:'0',
 		solved:'false',
+        product_id: '',
 		bg_color:'#079707',
 		puzzles:[
 			're~^|ce|des:Moves back, as a hairline**ent|^|es:They\'re sometimes served on trays**^|si|gns:Bows out**ig|no|^:Look the other way**^|exa|mi|ne:Take another good look at**sh|oes|to|^:Establishment with many horns**fo|^|st|er:Tree manager**fo|^|ign|er:Lou Graham-led arena rock band'
@@ -605,6 +605,7 @@ module.exports = [
 		num_puzzles:'3',
 		num_solved:'0',
 		solved:'false',
+        product_id: '',
 		bg_color:'#C0C0C0',
 		puzzles:[
             'le~^|ger|de|ma|in:Sleight of hand**^|ek:Drip of the onion family?**^|er|ed:Looked at with smarmy intent**^|wd:R-rated, maybe**cl|ue|^|ss:1995 Alicia Silverstone flick**si|nk|ho|^:Bigger than your run-of-the-mill pothole**^|is:Hawaiian garlands**^|thar|gy:Sluggishness**in|evi|tab|^:Fated',
@@ -620,6 +621,7 @@ module.exports = [
 		num_puzzles:'30',
 		num_solved:'0',
 		solved:'false',
+        product_id: '',
 		bg_color:'#FFB300',
 		puzzles:[
 			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
@@ -662,110 +664,56 @@ module.exports = [
 		num_puzzles:'50',
 		num_solved:'0',
 		solved:'false',
+        product_id: '',
 		bg_color:'#2B0B30',
 		puzzles:[
 			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
 			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something'
 			],
 	},
 	{
 		title:'',
 		index: '20',
-		type:'mypack',//forsale
+		type:'forsale',
+        product_id: '',
+        price: '',
 		show:'true',
-		num_puzzles:'1',
-		num_solved:'0',
+		num_puzzles:'',
 		solved:'false',
 		bg_color:'',
-		puzzles:[
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			],
 	},
 	{
 		title:'',
 		index: '21',
-		type:'mypack',
+		type:'forsale',
+        product_id: '',
+        price: '',
 		show:'true',
-		num_puzzles:'1',
-		num_solved:'0',
+		num_puzzles:'',
 		solved:'false',
 		bg_color:'',
-		puzzles:[
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			],
 	},
 	{
 		title:'',
 		index: '22',
-		type:'mypack',
+		type:'forsale',
+        product_id: '',
+        price: '',
 		show:'true',
-		num_puzzles:'1',
-		num_solved:'0',
+		num_puzzles:'',
 		solved:'false',
 		bg_color:'',
-		puzzles:[
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			],
 	},
 	{
 		title:'',
 		index: '23',
-		type:'mypack',
+		type:'forsale',
+        product_id: '',
+        price: '',
 		show:'true',
-		num_puzzles:'1',
-		num_solved:'0',
+		num_puzzles:'',
 		solved:'false',
 		bg_color:'',
-		puzzles:[
-			 'inc~co|nv|^|ed:Certain of something, or made so**^|re|ase:To make greater or add to**un|pr|^|ip|led:Crooked, immoral, or otherwise without scruples**prov|^|ial|ly:In an unsophisticated or narrow-minded manner**co|^|ide|nce:A remarkable concurrence of events**^|apa|ble:Unable to do or achieve (something)**^|ong|ru|ous:Not in harmony or keeping with the surroundings or other aspects of something',
-			],
-	},
+	}
 ];

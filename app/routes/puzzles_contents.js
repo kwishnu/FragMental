@@ -51,7 +51,7 @@ function shadeColor(color, percent) {
         return '#'+RR+GG+BB;
 }
 function formatData(data) {
-        const headings = 'Daily Puzzles*My Puzzles*Recommended Puzzle Packs*Completed Puzzle Packs'.split('*');
+        const headings = 'Daily Puzzles*My Puzzles*Available Puzzle Packs*Completed Puzzle Packs'.split('*');
         const keys = 'daily*mypack*forsale*solved'.split('*');
         const dataBlob = {};
         const sectionIds = [];
@@ -118,7 +118,7 @@ class PuzzleContents extends Component{
             isLoading: true,
             isOpen: false,
             todayFull: null,
-            isPremium: false,
+            isPremium: this.props.isPremium,
             puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
@@ -131,24 +131,22 @@ class PuzzleContents extends Component{
         }
     }
     componentDidMount() {
+        try {
+            AsyncStorage.setItem(KEY_Premium, this.props.isPremium);
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
+        try {
+            AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
+
+//        window.alert(Object.keys(this.props.puzzleData).length);
         AppState.addEventListener('change', this.handleAppStateChange);
         puzzleData = this.state.puzzleData;
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
-        AsyncStorage.getItem(KEY_Premium).then((premium) => {
-            if (premium !== null) {
-                var boolToUse = (premium == 'true')?true:false;
-                this.setState({
-                    isPremium: boolToUse
-                });
-            }else{
-                try {
-                    AsyncStorage.setItem(KEY_Premium, 'false');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-        });
         AsyncStorage.getItem(KEY_solvedTP).then((solvedTodays) => {
             if (solvedTodays !== null) {
                 solvedTodayOrNot = (solvedTodays == 'true')?true:false;
@@ -212,14 +210,14 @@ class PuzzleContents extends Component{
         AppState.removeEventListener('change', this.handleAppStateChange);
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
-    handleAppStateChange = (appState) => {
+    handleAppStateChange=(appState)=>{
         if(appState == 'active'){
             this.props.navigator.replace({
                 id: 'splash screen',
                 passProps: {motive: 'initialize'}
             });
         }
-     };
+     }
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {
@@ -345,14 +343,15 @@ class PuzzleContents extends Component{
             id: 'splash screen',
             passProps: {
                 motive: 'purchase',
-                packID: item_name
+                packName: item_name
             }
         });
     }
 
     onSelect(index, title, bg) {
         if (title.indexOf('*') > -1){
-            this.startPurchase(title.substring(1));
+            let theName = title.substring(1);
+            this.startPurchase(theName);
             return;
         }
         var theDestination = 'puzzle launcher';
@@ -431,7 +430,7 @@ class PuzzleContents extends Component{
         if(this.state.isLoading == true){
             return(
                 <View style={container_styles.loading}>
-                    <ActivityIndicator animating={true} size={'large'}/>
+                    <ActivityIndicator style={container_styles.spinner} animating={true} size={'large'}/>
                 </View>
             )
         }else{
@@ -480,11 +479,22 @@ var container_styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    loading_image: {
+        width: 200,
+        height: 200,
+    },
+    spinner: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
     loading: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#09146d'
+        backgroundColor: '#486bdd'
     },
     listview: {
         flexDirection: 'row',

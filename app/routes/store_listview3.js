@@ -64,7 +64,7 @@ module.exports = class ComboStore extends Component {
                                 initialListSize ={100}
                                 contentContainerStyle={ store_styles.listview }
                                 dataSource={rows}
-                                renderRow={(data) => <Row3 {...data} />}
+                                renderRow={(data) => <Row3 props= {data} navigator= {this.props.navigator} />}
                         />
                     </View>
                 </View>

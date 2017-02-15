@@ -470,13 +470,14 @@ class Game extends Component {
             for(let i=0; i<4; i++){
                 var rand0to9 = randomNum(0, 9);
                 puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
+                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
                 puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[rand0to9].color;
             }
             try {
             this.props.navigator.replace({
                 id: this.props.fromWhere,
                 passProps: {
-                    puzzleData: this.props.puzzleData,
+                    puzzleData: puzzleData,
                     daily_solvedArray: this.state.daily_solvedArray,
                     dataElement: this.props.dataElement,
                     isPremium: this.state.isPremium,
@@ -600,6 +601,8 @@ class Game extends Component {
                     if(this.props.fromWhere == 'puzzle launcher'){
                         var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
                         this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
+                        var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
+                        if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
                         try {
                             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
                         } catch (error) {

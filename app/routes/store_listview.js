@@ -75,19 +75,19 @@ module.exports = class StoreListView extends Component {
   }
 };
 
-startPurchase=(product_id, nav)=>{
+startPurchase=(name, nav)=>{
     nav.replace({
         id: 'splash screen',
         passProps: {
             motive: 'purchase',
-            packID: product_id
+            packName: name
         }
     });
 
 }
 
 const Row = ({props, navigator}) => (
-    <TouchableHighlight onPress={()=>startPurchase(props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
+    <TouchableHighlight onPress={()=>startPurchase(props.name, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
         <View style={store_styles.row_view}>
             <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}

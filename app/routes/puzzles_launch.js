@@ -77,6 +77,7 @@ var CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the scree
 var CELL_PADDING = Math.floor(CELL_WIDTH * .05) + 5; // 5% of the cell width...+
 var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
+var puzzleData = {};
 
 
 class PuzzleLaunch extends Component{
@@ -98,6 +99,7 @@ class PuzzleLaunch extends Component{
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount() {
+        puzzleData = this.state.puzzleData;
         this.setColors();
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         setTimeout(() => {this.stopSpinner()}, 10);
@@ -129,14 +131,15 @@ class PuzzleLaunch extends Component{
             var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
             for(let i=0; i<4; i++){
                 var rand0to9 = randomNum(0, 9);
-                this.state.puzzleData[20 + i].title = '*' + this.props.puzzleData[levels[i]].data[rand0to9].name;
-                this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
+                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
+                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
+                puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
             }
             try {
                 this.props.navigator.replace({
                     id: 'puzzles contents',
                     passProps: {
-                        puzzleData: this.state.puzzleData,
+                        puzzleData: puzzleData,
                     }
                 });
                 return true;

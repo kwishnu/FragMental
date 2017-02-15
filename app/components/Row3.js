@@ -78,11 +78,19 @@ var strToReturn = color;
          };
 }
 
-//startPurchase=(product_id)=>{
-//    window.alert('test');
-//}
-const Row3 = (props) => (
-    <TouchableHighlight onPress={()=>this.startPurchase(props.product_id)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
+buyCombo=(product_id, name, nav)=>{
+    window.alert(product_id);
+    nav.replace({
+        id: 'splash screen',
+        passProps: {
+            motive: 'purchase',
+            packID: product_id,
+            packName: name
+        }
+    });
+}
+const Row3 = ({props, navigator}) => (
+    <TouchableHighlight onPress={()=>this.buyCombo(props.product_id, props.name, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
                 <Text style={[{fontSize: 10}, this.getTextColor(props.color[0])]}>

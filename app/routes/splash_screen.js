@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Image, StyleSheet, NetInfo, AsyncStorage } from 'react-native';
+import { View, Image, StyleSheet, NetInfo, AsyncStorage, ActivityIndicator } from 'react-native';
 import Meteor from 'react-native-meteor';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
@@ -11,17 +11,30 @@ var KEY_SeenStart = 'seenStartKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
 var seenStart = false;
-var puzzleData = {};
+//var puzzleData = {};
 var ready = false;
 var nowISO = moment().valueOf();
 var launchDay = moment('2017 01', 'YYYY-MM');//January 1, 2017
 var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 1/1/2017
 var startNum = parseInt(dayDiff, 10) - 28;
 var tonightMidnight = moment().endOf('day').valueOf();
+let handle = {};
+
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
 }
+function toObject(arr) {
+  var rv = {};
+  for (var i = 0; i < arr.length; ++i)
+    rv[i] = arr[i];
+  return rv;
+}
+//'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
+//'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
+//'ws://10.0.0.207:3000/websocket'; <= localhost
+let METEOR_URL = 'ws://10.0.0.207:3000/websocket';//'ws://52.52.205.96:80/websocket';
+Meteor.connect(METEOR_URL);
 
 class SplashScreen extends Component {
     constructor(props) {
@@ -29,13 +42,15 @@ class SplashScreen extends Component {
         this.state = {
             id: 'splash screen',
             seenStart: 'false',
-            notif_time: ''
+            notif_time: '',
+            hasPremium: 'false',
+            isLoading: true
         };
     }
     componentDidMount() {
+        let puzzleData = {};
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
-            let boolToUse = 'false';
             AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
                 if (puzzles !== null) {//get current Puzzle data:
                     puzzleData = JSON.parse(puzzles)
@@ -49,16 +64,7 @@ class SplashScreen extends Component {
                 }
                 return AsyncStorage.getItem(KEY_Premium);
             }).then((premium) => {
-                if (premium !== null) {
-                    if(premium == 'true'){
-                        puzzleData[17].show = 'false';
-                        puzzleData[18].show = 'true';
-                        boolToUse = 'true';
-                    }else{
-                        puzzleData[17].show = 'true';
-                        puzzleData[18].show = 'false';
-                    }
-                }else{
+                if (premium == null) {//set initial value of no upgrade...
                     puzzleData[17].show = 'true';
                     puzzleData[18].show = 'false';
                     try {
@@ -68,9 +74,9 @@ class SplashScreen extends Component {
                     }
                 }
                 return AsyncStorage.getItem(KEY_Notifs);
-            }).then((notifDetails) => {
-                if (notifDetails !== null) {
-                    this.setState({notif_time: notifDetails});
+            }).then((notifHour) => {//notification hour, zero if no notifications
+                if (notifHour !== null) {
+                    this.setState({notif_time: notifHour});
                 }else{
                     this.setState({notif_time: '7'});
                     try {
@@ -94,14 +100,9 @@ class SplashScreen extends Component {
                 return NetInfo.isConnected.fetch();
             }).then((isConnected) => {
                 if(isConnected){
-    //'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
-    //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
-    //'ws://10.0.0.207:3000/websocket'; <= localhost
-                    let METEOR_URL = 'ws://52.52.205.96:80/websocket';
-                    Meteor.connect(METEOR_URL);
                     const handle = Meteor.subscribe('AllData', {
                         onReady: function () {
-                            const d_puzzles = Meteor.collection('dataC').find();
+                            const d_puzzles = Meteor.collection('dataD').find();//dataD => daily puzzles
                             var flag = 'skip';
                             var i = 30;
                             var puzzStringArray = [];
@@ -135,40 +136,177 @@ class SplashScreen extends Component {
                         ready: handle.ready(),
                     };
                 }
-            }).then((disregard) => {
+            }).then(() => {
                 var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
                 this.setNotifications();
-                this.gotoScene(whereToGo);
+                this.setState({isLoading: false});
+                this.gotoScene(whereToGo, puzzleData);
             })
             .catch(function(error) {
                 window.alert(error.message);
                 throw error;
             });
-
-            try {
-                AsyncStorage.setItem(KEY_Premium, boolToUse);
-                AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(puzzleData));
-            } catch (error) {
-                window.alert('AsyncStorage error: ' + error.message);
-            }
         }else{//purchased puzzle pack...
-            window.alert(this.props.packID);
-
-
-            this.gotoScene('puzzles contents');
+            this.setState({hasPremium: 'true'});
+            AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
+                puzzleData = JSON.parse(puzzles);
+                puzzleData[17].show = 'false';
+                puzzleData[18].show = 'true';
+                return puzzleData;
+            }).then((theData) => {
+                let pushPack = this.getPuzzlePack(this.props.packName, theData);
+                return pushPack;
+            }).then((data) => {
+                this.gotoScene('puzzles contents', data);
+            }).catch(function(error) {
+                window.alert(error.message);
+                throw error;
+            });
         }
     }
-    gotoScene(whichScene){
+    getPuzzlePack(name, puzzleData){
+        return new Promise(
+            function (resolve, reject) {
+                let title = '';
+                let index = '';
+                let num_puzzles = '';
+                let bg_color = '';
+                let puzzles = [];
+
+                let blankPackObj =
+                    {
+                        title:'',
+                        index: '',
+                        type:'mypack',
+                        show:'true',
+                        num_puzzles:'',
+                        num_solved:'0',
+                        solved:'false',
+                        bg_color:'',
+                        puzzles:[]
+                    };
+                if (Array.isArray(name)){//combo pack
+                    let blankPackObj1 = JSON.parse(JSON.stringify(blankPackObj));
+                    let blankPackObj2 = JSON.parse(JSON.stringify(blankPackObj));
+                    Object.keys(puzzleData).forEach((key)=>{
+                        var obj = puzzleData[key];
+                        for (var el in obj) {
+                            if (el == 'data'){
+                                for(let j=0; j<obj[el].length; j++){
+                                    if(puzzleData[key].puzzleData[j].name == name[0]){
+                                        blankPackObj.title = puzzleData[key].puzzleData[j].name;
+                                        blankPackObj.index = puzzleData.length.toString();
+                                        blankPackObj.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
+                                        blankPackObj.bg_color = puzzleData[key].puzzleData[j].color;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    Object.keys(puzzleData).forEach((key)=>{
+                        var obj = puzzleData[key];
+                        for (var el in obj) {
+                            if (el == 'data'){
+                                for(let j=0; j<obj[el].length; j++){
+                                    if(puzzleData[key].puzzleData[j].name == name[1]){
+                                        blankPackObj1.title = puzzleData[key].puzzleData[j].name;
+                                        blankPackObj1.index = puzzleData.length.toString();
+                                        blankPackObj1.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
+                                        blankPackObj1.bg_color = puzzleData[key].puzzleData[j].color;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    Object.keys(puzzleData).forEach((key)=>{
+                        var obj = puzzleData[key];
+                        for (var el in obj) {
+                            if (el == 'data'){
+                                for(let j=0; j<obj[el].length; j++){
+                                    if(puzzleData[key].puzzleData[j].name == name[2]){
+                                        blankPackObj2.title = puzzleData[key].puzzleData[j].name;
+                                        blankPackObj2.index = puzzleData.length.toString();
+                                        blankPackObj2.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
+                                        blankPackObj2.bg_color = puzzleData[key].puzzleData[j].color;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+
+
+
+                    return;
+                }else{
+                    Object.keys(puzzleData).forEach((key)=>{
+                        var obj = puzzleData[key];
+                        for (var el in obj) {
+                            if (el == 'data'){
+                                for(let j=0; j<obj[el].length; j++){
+                                    if(puzzleData[key].data[j].name == name){
+                                        title = puzzleData[key].data[j].name;
+                                        index = puzzleData.length.toString();
+                                        num_puzzles = puzzleData[key].data[j].num_puzzles;
+                                        bg_color = puzzleData[key].data[j].color;
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    const subs = Meteor.subscribe('AllData', {
+                        onReady: function () {
+                                const d_puzzles = Meteor.collection('dataP').find({pack: name});
+                                for (var key in d_puzzles) {
+                                    var obj = d_puzzles[key];
+                                    for (var prop in obj) {
+                                        if(prop=='puzz'){
+                                            puzzles.push(obj[prop]);
+                                        }
+                                    }
+                                }
+                                puzzleData.push({
+                                    title: title,
+                                    index: puzzleData.length,
+                                    type: 'mypack',
+                                    show: 'true',
+                                    num_puzzles: num_puzzles,
+                                    num_solved: '0',
+                                    solved: 'false',
+                                    bg_color: bg_color,
+                                    puzzles: puzzles
+                                });
+                                resolve(puzzleData);
+                            },
+                        onStop: function () {
+                            window.alert('Sorry, can\'t connect to our server right now');
+                            reject(error.reason);
+                        }
+                    });
+        //console.log(Object.keys(puzzleData).length);
+                }
+        });
+    }
+    gotoScene(whichScene, puzzleData){
         var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
         for(let i=0; i<4; i++){
             var rand0to9 = randomNum(0, 9);
             puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
+            puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
             puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[rand0to9].color;
         }
+
+        this.setState({isLoading: false});
         this.props.navigator.replace({
             id: whichScene,
             passProps: {
                 puzzleData: puzzleData,
+                isPremium: this.state.hasPremium,
                 destination: 'puzzles contents'
                 },
        });
@@ -192,11 +330,20 @@ class SplashScreen extends Component {
 
 
     render() {
-        return (
-            <View style={ splash_styles.container }>
-                <Image style={{ width: 200, height: 200 }} source={require('../images/icon.png')} />
-            </View>
-        );
+        if(this.state.isLoading == true){
+            return(
+                <View style={ splash_styles.container }>
+                    <Image style={{ width: 200, height: 200 }} source={require('../images/icon.png')} />
+                    <ActivityIndicator style={splash_styles.spinner} animating={true} size={'large'}/>
+                </View>
+            )
+        }else{
+            return (
+                <View style={ splash_styles.container }>
+                    <Image style={{ width: 200, height: 200 }} source={require('../images/icon.png')} />
+                </View>
+            );
+        }
     }
 }
 
@@ -206,6 +353,13 @@ var splash_styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#486bdd',
+    },
+    spinner: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
     },
 });
 
