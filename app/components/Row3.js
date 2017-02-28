@@ -79,7 +79,7 @@ var strToReturn = color;
 }
 
 buyCombo=(product_id, name, nav)=>{
-    window.alert(product_id);
+    nav.pop({});
     nav.replace({
         id: 'splash screen',
         passProps: {
