@@ -25,7 +25,7 @@ module.exports = [
         data:[
                     {
                     name: 'Capri',
-                    product_id: 'fm.e.capri.50.00BFFF',
+                    product_id: 'fm.e.capri.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -34,7 +34,7 @@ module.exports = [
                     },
                     {
                     name: 'Chartreuse',
-                    product_id: 'fm.e.chartreuse.50.DFFF00',
+                    product_id: 'fm.e.chartreuse.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -43,7 +43,7 @@ module.exports = [
                     },
                     {
                     name: 'Electric Indigo',
-                    product_id: 'fm.e.electric_indigo.50.6F00FF',
+                    product_id: 'fm.e.electric_indigo.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -52,7 +52,7 @@ module.exports = [
                     },
                     {
                     name: 'Ferrari Red',
-                    product_id: 'fm.e.ferrari_red.50.FF2800',
+                    product_id: 'fm.e.ferrari_red.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -61,7 +61,7 @@ module.exports = [
                     },
                     {
                     name: 'Guppie Green',
-                    product_id: 'fm.e.guppie_green.50.00FF7F',
+                    product_id: 'fm.e.guppie_green.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -70,7 +70,7 @@ module.exports = [
                     },
                     {
                     name: 'Lavender Blue',
-                    product_id: 'fm.e.lavender_blue.50.CCCCFF',
+                    product_id: 'fm.e.lavender_blue.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -79,7 +79,7 @@ module.exports = [
                     },
                     {
                     name: 'Mango Tango',
-                    product_id: 'fm.e.mango_tango.100.FF8243',
+                    product_id: 'fm.e.mango_tango.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -88,7 +88,7 @@ module.exports = [
                     },
                     {
                     name: 'Hot Phlox',
-                    product_id: 'fm.e.hot_phlox.100.DF00FF',
+                    product_id: 'fm.e.hot_phlox.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -97,7 +97,7 @@ module.exports = [
                     },
                     {
                     name: 'Tasty Turquoise',
-                    product_id: 'fm.e.tasty_turquoise.100.00FFEF',
+                    product_id: 'fm.e.tasty_turquoise.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -106,7 +106,7 @@ module.exports = [
                     },
                     {
                     name: 'Wild Strawberry',
-                    product_id: 'fm.e.wild_strawberry.100.FF43A4',
+                    product_id: 'fm.e.wild_strawberry.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -123,7 +123,7 @@ module.exports = [
         data:[
                     {
                     name: 'Bungalow',
-                    product_id: 'fm.m.bungalow.50.138808',
+                    product_id: 'fm.m.bungalow.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -132,7 +132,7 @@ module.exports = [
                     },
                     {
                     name: 'Cruise',
-                    product_id: 'fm.m.cruise.50.2A52BE',
+                    product_id: 'fm.m.cruise.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -141,7 +141,7 @@ module.exports = [
                     },
                     {
                     name: 'Getaway',
-                    product_id: 'fm.m.getaway.50.800000',
+                    product_id: 'fm.m.getaway.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -150,7 +150,7 @@ module.exports = [
                     },
                     {
                     name: 'Holiday',
-                    product_id: 'fm.m.holiday.50.FEFE22',
+                    product_id: 'fm.m.holiday.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -159,7 +159,7 @@ module.exports = [
                     },
                     {
                     name: 'Road Trip',
-                    product_id: 'fm.m.road_trip.50.98817B',
+                    product_id: 'fm.m.road_trip.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -168,7 +168,7 @@ module.exports = [
                     },
                     {
                     name: 'Siesta',
-                    product_id: 'fm.m.siesta.50.082567',
+                    product_id: 'fm.m.siesta.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -177,7 +177,7 @@ module.exports = [
                     },
                     {
                     name: 'Tropics',
-                    product_id: 'fm.m.tropics.100.C71585',
+                    product_id: 'fm.m.tropics.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -186,7 +186,7 @@ module.exports = [
                     },
                     {
                     name: 'Vacation',
-                    product_id: 'fm.m.vacation.100.CBA135',
+                    product_id: 'fm.m.vacation.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -195,7 +195,7 @@ module.exports = [
                     },
                     {
                     name: 'Villa',
-                    product_id: 'fm.m.villa.100.FFC40C',
+                    product_id: 'fm.m.villa.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -204,7 +204,7 @@ module.exports = [
                     },
                     {
                     name: 'Weekender',
-                    product_id: 'fm.m.weekender.100.195905',
+                    product_id: 'fm.m.weekender.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -221,7 +221,7 @@ module.exports = [
         data:[
                     {
                     name: 'Blizzard',
-                    product_id: 'fm.h.blizzard.50.E7FEFF',
+                    product_id: 'fm.h.blizzard.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -230,7 +230,7 @@ module.exports = [
                     },
                     {
                     name: 'Cyclone',
-                    product_id: 'fm.h.cyclone.50.DE3163',
+                    product_id: 'fm.h.cyclone.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -239,7 +239,7 @@ module.exports = [
                     },
                     {
                     name: 'Scirocco',
-                    product_id: 'fm.h.scirocco.50.FFCBA4',
+                    product_id: 'fm.h.scirocco.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -248,7 +248,7 @@ module.exports = [
                     },
                     {
                     name: 'Deluge',
-                    product_id: 'fm.h.deluge.50.663854',
+                    product_id: 'fm.h.deluge.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -257,7 +257,7 @@ module.exports = [
                     },
                     {
                     name: 'Hurricane',
-                    product_id: 'fm.h.hurricane.50.8F00FF',
+                    product_id: 'fm.h.hurricane.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -266,7 +266,7 @@ module.exports = [
                     },
                     {
                     name: 'Southwester',
-                    product_id: 'fm.h.southwester.50.FFCC33',
+                    product_id: 'fm.h.southwester.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -275,7 +275,7 @@ module.exports = [
                     },
                     {
                     name: 'Squall',
-                    product_id: 'fm.h.squall.100.A52A2A',
+                    product_id: 'fm.h.squall.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -284,7 +284,7 @@ module.exports = [
                     },
                     {
                     name: 'Tempest',
-                    product_id: 'fm.h.tempest.100.007BA7',
+                    product_id: 'fm.h.tempest.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -293,7 +293,7 @@ module.exports = [
                     },
                     {
                     name: 'Thunderstorm',
-                    product_id: 'fm.h.thunderstorm.100.3B444B',
+                    product_id: 'fm.h.thunderstorm.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -302,7 +302,7 @@ module.exports = [
                     },
                     {
                     name: 'Typhoon',
-                    product_id: 'fm.h.typhoon.100.5D8AA8',
+                    product_id: 'fm.h.typhoon.100',
                     price: '$2.99',
                     show: 'true',
                     num_puzzles: '100',
@@ -319,7 +319,7 @@ module.exports = [
         data:[
                     {
                     name: 'Art',
-                    product_id: 'fm.t.art.50.A50B5E',
+                    product_id: 'fm.t.art.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -328,7 +328,7 @@ module.exports = [
                     },
                     {
                     name: 'Business',
-                    product_id: 'fm.t.business.50.087830',
+                    product_id: 'fm.t.business.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -337,7 +337,7 @@ module.exports = [
                     },
                     {
                     name: 'Entertainment',
-                    product_id: 'fm.t.entertainment.50.9457EB',
+                    product_id: 'fm.t.entertainment.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -346,7 +346,7 @@ module.exports = [
                     },
                     {
                     name: 'Explorers',
-                    product_id: 'fm.t.explorers.50.29AB87',
+                    product_id: 'fm.t.explorers.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -355,7 +355,7 @@ module.exports = [
                     },
                     {
                     name: 'Food and Drink',
-                    product_id: 'fm.t.food_and_drink.50.AAF0D1',
+                    product_id: 'fm.t.food_and_drink.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -364,7 +364,7 @@ module.exports = [
                     },
                     {
                     name: 'Geography',
-                    product_id: 'fm.t.geography.50.FADA5E',
+                    product_id: 'fm.t.geography.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -373,7 +373,7 @@ module.exports = [
                     },
                     {
                     name: 'History',
-                    product_id: 'fm.t.history.50.796878',
+                    product_id: 'fm.t.history.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -382,7 +382,7 @@ module.exports = [
                     },
                     {
                     name: 'Music',
-                    product_id: 'fm.t.music.50.B784A7',
+                    product_id: 'fm.t.music.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -391,7 +391,7 @@ module.exports = [
                     },
                     {
                     name: 'Quotations',
-                    product_id: 'fm.t.quotations.50.FDF5E6',
+                    product_id: 'fm.t.quotations.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',
@@ -400,7 +400,7 @@ module.exports = [
                     },
                     {
                     name: 'Science',
-                    product_id: 'fm.t.science.50.FF4500',
+                    product_id: 'fm.t.science.50',
                     price: '$1.99',
                     show: 'true',
                     num_puzzles: '50',

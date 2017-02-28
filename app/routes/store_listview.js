@@ -76,6 +76,7 @@ module.exports = class StoreListView extends Component {
 };
 
 startPurchase=(name, nav)=>{
+    nav.pop({});
     nav.replace({
         id: 'splash screen',
         passProps: {

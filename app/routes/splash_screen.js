@@ -167,81 +167,84 @@ class SplashScreen extends Component {
     getPuzzlePack(name, puzzleData){
         return new Promise(
             function (resolve, reject) {
-                let title = '';
-                let index = '';
-                let num_puzzles = '';
-                let bg_color = '';
-                let puzzles = [];
-
-                let blankPackObj =
-                    {
-                        title:'',
-                        index: '',
-                        type:'mypack',
-                        show:'true',
-                        num_puzzles:'',
-                        num_solved:'0',
-                        solved:'false',
-                        bg_color:'',
-                        puzzles:[]
-                    };
                 if (Array.isArray(name)){//combo pack
-                    let blankPackObj1 = JSON.parse(JSON.stringify(blankPackObj));
-                    let blankPackObj2 = JSON.parse(JSON.stringify(blankPackObj));
-                    Object.keys(puzzleData).forEach((key)=>{
-                        var obj = puzzleData[key];
-                        for (var el in obj) {
-                            if (el == 'data'){
-                                for(let j=0; j<obj[el].length; j++){
-                                    if(puzzleData[key].puzzleData[j].name == name[0]){
-                                        blankPackObj.title = puzzleData[key].puzzleData[j].name;
-                                        blankPackObj.index = puzzleData.length.toString();
-                                        blankPackObj.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
-                                        blankPackObj.bg_color = puzzleData[key].puzzleData[j].color;
-                                        continue;
+                    let title = [];
+                    let index = [];
+                    let num_puzzles = [];
+                    let bg_color = [];
+                    let puzzles = [[],[],[]];
+                    let combinedName = name[0] + ' ' + name[1] + ' ' + name[2];
+
+                    for (let k = 0; k < 3; k++){
+                        Object.keys(puzzleData).forEach((key)=>{
+                            var obj = puzzleData[key];
+                            for (var el in obj) {
+                                if (el == 'data'){
+                                    for(let j=0; j<obj[el].length; j++){
+                                        if(puzzleData[key].data[j].name == name[k]){
+                                            title[k] = puzzleData[key].data[j].name;
+                                            index[k] = (puzzleData.length + k).toString();
+                                            num_puzzles[k] = puzzleData[key].data[j].num_puzzles;
+                                            bg_color[k] = puzzleData[key].data[j].color;
+                                            continue;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
-                    Object.keys(puzzleData).forEach((key)=>{
-                        var obj = puzzleData[key];
-                        for (var el in obj) {
-                            if (el == 'data'){
-                                for(let j=0; j<obj[el].length; j++){
-                                    if(puzzleData[key].puzzleData[j].name == name[1]){
-                                        blankPackObj1.title = puzzleData[key].puzzleData[j].name;
-                                        blankPackObj1.index = puzzleData.length.toString();
-                                        blankPackObj1.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
-                                        blankPackObj1.bg_color = puzzleData[key].puzzleData[j].color;
-                                        continue;
+                        });
+                    }
+
+                    const subs = Meteor.subscribe('AllData', {
+                        onReady: function () {
+                                const d_puzzles = Meteor.collection('dataC').find({pack: combinedName});
+                                let puzzleCount = 0;
+                                let whichOfThe3 = 0;
+                                for (var key in d_puzzles) {
+                                    var obj = d_puzzles[key];
+                                    for (var prop in obj) {
+                                        if(prop=='puzz'){
+                                            puzzles[whichOfThe3].push(obj[prop]);
+                                            puzzleCount++;
+                                        }
+                                        if (puzzleCount == num_puzzles[whichOfThe3]){
+                                            whichOfThe3++;
+                                            puzzleCount = 0;
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    });
-                    Object.keys(puzzleData).forEach((key)=>{
-                        var obj = puzzleData[key];
-                        for (var el in obj) {
-                            if (el == 'data'){
-                                for(let j=0; j<obj[el].length; j++){
-                                    if(puzzleData[key].puzzleData[j].name == name[2]){
-                                        blankPackObj2.title = puzzleData[key].puzzleData[j].name;
-                                        blankPackObj2.index = puzzleData.length.toString();
-                                        blankPackObj2.num_puzzles = puzzleData[key].puzzleData[j].num_puzzles;
-                                        blankPackObj2.bg_color = puzzleData[key].puzzleData[j].color;
-                                        continue;
-                                    }
+                                for (let push = 0; push < 3; push++){
+                                    puzzleData.push({
+                                        title: title[push],
+                                        index: index[push],
+                                        type: 'mypack',
+                                        show: 'true',
+                                        num_puzzles: num_puzzles[push],
+                                        num_solved: '0',
+                                        solved: 'false',
+                                        bg_color: bg_color[push],
+                                        puzzles: puzzles[push]
+                                    });
                                 }
-                            }
+                                resolve(puzzleData);
+                            },
+                        onStop: function () {
+                            window.alert('Sorry, can\'t connect to our server right now');
+                            reject(error.reason);
                         }
                     });
 
 
 
 
-                    return;
+
+
                 }else{
+                    let title = '';
+                    let index = '';
+                    let num_puzzles = '';
+                    let bg_color = '';
+                    let puzzles = [];
+
                     Object.keys(puzzleData).forEach((key)=>{
                         var obj = puzzleData[key];
                         for (var el in obj) {
@@ -288,8 +291,8 @@ class SplashScreen extends Component {
                             reject(error.reason);
                         }
                     });
-        //console.log(Object.keys(puzzleData).length);
                 }
+        //console.log(Object.keys(puzzleData).length);
         });
     }
     gotoScene(whichScene, puzzleData){

@@ -222,13 +222,7 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'settings':
-                    this.props.navigator.push({
-                        id: 'settings',
-                        passProps: {
-                            destination: 'puzzle launcher',
-                            puzzleData: this.props.puzzleData,
-                        }
-                    });
+                    window.alert('Please change settings from the Puzzles Contents page');
                     break;
                 case 'about':
                     this.props.navigator.push({
