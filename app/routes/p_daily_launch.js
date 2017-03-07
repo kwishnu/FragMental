@@ -59,19 +59,39 @@ class DailyLaunch extends Component{
             return true;
         }else{
             try {
-            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-            for(let i=0; i<4; i++){
-                var rand0to9 = randomNum(0, 9);
-                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
-                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
-                puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
-            }
-            this.props.navigator.replace({
-                id: 'puzzles contents',
-                passProps: {
-                    puzzleData: puzzleData,
+                var myPackArray = [];
+                var str = '';
+                for (var key in puzzleData){
+                    if (puzzleData[key].type == 'mypack'){
+                        myPackArray.push(puzzleData[key].title);
+                    }
                 }
-            });
+                var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
+                for(let i=0; i<4; i++){
+                    var titleIndex = -1;
+                    var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
+                    rand0to9 = shuffleArray(rand0to9);
+                    for (var r=0; r<10; r++){
+        //                var rand0to9 = randomNum(0, 9);
+                        if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
+                            titleIndex = rand0to9[r];
+                            break;
+                        }
+                    }
+                    if (titleIndex !== -1){
+                        puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
+                        puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                        puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
+                    }else{
+                        puzzleData[20 + i].show = 'false';
+                    }
+                }
+                this.props.navigator.replace({
+                    id: 'puzzles contents',
+                    passProps: {
+                        puzzleData: puzzleData,
+                    }
+                });
                 return true;
             } catch(err)  {
                 return false;

@@ -466,32 +466,52 @@ class Game extends Component {
                     });
     }
     closeGame() {
-            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-            for(let i=0; i<4; i++){
-                var rand0to9 = randomNum(0, 9);
-                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
-                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
-                puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[rand0to9].color;
+        var myPackArray = [];
+        var str = '';
+        for (var key in puzzleData){
+            if (puzzleData[key].type == 'mypack'){
+                myPackArray.push(puzzleData[key].title);
             }
-            try {
-            this.props.navigator.replace({
-                id: this.props.fromWhere,
-                passProps: {
-                    puzzleData: puzzleData,
-                    daily_solvedArray: this.state.daily_solvedArray,
-                    dataElement: this.props.dataElement,
-                    isPremium: this.state.isPremium,
-                    puzzleArray: this.props.puzzleArray,
-                    textColor: this.props.textColor,
-                    bgColor: this.props.bgColor,
-                    title: this.props.myTitle,
-                    },
-            });
-                return true;
-            } catch(err)  {
-                window.alert(err.message)
-                return true;
+        }
+        var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
+        for(let i=0; i<4; i++){
+            var titleIndex = -1;
+            var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
+            rand0to9 = shuffleArray(rand0to9);
+            for (var r=0; r<10; r++){
+//                var rand0to9 = randomNum(0, 9);
+                if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
+                    titleIndex = rand0to9[r];
+                    break;
+                }
             }
+            if (titleIndex !== -1){
+                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
+                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
+            }else{
+                puzzleData[20 + i].show = 'false';
+            }
+        }
+        try {
+        this.props.navigator.replace({
+            id: this.props.fromWhere,
+            passProps: {
+                puzzleData: puzzleData,
+                daily_solvedArray: this.state.daily_solvedArray,
+                dataElement: this.props.dataElement,
+                isPremium: this.state.isPremium,
+                puzzleArray: this.props.puzzleArray,
+                textColor: this.props.textColor,
+                bgColor: this.props.bgColor,
+                title: this.props.myTitle,
+                },
+        });
+            return true;
+        } catch(err)  {
+            window.alert(err.message)
+            return true;
+        }
     }
     nextGame(){
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
