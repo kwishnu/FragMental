@@ -14,7 +14,7 @@ var seenStart = false;
 //var puzzleData = {};
 var ready = false;
 var nowISO = moment().valueOf();
-var launchDay = moment('2017 01', 'YYYY-MM');//January 1, 2017
+var launchDay = moment('2017 02', 'YYYY-MM');//Feb 1, 2017
 var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 1/1/2017
 var startNum = parseInt(dayDiff, 10) - 28;
 var tonightMidnight = moment().endOf('day').valueOf();
@@ -23,6 +23,15 @@ let handle = {};
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
+}
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
 }
 function toObject(arr) {
   var rv = {};
@@ -296,12 +305,32 @@ class SplashScreen extends Component {
         });
     }
     gotoScene(whichScene, puzzleData){
+        var myPackArray = [];
+        var str = '';
+        for (var key in puzzleData){
+            if (puzzleData[key].type == 'mypack'){
+                myPackArray.push(puzzleData[key].title);
+            }
+        }
         var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
         for(let i=0; i<4; i++){
-            var rand0to9 = randomNum(0, 9);
-            puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
-            puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
-            puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[rand0to9].color;
+            var titleIndex = -1;
+            var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
+            rand0to9 = shuffleArray(rand0to9);
+            for (var r=0; r<10; r++){
+//                var rand0to9 = randomNum(0, 9);
+                if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
+                    titleIndex = rand0to9[r];
+                    break;
+                }
+            }
+            if (titleIndex !== -1){
+                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
+                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
+            }else{
+                puzzleData[20 + i].show = 'false';
+            }
         }
 
         this.setState({isLoading: false});
