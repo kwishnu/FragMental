@@ -118,7 +118,7 @@ class DailyLaunch extends Component{
                     });
                     break;
                 case 'game board':
-                    this.props.navigator.replace({
+                    this.props.navigator.push({
                         id: 'game board',
                         passProps: {
                             puzzleData: this.props.puzzleData,
@@ -247,7 +247,7 @@ class DailyLaunch extends Component{
                 puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
                 this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
             }
-        this.props.navigator.replace({
+        this.props.navigator.push({
             id: 'game board',
             passProps: {
                 puzzleData: this.state.puzzleData,

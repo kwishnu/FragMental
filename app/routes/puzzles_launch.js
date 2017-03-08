@@ -188,7 +188,7 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'game board':
-                    this.props.navigator.replace({
+                    this.props.navigator.push({
                         id: 'game board',
                         passProps: {
                             puzzleData: this.props.puzzleData,
@@ -242,7 +242,13 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'settings':
-                    window.alert('Please change settings from the Puzzles Contents page');
+                    this.props.navigator.push({
+                        id: 'settings',
+                        passProps: {
+                            destination: 'puzzle launcher',
+                            puzzleData: this.props.puzzleData,
+                        }
+                    });
                     break;
                 case 'about':
                     this.props.navigator.push({
@@ -307,7 +313,7 @@ class PuzzleLaunch extends Component{
     }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
-        this.props.navigator.replace({
+        this.props.navigator.push({
             id: 'game board',
             passProps: {
                 puzzleData: this.state.puzzleData,

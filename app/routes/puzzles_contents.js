@@ -363,7 +363,7 @@ class PuzzleContents extends Component{
         switch(title){
             case 'Today\'s Puzzle':
                 theDestination = 'game board';
-                this.props.navigator.replace({
+                this.props.navigator.push({
                     id: 'game board',
                     passProps: {
                         puzzleData: this.props.puzzleData,
