@@ -74,8 +74,9 @@ class StartScene extends Component {
     render() {
         return (
             <AppIntro onDoneBtnClick={this.doneBtnHandle} onSkipBtnClick={this.onSkipBtnHandle}>
+
                 <View style={[styles.slide,{ backgroundColor: '#081262' }]}>
-                    <View style={styles.header}>
+                    <View style={[styles.header, {marginTop:20}]}>
                         <View style={[styles.pic, {top: -10, left: width*.05,}]} level={-15}>
                             <Image style={{ width: width*.7, height: width*.7 }} source={require('../images/intro1/gradient2.png')} />
                         </View>
@@ -109,86 +110,43 @@ class StartScene extends Component {
                         </View>
                     </View>
                 </View>
+
                 <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
-                    <View style={styles.header}>
+                    <View style={[styles.header, {marginTop:-40}]}>
                         <View>
-                            <Image style={{ width: 75 * 2.5, height: 63 * 2.5 }} source={require('../images/2/1.png')} />
+                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2/p2.png')} />
                         </View>
-                        <View style={[styles.pic, {
-                        top: 30,
-                        left: 40,
-                        }]} level={20}
-                        >
-                            <Image style={{ width: 101 * 2.5, height: 71 * 2.5 }} source={require('../images/2/2.png')} />
-                        </View>
-                        <View style={[styles.pic, {
-                        top: 10,
-                        left: 50,
-                        }]} level={-20}
-                        >
-                            <Image style={{ width: 85 * 2.5, height: 73 * 2.5 }} source={require('../images/2/3.png')} />
-                        </View>
-                    </View>
-                    <View style={styles.info}>
-                        <View level={10}><Text style={styles.title}>Title!</Text></View>
-                        <View level={15}><Text style={styles.description}>description!</Text></View>
                     </View>
                 </View>
-                <View style={[styles.slide, { backgroundColor: '#406E9F' }]}>
-                    <View style={styles.header}>
-                    <View style={[styles.pic, {
-                    top: 20,
-                    left: 20,
-                    }]}
-                    >
-                    <Image style={{ width: 138 * 2.5, height: 83 * 2.5 }} source={require('../images/3/3.png')} />
+
+                <View style={[styles.slide, { backgroundColor: '#3ff14c' }]}>
+                    <View style={[styles.header, {marginTop:-40}]}>
+                        <View>
+                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/page3bg.png')} />
+                        </View>
                     </View>
-                    <View style={[styles.pic, {
-                    top: 25,
-                    left: 40,
-                    }]} level={-15}
-                    >
-                    <Image style={{ width: 103 * 2.5, height: 42 * 2.5 }} source={require('../images/3/4.png')} />
+                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={-20}>
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/re.png')} />
                     </View>
-                    <View level={10}>
-                    <Image style={{ width: 95 * 2.5, height: 55 * 2.5 }} source={require('../images/3/1.png')} />
+                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={30}>
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/ce.png')} />
                     </View>
-                    <View style={[styles.pic, {
-                    top: 65,
-                    left: 120,
-                    }]} level={25}
-                    >
-                    <Image style={{ width: 47 * 2.5, height: 43 * 2.5 }} source={require('../images/3/2.png')} />
-                    </View>
-                    </View>
-                    <View style={styles.info}>
-                    <View level={10}><Text style={styles.title}>Title!</Text></View>
-                    <View level={15}><Text style={styles.description}>description!</Text></View>
+                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={-10}>
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/des.png')} />
                     </View>
                 </View>
-                <View style={[styles.slide, { backgroundColor: '#081262' }]}>
-                    <View style={styles.header}>
+
+               <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
+                    <View style={[styles.header, {marginTop:-40}]}>
                         <View>
-                            <Image style={{ width: 75 * 2.5, height: 63 * 2.5 }} source={require('../images/2/1.png')} />
-                        </View>
-                        <View style={[styles.pic, {
-                        top: 30,
-                        left: 40,
-                        }]} level={20}
-                        >
-                            <Image style={{ width: 101 * 2.5, height: 71 * 2.5 }} source={require('../images/2/2.png')} />
-                        </View>
-                        <View style={[styles.pic, {
-                        top: 10,
-                        left: 50,
-                        }]} level={-20}
-                        >
-                            <Image style={{ width: 85 * 2.5, height: 73 * 2.5 }} source={require('../images/2/3.png')} />
+                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/page4bg.png')} />
                         </View>
                     </View>
-                    <View style={styles.info}>
-                        <View level={10}><Text style={styles.title}>Title!</Text></View>
-                        <View level={15}><Text style={styles.description}>description!</Text></View>
+                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={-20}>
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/key.png')} />
+                    </View>
+                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={30}>
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/hint.png')} />
                     </View>
                 </View>
             </AppIntro>
@@ -201,8 +159,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#9DD6EB',
-    padding: 15,
   },
   header: {
     flex: 1,
