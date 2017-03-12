@@ -229,12 +229,12 @@ class Game extends Component {
         return true;
     }
     setPremium(){
-        var numToUse = (this.props.isPremium == true)?6:2;
-        var opacityToUse = (this.props.isPremium == true)?1:0;
+        var numToUse = (this.props.isPremium == 'true')?6:2;
+        var opacityToUse = (this.props.isPremium == 'true')?1:0;
         this.setState({hintOpacity: opacityToUse,
             numHints: numToUse,
             hintOpacity: this.state.hintOpacity,
-                      });
+        });
     }
     setColors(){
         var bgC = this.props.bgColor;

@@ -23,7 +23,7 @@ module.exports = class StoreListView extends Component {
         })
         this.state = {
             id: 'store',
-            dataSource: this.props.puzzleData[this.props.dataIndex].data
+            dataSource: this.props.availableList
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -50,7 +50,7 @@ module.exports = class StoreListView extends Component {
 
 
     render() {
-        const rows = this.dataSource.cloneWithRows(this.props.puzzleData[this.props.dataIndex].data);
+        const rows = this.dataSource.cloneWithRows(this.props.availableList); //(this.props.puzzleData[this.props.dataIndex].data);
         return (
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>

@@ -18,12 +18,11 @@ module.exports = class ComboStore extends Component {
 //        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             id: 'combo store',
-            dataSource: this.props.puzzleData[this.props.dataIndex].data
+            dataSource: this.props.availableList
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount(){
-    //window.alert(this.props.dataIndex);
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
     componentWillUnmount () {
@@ -46,7 +45,7 @@ module.exports = class ComboStore extends Component {
 
 
     render() {
-        const rows = this.dataSource.cloneWithRows(this.props.puzzleData[this.props.dataIndex].data);
+        const rows = this.dataSource.cloneWithRows(this.props.availableList); //(this.props.puzzleData[this.props.dataIndex].data);
         return (
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
@@ -61,7 +60,6 @@ module.exports = class ComboStore extends Component {
                     </View>
                     <View style={ store_styles.listview_container }>
                         <ListView  showsVerticalScrollIndicator ={false}
-                                initialListSize ={100}
                                 contentContainerStyle={ store_styles.listview }
                                 dataSource={rows}
                                 renderRow={(data) => <Row3 props= {data} navigator= {this.props.navigator} />}

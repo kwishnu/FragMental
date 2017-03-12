@@ -203,8 +203,11 @@ class PuzzleLaunch extends Component{
                     });
                     return;
                 case 'daily launcher':
-                    //check for upgrade, route accordingly todo
-                    this.onSelect('17','Last Three Days', null);
+                    if(this.props.isPremium == 'true'){
+                        this.onSelect('18','Last Thirty Days', null);
+                    }else{
+                        this.onSelect('17','Last Three Days', null);
+                    }
                     break;
                 case 'store':
                     this.props.navigator.push({

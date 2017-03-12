@@ -243,25 +243,58 @@ class PuzzleContents extends Component{
                     this.onSelect('16','Today\'s Puzzle', null);
                     break;
                 case 'daily launcher':
-                    //check for upgrade, route accordingly todo
-                    this.onSelect('17','Last Three Days', null);
+                    if(this.props.isPremium == 'true'){
+                        this.onSelect('18','Last Thirty Days', null);
+                    }else{
+                        this.onSelect('17','Last Three Days', null);
+                    }
                     break;
                 case 'store':
+                    var myPackArray = [];
+                    var keepInList = [];
+
+                    for (var j=0; j<this.props.puzzleData.length; j++){
+                        if (this.props.puzzleData[j].type == 'mypack'){
+                            myPackArray.push(this.props.puzzleData[j].title);
+                        }
+                    }
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if(myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name) < 0){
+                            keepInList.push(this.props.puzzleData[item.index].data[i]);
+                        }
+                    }
+
                     this.props.navigator.push({
                         id: 'store',
                         passProps: {
                             dataIndex: item.index,
                             title: item.title + ' Puzzle Packs',
+                            availableList: keepInList,
                             puzzleData: this.props.puzzleData,
                         }
                     });
                     break;
                 case 'store3':
+                    var myPackArray = [];
+                    var keepInList = this.props.puzzleData[item.index].data;
+
+                    for (var j=0; j<this.props.puzzleData.length; j++){
+                        if (this.props.puzzleData[j].type == 'mypack'){
+                            myPackArray.push(this.props.puzzleData[j].title);
+                        }
+                    }
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if((myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[2]) > -1)){
+                            keepInList.splice(i, 1);
+                        }
+                    }
+
                     this.props.navigator.push({
                         id: 'combo store',
                         passProps: {
                             dataIndex: item.index,
                             title: item.title + ' Value Packs',
+                            availableList: keepInList,
                             puzzleData: this.props.puzzleData,
                         }
                     });
