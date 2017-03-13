@@ -83,7 +83,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion "25.0.2"
 
     defaultConfig {
@@ -128,6 +128,7 @@ android {
 dependencies {
     compile project(':RNSound')
     compile project(':react-native-push-notification')
+    compile project(':react-native-orientation')
     compile('com.google.android.gms:play-services-gcm:8.1.0') {
         force = true;
     }
