@@ -79,7 +79,7 @@ var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
 var KEY_daily_solved_array = 'solved_array';
 var puzzleData = {};
-
+var test = '';
 
 class PuzzleLaunch extends Component{
     constructor(props) {
