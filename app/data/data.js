@@ -617,7 +617,7 @@ module.exports = [
 		title:'Last Thirty Days',
 		index: '18',
 		type:'daily',
-		show:'true',
+		show:'false',
 		num_puzzles:'30',
 		num_solved:'0',
 		solved:'false',

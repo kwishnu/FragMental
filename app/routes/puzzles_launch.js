@@ -77,6 +77,7 @@ var CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the scree
 var CELL_PADDING = Math.floor(CELL_WIDTH * .05) + 5; // 5% of the cell width...+
 var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
+var KEY_daily_solved_array = 'solved_array';
 var puzzleData = {};
 
 
@@ -204,9 +205,9 @@ class PuzzleLaunch extends Component{
                     return;
                 case 'daily launcher':
                     if(this.props.isPremium == 'true'){
-                        this.onSelect('18','Last Thirty Days', null);
+                        this.goToDaily('18');
                     }else{
-                        this.onSelect('17','Last Three Days', null);
+                        this.goToDaily('17');
                     }
                     break;
                 case 'store':
@@ -313,6 +314,29 @@ class PuzzleLaunch extends Component{
                  strToReturn='#7e867e';
              }
          return {borderColor: strToReturn};
+    }
+    goToDaily(index){
+        var sArray = [];
+        var gripeText = (this.props.isPremium == 'true')?'':'Purchase any puzzle pack and always have access here to the last 30 days of FragMental puzzles!';
+
+        AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
+            if (theArray !== null) {
+              sArray = JSON.parse(theArray);
+            }
+            this.props.navigator.replace({
+                id: 'daily launcher',
+                passProps: {
+                    puzzleData: this.props.puzzleData,
+                    daily_solvedArray: sArray,
+                    title: 'Daily Puzzles',
+                    todayFull: this.props.todayFull,
+                    gripeText: gripeText,
+                    dataElement: index,
+                    isPremium: this.state.isPremium,
+                    bgColor: '#09146d'
+                },
+            });
+        });
     }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;

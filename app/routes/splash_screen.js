@@ -71,17 +71,8 @@ class SplashScreen extends Component {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
                 }
-                return AsyncStorage.getItem(KEY_Premium);
-            }).then((premium) => {
-                if (premium == null) {//set initial value of no upgrade...
-                    puzzleData[17].show = 'true';
-                    puzzleData[18].show = 'false';
-                    try {
-                        AsyncStorage.setItem(KEY_Premium, 'false');
-                    } catch (error) {
-                        window.alert('AsyncStorage error: ' + error.message);
-                    }
-                }
+                let premiumBool = (puzzleData[18].show == 'true')?'true':'false';
+                this.setState({hasPremium: premiumBool});
                 return AsyncStorage.getItem(KEY_Notifs);
             }).then((notifHour) => {//notification hour, zero if no notifications
                 if (notifHour !== null) {
@@ -242,11 +233,6 @@ class SplashScreen extends Component {
                         }
                     });
 
-
-
-
-
-
                 }else{
                     let title = '';
                     let index = '';
@@ -301,7 +287,6 @@ class SplashScreen extends Component {
                         }
                     });
                 }
-        //console.log(Object.keys(puzzleData).length);
         });
     }
     gotoScene(whichScene, puzzleData){

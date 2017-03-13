@@ -132,11 +132,6 @@ class PuzzleContents extends Component{
     }
     componentDidMount() {
         try {
-            AsyncStorage.setItem(KEY_Premium, this.props.isPremium);
-        } catch (error) {
-            window.alert('AsyncStorage error: ' + error.message);
-        }
-        try {
             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
@@ -243,6 +238,7 @@ class PuzzleContents extends Component{
                     this.onSelect('16','Today\'s Puzzle', null);
                     break;
                 case 'daily launcher':
+                console.log(this.props.isPremium);
                     if(this.props.isPremium == 'true'){
                         this.onSelect('18','Last Thirty Days', null);
                     }else{
@@ -449,6 +445,7 @@ class PuzzleContents extends Component{
                     puzzleData: this.props.puzzleData,
                     daily_solvedArray: sArray,
                     title: theTitle,
+                    todayFull: this.state.todayFull,
                     gripeText: gripeText,
                     dataElement: index,
                     isPremium: this.state.isPremium,
