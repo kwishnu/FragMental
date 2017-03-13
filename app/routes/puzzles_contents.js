@@ -73,7 +73,7 @@ function formatData(data) {
         }
         return { dataBlob, sectionIds, rowIds };
     }
-
+var Orientation = require('react-native-orientation');
 var SideMenu = require('react-native-side-menu');
 var Menu = require('../nav/menu');
 var deepCopy = require('../data/deepCopy.js');
@@ -131,6 +131,7 @@ class PuzzleContents extends Component{
         }
     }
     componentDidMount() {
+        Orientation.lockToPortrait();
         try {
             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
         } catch (error) {
