@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroi
 //import Row from '../components/Row';
 import Button from '../components/Button';
 var styles = require('../styles/styles');
+var InAppBilling = require("react-native-billing");
 var { width, height } = require('Dimensions').get('window');
 var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
 var CELL_HEIGHT = CELL_WIDTH * .5;
@@ -75,20 +76,39 @@ module.exports = class StoreListView extends Component {
   }
 };
 
-startPurchase=(name, nav)=>{
-    nav.pop({});
-    nav.replace({
-        id: 'splash screen',
-        passProps: {
-            motive: 'purchase',
-            packName: name
-        }
+startPurchase=(item_name, itemID, nav)=>{
+    InAppBilling.open()
+    .then(() => InAppBilling.purchase(itemID))
+    .then((details) => {
+        this.props.navigator.replace({
+            id: 'splash screen',
+            passProps: {
+                motive: 'purchase',
+                packName: item_name
+            }
+        });
+        console.log("You purchased: ", details)
+        return InAppBilling.close()
+    }).catch((err) => {
+        console.log(err);
+        return InAppBilling.close()
     });
-
 }
 
+//startPurchase=(name, productID, nav)=>{
+//    nav.pop({});
+//    nav.replace({
+//        id: 'splash screen',
+//        passProps: {
+//            motive: 'purchase',
+//            packName: name
+//        }
+//    });
+//
+//}
+
 const Row = ({props, navigator}) => (
-    <TouchableHighlight onPress={()=>startPurchase(props.name, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
+    <TouchableHighlight onPress={()=>startPurchase(props.name, props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
         <View style={store_styles.row_view}>
             <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}

@@ -73,6 +73,7 @@ function formatData(data) {
         }
         return { dataBlob, sectionIds, rowIds };
     }
+var InAppBilling = require("react-native-billing");
 var Orientation = require('react-native-orientation');
 var SideMenu = require('react-native-side-menu');
 var Menu = require('../nav/menu');
@@ -99,7 +100,6 @@ var tonightMidnight = moment().endOf('day').valueOf();
 var puzzleData = {};
 var sArray = [];
 var solvedTodayOrNot = false;
-
 
 class PuzzleContents extends Component{
     constructor(props) {
@@ -362,20 +362,28 @@ class PuzzleContents extends Component{
         var titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
         return titleToReturn;
     }
-    startPurchase=(item_name)=>{
-        this.props.navigator.replace({
-            id: 'splash screen',
-            passProps: {
-                motive: 'purchase',
-                packName: item_name
-            }
+    startPurchase=(item_name, itemID)=>{
+        InAppBilling.open()
+        .then(() => InAppBilling.purchase(itemID))
+        .then((details) => {
+            this.props.navigator.replace({
+                id: 'splash screen',
+                passProps: {
+                    motive: 'purchase',
+                    packName: item_name
+                }
+            });
+            console.log("You purchased: ", details)
+            return InAppBilling.close()
+        }).catch((err) => {
+            console.log(err);
+            return InAppBilling.close()
         });
     }
-
-    onSelect(index, title, bg) {
+    onSelect(index, title, bg, productID) {
         if (title.indexOf('*') > -1){
             let theName = title.substring(1);
-            this.startPurchase(theName);
+            this.startPurchase(theName, productID);
             return;
         }
         var theDestination = 'puzzle launcher';
@@ -485,7 +493,7 @@ class PuzzleContents extends Component{
                                         dataSource={this.state.dataSource}
                                         renderRow={(rowData) =>
                                              <View>
-                                                 <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color)}
+                                                 <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color, rowData.product_id)}
                                                                      style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
                                                                      underlayColor={rowData.bg_color} >
                                                      <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title)}</Text>

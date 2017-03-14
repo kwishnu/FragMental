@@ -2,11 +2,15 @@ package com.fragmental;
 
 import android.app.Application;
 import android.util.Log;
+import android.content.Intent;
+import java.util.Arrays;
+import java.util.List;
 
 import com.zmxv.RNSound.RNSoundPackage;
-import android.content.Intent;
 import com.github.yamill.orientation.OrientationPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.idehub.Billing.InAppBillingBridgePackage;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -14,8 +18,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -31,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
         new MainReactPackage(),
         new OrientationPackage(),
         new ReactNativePushNotificationPackage(),
-        new RNSoundPackage()
+        new RNSoundPackage(),
+        new InAppBillingBridgePackage()
       );
     }
   };

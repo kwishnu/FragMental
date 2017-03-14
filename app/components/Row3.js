@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+var InAppBilling = require("react-native-billing");
 var { width, height } = require('Dimensions').get('window');
 var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
 var CELL_HEIGHT = CELL_WIDTH * .5;
@@ -78,19 +79,38 @@ var strToReturn = color;
          };
 }
 
-buyCombo=(product_id, name, nav)=>{
-    nav.pop({});
-    nav.replace({
-        id: 'splash screen',
-        passProps: {
-            motive: 'purchase',
-            packID: product_id,
-            packName: name
-        }
+buyCombo=(item_name, itemID, nav)=>{
+    InAppBilling.open()
+    .then(() => InAppBilling.purchase(itemID))
+    .then((details) => {
+        this.props.navigator.replace({
+            id: 'splash screen',
+            passProps: {
+                motive: 'purchase',
+                packName: item_name
+            }
+        });
+        console.log("You purchased: ", details)
+        return InAppBilling.close()
+    }).catch((err) => {
+        console.log(err);
+        return InAppBilling.close()
     });
 }
+
+//buyCombo=(product_id, name, nav)=>{
+//    nav.pop({});
+//    nav.replace({
+//        id: 'splash screen',
+//        passProps: {
+//            motive: 'purchase',
+//            packID: product_id,
+//            packName: name
+//        }
+//    });
+//}
 const Row3 = ({props, navigator}) => (
-    <TouchableHighlight onPress={()=>this.buyCombo(props.product_id, props.name, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
+    <TouchableHighlight onPress={()=>this.buyCombo( props.name, props.product_id, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
                 <Text style={[{fontSize: 10}, this.getTextColor(props.color[0])]}>

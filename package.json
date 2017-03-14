@@ -11,6 +11,7 @@
     "react": "15.4.2",
     "react-native": "0.40.0",
     "react-native-app-intro": "^1.1.5",
+    "react-native-billing": "^2.3.0",
     "react-native-meteor": "^1.0.3",
     "react-native-orientation": "yamill/react-native-orientation",
     "react-native-push-notification": "^2.2.1",

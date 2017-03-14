@@ -129,6 +129,7 @@ dependencies {
     compile project(':RNSound')
     compile project(':react-native-push-notification')
     compile project(':react-native-orientation')
+    compile project(':react-native-billing')
     compile('com.google.android.gms:play-services-gcm:8.1.0') {
         force = true;
     }
