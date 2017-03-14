@@ -79,7 +79,6 @@ var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
 var KEY_daily_solved_array = 'solved_array';
 var puzzleData = {};
-var test = '';
 
 class PuzzleLaunch extends Component{
     constructor(props) {
@@ -210,6 +209,16 @@ class PuzzleLaunch extends Component{
                         this.goToDaily('17');
                     }
                     break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'puzzle launcher',
+                            puzzleData: this.props.puzzleData,
+                            seenIntro: 'true'
+                        }
+                    });
+                    break;
                 case 'store':
                     this.props.navigator.push({
                         id: 'store',
@@ -235,15 +244,6 @@ class PuzzleLaunch extends Component{
                     break;
                 case 'twitter':
                     window.alert('Device not configured');
-                    break;
-                case 'app_intro':
-                    this.props.navigator.push({
-                        id: 'start scene',
-                        passProps: {
-                            destination: 'puzzle launcher',
-                            puzzleData: this.props.puzzleData,
-                        }
-                    });
                     break;
                 case 'settings':
                     this.props.navigator.push({

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, AppState } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -90,6 +90,7 @@ var KEY_midnight = 'midnight';
 var KEY_Premium = 'premiumOrNot';
 var KEY_Puzzles = 'puzzlesKey';
 var KEY_solvedTP = 'solvedTP';
+var KEY_ratedTheApp = 'ratedApp';
 var nowISO = moment().valueOf();
 var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
 var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
@@ -119,6 +120,7 @@ class PuzzleContents extends Component{
             isOpen: false,
             todayFull: null,
             isPremium: this.props.isPremium,
+            hasRated: 'false',
             puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
@@ -137,9 +139,6 @@ class PuzzleContents extends Component{
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
-
-//        window.alert(Object.keys(this.props.puzzleData).length);
-        AppState.addEventListener('change', this.handleAppStateChange);
         puzzleData = this.state.puzzleData;
         var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
@@ -154,6 +153,9 @@ class PuzzleContents extends Component{
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
+        });
+        AsyncStorage.getItem(KEY_ratedTheApp).then((rated) => {
+            if(rated == 'true'){this.setState({hasRated: rated})}
         });
         AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
             if (theArray !== null) {
@@ -203,17 +205,8 @@ class PuzzleContents extends Component{
             });
     }
     componentWillUnmount(){
-        AppState.removeEventListener('change', this.handleAppStateChange);
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
-    handleAppStateChange=(appState)=>{
-        if(appState == 'active'){
-            this.props.navigator.replace({
-                id: 'splash screen',
-                passProps: {motive: 'initialize'}
-            });
-        }
-     }
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {
@@ -245,6 +238,16 @@ class PuzzleContents extends Component{
                     }else{
                         this.onSelect('17','Last Three Days', null);
                     }
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'menu',
+                            puzzleData: this.props.puzzleData,
+                            seenIntro: 'true'
+                        }
+                    });
                     break;
                 case 'store':
                     var myPackArray = [];
@@ -301,15 +304,6 @@ class PuzzleContents extends Component{
                     break;
                 case 'twitter':
                     window.alert('Device not configured');
-                    break;
-                case 'app_intro':
-                    this.props.navigator.push({
-                        id: 'start scene',
-                        passProps: {
-                            destination: 'menu',
-                            puzzleData: this.props.puzzleData,
-                        }
-                    });
                     break;
                 case 'settings':
                     this.props.navigator.push({
@@ -403,7 +397,8 @@ class PuzzleContents extends Component{
                         bgColor: '#09146d',
                         fromWhere: 'puzzles contents',
                         dataElement: index,
-                        isPremium: this.state.isPremium
+                        isPremium: this.state.isPremium,
+                        hasRated: this.state.hasRated
                     },
                 });
                 return;
@@ -422,6 +417,7 @@ class PuzzleContents extends Component{
                         gripeText: gripeText,
                         dataElement: index,
                         isPremium: this.state.isPremium,
+                        hasRated: this.state.hasRated,
                         bgColor: '#09146d'
                     },
                 });
@@ -450,6 +446,7 @@ class PuzzleContents extends Component{
                     gripeText: gripeText,
                     dataElement: index,
                     isPremium: this.state.isPremium,
+                    hasRated: this.state.hasRated,
                     bgColor: bgColorToSend
                 },
             });

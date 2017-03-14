@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert, Platform, Linking, AppState } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');
@@ -91,6 +91,7 @@ var KEY_solvedTP = 'solvedTP';
 var KEY_daily_solved_array = 'solved_array';
 var KEY_Sound = 'soundKey';
 var KEY_UseNumLetters = 'numLetters';
+var KEY_ratedTheApp = 'ratedApp';
 var useSounds = 'false';
 var dataBackup = {};
 var puzzleData = {};
@@ -192,21 +193,22 @@ class Game extends Component {
             starImage1: require('../images/star_grey.png'),
             starImage2: require('../images/star_grey.png'),
             arrowImage: require('../images/arrow_forward.png'),
-            isPremium: this.props.isPremium
+            hasRated: this.props.hasRated
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount() {
+        BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.addEventListener('change', this.handleAppStateChange);
         puzzleData = this.state.puzzleData;
         this.setColors();
-        this.setPremium();
+        this.setRated();
         AsyncStorage.getItem(KEY_UseNumLetters).then((value) => {
             var valueToBool = (value == 'true')?true:false;
             this.setState({useNumLetters: valueToBool});
             this.storeGameVariables(this.state.index);
             this.setState({isLoading: false});
         });
-        BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         AsyncStorage.getItem(KEY_Sound).then((sounds) => {
             if (sounds !== null) {
                 useSounds = sounds;
@@ -222,23 +224,28 @@ class Game extends Component {
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
-
+        AppState.removeEventListener('change', this.handleAppStateChange);
     }
     handleHardwareBackButton() {
         this.closeGame();
         return true;
     }
-    setPremium(){
-        var numToUse = (this.props.isPremium == 'true')?6:2;
-        var opacityToUse = (this.props.isPremium == 'true')?1:0;
-        this.setState({hintOpacity: opacityToUse,
-            numHints: numToUse,
-            hintOpacity: this.state.hintOpacity,
+    handleAppStateChange=(appState)=>{
+        if(appState == 'active'){
+            this.reset_scene();
+
+        }
+     }
+    setRated(){
+        var numToUse = (this.state.hasRated == 'true')?6:2;
+        var opacityToUse = (this.state.hasRated == 'true')?1:0;
+        this.setState({
+            hintOpacity: opacityToUse,
+            numHints: numToUse
         });
     }
     setColors(){
         var bgC = this.props.bgColor;
-
         var fieldColor = shadeColor2(bgC, -10);;//(bgC, 50);
         var headColor =  shadeColor2(bgC, -30);
         var cluebgColor = shadeColor2(bgC, 30);
@@ -330,7 +337,7 @@ class Game extends Component {
         );
     }
     reset_scene(){
-        this.setPremium();
+        this.setRated();
         var data =  this.state.theData;
             for(var i=0; i<data.length; i++){
                 data[i].frag = dataBackup[i].frag;
@@ -413,19 +420,19 @@ class Game extends Component {
             }
         }
         try {
-        this.props.navigator.pop({
-            id: this.props.fromWhere,
-            passProps: {
-                puzzleData: puzzleData,
-                daily_solvedArray: this.state.daily_solvedArray,
-                dataElement: this.props.dataElement,
-                isPremium: this.state.isPremium,
-                puzzleArray: this.props.puzzleArray,
-                textColor: this.props.textColor,
-                bgColor: this.props.bgColor,
-                title: this.props.myTitle,
-                },
-        });
+            this.props.navigator.pop({
+                id: this.props.fromWhere,
+                passProps: {
+                    puzzleData: puzzleData,
+                    daily_solvedArray: this.state.daily_solvedArray,
+                    dataElement: this.props.dataElement,
+                    hasRated: this.state.hasRated,
+                    puzzleArray: this.props.puzzleArray,
+                    textColor: this.props.textColor,
+                    bgColor: this.props.bgColor,
+                    title: this.props.myTitle,
+                    },
+            });
             return true;
         } catch(err)  {
             window.alert(err.message)
@@ -590,7 +597,7 @@ class Game extends Component {
                 this.score_increment(scoreToAdd);
             }else{
                 if(useSounds == 'true')blat.play();
-                this.score_decrement(scoreToAdd);
+                this.score_decrement(1);
             }
         }else{
             if(useSounds == 'true')blat.play();
@@ -741,53 +748,63 @@ class Game extends Component {
         if(this.state.numHints > 0 || !fromHintButton){
             var remainingHints = this.state.numHints - 1;
             if(fromHintButton){
-                if(this.state.isPremium == true){
+                if(this.state.hasRated == 'true'){
                     switch(remainingHints){
                         case 5:
-                            this.setState({hint6Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint6Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 4:
-                            this.setState({hint5Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint5Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 3:
-                            this.setState({hint4Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint4Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 2:
-                            this.setState({hint3Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint3Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 1:
-                            this.setState({hint2Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint2Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 0:
-                            this.setState({hint1Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint1Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         default:
+                            return;
                     }
                 }else{
                     switch(remainingHints){
                         case 1:
-                            this.setState({hint2Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint2Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         case 0:
-                            this.setState({hint1Color: '#000',
-                                           numHints: remainingHints
-                                    });
+                            this.setState({
+                                hint1Color: '#000',
+                                numHints: remainingHints
+                            });
                             break;
                         default:
+                            return;
                     }
                 }
             }
@@ -808,12 +825,35 @@ class Game extends Component {
                 return;
                 }
             }
-        }else if(this.state.isPremium != true){
-            Alert.alert('No more hints', 'Sorry, only 2 hints per puzzle! Purchase just one puzzle pack, and always get 6 hints per game.');
-        }else{
-            Alert.alert('No more hints', 'No more hints!');
+        }else if(this.state.hasRated != 'true'){
+            this.showRatingDialog();
         }
     }
+	showRatingDialog() {
+		let storeUrl = Platform.OS === 'ios' ?
+			'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=': //+ _config.appStoreId + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+			'market://details?id=' + 'com.baked.listanywhere';//+ _config.appStoreId;
+		Alert.alert(
+			'More hints?',
+			'Always get 6 hints if you take just a moment to give our app a kind rating!',
+			[
+				{ text: 'Maybe next time', style: 'cancel' },
+				{ text: 'Sure!', onPress: () => {
+                    this.setState({hasRated: 'true'});
+                    try {
+                        AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
+                            Linking.openURL(storeUrl);
+                        });
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+
+				}},
+			],
+			{ cancelable: false }
+		);
+    }
+
     getClueText(which){
         var textToReturn = '';
         var currClue = this.state.currentClue;
@@ -953,7 +993,7 @@ class Game extends Component {
                             </View>
                             <View style={ game_styles.hint_row }>
                                     <Text style={[game_styles.hint, {color: this.state.hint3Color, opacity: this.state.hintOpacity}]}>*</Text>
-                                    <Text style={[game_styles.hint, {color: this.state.hint5Color, opacity: this.state.hintOpacity}]}>*</Text>
+                                    <Text style={[game_styles.hint, {color: this.state.hint4Color, opacity: this.state.hintOpacity}]}>*</Text>
                             </View>
                             <View style={ game_styles.hint_row }>
                                     <Text style={[game_styles.hint, {color: this.state.hint1Color}]}>*</Text>

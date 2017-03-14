@@ -324,6 +324,7 @@ class SplashScreen extends Component {
             passProps: {
                 puzzleData: puzzleData,
                 isPremium: this.state.hasPremium,
+                seenIntro: this.state.seenStart,
                 destination: 'puzzles contents'
                 },
        });

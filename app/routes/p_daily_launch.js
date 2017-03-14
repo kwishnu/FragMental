@@ -128,12 +128,23 @@ class DailyLaunch extends Component{
                             bgColor: '#09146d',
                             fromWhere: 'puzzles contents',
                             dataElement: '16',
-                            isPremium: this.props.isPremium
+                            isPremium: this.state.isPremium,
+                            hasRated: this.props.hasRated
                         },
                     });
                     return;
                 case 'daily launcher':
                     this.toggle();
+                    break;
+                case 'app_intro':
+                    this.props.navigator.push({
+                        id: 'start scene',
+                        passProps: {
+                            destination: 'daily launcher',
+                            puzzleData: this.props.puzzleData,
+                            seenIntro: 'true'
+                        }
+                    });
                     break;
                 case 'store':
                     this.props.navigator.push({
@@ -160,15 +171,6 @@ class DailyLaunch extends Component{
                     break;
                 case 'twitter':
                     window.alert('Device not configured');
-                    break;
-                case 'app_intro':
-                    this.props.navigator.push({
-                        id: 'start scene',
-                        passProps: {
-                            destination: 'daily launcher',
-                            puzzleData: this.props.puzzleData,
-                        }
-                    });
                     break;
                 case 'settings':
                     this.props.navigator.push({
@@ -285,7 +287,8 @@ class DailyLaunch extends Component{
                 fromWhere: 'daily launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
-                isPremium: this.props.isPremium,
+                isPremium: this.state.isPremium,
+                hasRated: this.props.hasRated,
                 bgColor: this.props.bgColor,
                 myTitle: this.props.title
             },

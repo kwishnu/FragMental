@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import AppIntro from 'react-native-app-intro';
 var KEY_UseNumLetters = 'numLetters';
+var KEY_ratedTheApp = 'ratedApp';
 var {width, height} = require('Dimensions').get('window');
 
 
@@ -25,18 +26,18 @@ class StartScene extends Component {
     }
     componentDidMount() {
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
-        AsyncStorage.getItem(KEY_UseNumLetters).then((result) => {
-            if (result !== null) {
-                //do nothing
-            }else{
-                try {
-                    AsyncStorage.setItem(KEY_UseNumLetters, 'true');//
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
+        if (this.props.seenIntro != 'true'){
+            try {
+                AsyncStorage.setItem(KEY_UseNumLetters, 'true');//
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
             }
-        });
-
+            try {
+                AsyncStorage.setItem(KEY_ratedTheApp, 'false');//
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+        }
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
