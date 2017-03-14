@@ -215,6 +215,7 @@ class PuzzleLaunch extends Component{
                         passProps: {
                             destination: 'puzzle launcher',
                             puzzleData: this.props.puzzleData,
+                            introIndex: 1,
                             seenIntro: 'true'
                         }
                     });

@@ -232,7 +232,6 @@ class PuzzleContents extends Component{
                     this.onSelect('16','Today\'s Puzzle', null);
                     break;
                 case 'daily launcher':
-                console.log(this.props.isPremium);
                     if(this.props.isPremium == 'true'){
                         this.onSelect('18','Last Thirty Days', null);
                     }else{
@@ -245,6 +244,7 @@ class PuzzleContents extends Component{
                         passProps: {
                             destination: 'menu',
                             puzzleData: this.props.puzzleData,
+                            introIndex: 1,
                             seenIntro: 'true'
                         }
                     });

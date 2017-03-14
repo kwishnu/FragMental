@@ -325,6 +325,7 @@ class SplashScreen extends Component {
                 puzzleData: puzzleData,
                 isPremium: this.state.hasPremium,
                 seenIntro: this.state.seenStart,
+                introIndex: 0,
                 destination: 'puzzles contents'
                 },
        });

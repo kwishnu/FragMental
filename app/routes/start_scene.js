@@ -74,7 +74,7 @@ class StartScene extends Component {
 
     render() {
         return (
-            <AppIntro onDoneBtnClick={this.doneBtnHandle} onSkipBtnClick={this.onSkipBtnHandle}>
+            <AppIntro defaultIndex= {this.props.introIndex} onDoneBtnClick={this.doneBtnHandle} onSkipBtnClick={this.onSkipBtnHandle}>
 
                 <View style={[styles.slide,{ backgroundColor: '#081262' }]}>
                     <View style={[styles.header, {marginTop:20}]}>

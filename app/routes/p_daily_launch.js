@@ -142,6 +142,7 @@ class DailyLaunch extends Component{
                         passProps: {
                             destination: 'daily launcher',
                             puzzleData: this.props.puzzleData,
+                            introIndex: 1,
                             seenIntro: 'true'
                         }
                     });
