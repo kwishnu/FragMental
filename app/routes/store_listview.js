@@ -75,7 +75,6 @@ module.exports = class StoreListView extends Component {
     );
   }
 };
-
 startPurchase=(item_name, itemID, nav)=>{
     InAppBilling.open()
     .then(() => InAppBilling.purchase(itemID))
@@ -94,18 +93,6 @@ startPurchase=(item_name, itemID, nav)=>{
         return InAppBilling.close()
     });
 }
-
-//startPurchase=(name, productID, nav)=>{
-//    nav.pop({});
-//    nav.replace({
-//        id: 'splash screen',
-//        passProps: {
-//            motive: 'purchase',
-//            packName: name
-//        }
-//    });
-//
-//}
 
 const Row = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>startPurchase(props.name, props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>

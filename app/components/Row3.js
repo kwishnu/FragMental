@@ -78,7 +78,6 @@ var strToReturn = color;
          backgroundColor: strToReturn,
          };
 }
-
 buyCombo=(item_name, itemID, nav)=>{
     InAppBilling.open()
     .then(() => InAppBilling.purchase(itemID))
@@ -98,17 +97,6 @@ buyCombo=(item_name, itemID, nav)=>{
     });
 }
 
-//buyCombo=(product_id, name, nav)=>{
-//    nav.pop({});
-//    nav.replace({
-//        id: 'splash screen',
-//        passProps: {
-//            motive: 'purchase',
-//            packID: product_id,
-//            packName: name
-//        }
-//    });
-//}
 const Row3 = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>this.buyCombo( props.name, props.product_id, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
