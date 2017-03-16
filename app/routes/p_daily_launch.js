@@ -80,7 +80,8 @@ class DailyLaunch extends Component{
                     }
                     if (titleIndex !== -1){
                         puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
-                        puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                        puzzleData[20 + i].product_id = puzzleData[levels[i]].data[titleIndex].product_id;
+                        puzzleData[20 + i].num_puzzles = puzzleData[levels[i]].data[titleIndex].num_puzzles;
                         puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
                     }else{
                         puzzleData[20 + i].show = 'false';
@@ -148,21 +149,51 @@ class DailyLaunch extends Component{
                     });
                     break;
                 case 'store':
+                    var myPackArray = [];
+                    var keepInList = [];
+
+                    for (var j=0; j<this.props.puzzleData.length; j++){
+                        if (this.props.puzzleData[j].type == 'mypack'){
+                            myPackArray.push(this.props.puzzleData[j].title);
+                        }
+                    }
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if(myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name) < 0){
+                            keepInList.push(this.props.puzzleData[item.index].data[i]);
+                        }
+                    }
+                    keepInList = keepInList.reverse();
                     this.props.navigator.push({
                         id: 'store',
                         passProps: {
                             dataIndex: item.index,
                             title: item.title + ' Puzzle Packs',
+                            availableList: keepInList,
                             puzzleData: this.props.puzzleData,
                         }
                     });
                     break;
                 case 'store3':
+                    var myPackArray = [];
+                    var keepInList = this.props.puzzleData[item.index].data;
+
+                    for (var j=0; j<this.props.puzzleData.length; j++){
+                        if (this.props.puzzleData[j].type == 'mypack'){
+                            myPackArray.push(this.props.puzzleData[j].title);
+                        }
+                    }
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if((myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[2]) > -1)){
+                            keepInList.splice(i, 1);
+                        }
+                    }
+
                     this.props.navigator.push({
                         id: 'combo store',
                         passProps: {
                             dataIndex: item.index,
                             title: item.title + ' Value Packs',
+                            availableList: keepInList,
                             puzzleData: this.props.puzzleData,
                         }
                     });
@@ -272,7 +303,8 @@ class DailyLaunch extends Component{
             }
             if (titleIndex !== -1){
                 puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
-                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].product_id = puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].num_puzzles = puzzleData[levels[i]].data[titleIndex].num_puzzles;
                 puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
             }else{
                 puzzleData[20 + i].show = 'false';
