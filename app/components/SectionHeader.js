@@ -1,3 +1,5 @@
+//section header for Contents:
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 var {width, height} = require('Dimensions').get('window');
@@ -5,7 +7,7 @@ var {width, height} = require('Dimensions').get('window');
 const styles = StyleSheet.create({
   container: {
     width: width,
-    padding: 10,
+    padding: 8,
     paddingLeft: 20,
     flexDirection: 'row',
     alignItems: 'center',
