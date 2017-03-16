@@ -82,7 +82,8 @@ buyCombo=(item_name, itemID, nav)=>{
     InAppBilling.open()
     .then(() => InAppBilling.purchase(itemID))
     .then((details) => {
-        this.props.navigator.replace({
+        nav.pop({});
+        nav.replace({
             id: 'splash screen',
             passProps: {
                 motive: 'purchase',
