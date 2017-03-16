@@ -1,29 +1,45 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, BackAndroid } from 'react-native';
+import { StyleSheet, Text, View, Image, BackAndroid, Platform, AsyncStorage, Linking, AppState } from 'react-native';
 import Button from '../components/Button';
+import configs from '../config/configs';
+import moment from 'moment';
+
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
-
+var year = moment().year();
+var KEY_ratedTheApp = 'ratedApp';
 
 module.exports = class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: 'about',
+            ratedApp: false
         };
-       this.goSomewhere = this.goSomewhere.bind(this);
+        this.goSomewhere = this.goSomewhere.bind(this);
     }
     componentDidMount(){
         BackAndroid.addEventListener('hardwareBackPress', this.goSomewhere);
+        AppState.addEventListener('change', this.handleAppStateChange);
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.goSomewhere);
+        AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+    handleAppStateChange=(appState)=>{
+        if(appState == 'active'){
+            this.props.navigator.replace({
+                id: 'splash screen',
+                passProps: {
+                    motive: 'initialize',
+                    puzzleData: this.props.puzzleData,
+                }
+            });
+        }
     }
     goSomewhere() {
         try {
-            var goToHere = this.props.destination;
             this.props.navigator.pop({
-                id: goToHere,
                 passProps: {
                     puzzleData: this.props.puzzleData,
                 }
@@ -35,6 +51,20 @@ module.exports = class Settings extends Component {
         return true;
     }
 
+    rateApp(){
+		let storeUrl = Platform.OS === 'ios' ?
+			'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + _configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+			'market://details?id=' + configs.appStoreID;
+        try {
+            AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
+                this.setState({ratedApp: true});
+                this.props.navigator.pop({});
+            });
+                Linking.openURL(storeUrl);
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
+    }
     render() {
         return (
             <View style={about_styles.container}>
@@ -42,16 +72,29 @@ module.exports = class Settings extends Component {
                     <Button style={{left: 10}} onPress={ () => this.goSomewhere() }>
                         <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
                     </Button>
-                    <Text style={styles.header_text} >About FragMental
-                    </Text>
+                    <Text style={about_styles.header_text} >About FragMental</Text>
                     <Button>
                         <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
                     </Button>
                 </View>
                 <View style={ about_styles.about_container }>
-
-
-
+                    <Image source={ require('../images/logo.png') } style={ { width: 180, height: 60 } } />
+                    <View style={about_styles.parameter_container}>
+                        <View style={about_styles.divider}>
+                        </View>
+                    </View>
+                    <Text style={about_styles.text}>{'FragMental   v.' + configs.versionName}</Text>
+                    <Text style={about_styles.finePrint}>All rights reserved</Text>
+                    <Text style={about_styles.finePrint}>baked beans software</Text>
+                    <Text style={about_styles.finePrint}>{'\u00A9' + ' ' + year}</Text>
+                    <View style={about_styles.parameter_container}>
+                        <View style={about_styles.divider}>
+                        </View>
+                    </View>
+                    <Text style={about_styles.mediumPrint}>{'If you enjoy our app, please take a moment to rate us in the store via the button below...we\'ll thank you with 6 hints for every puzzle!'}</Text>
+                    <Button style={about_styles.button} onPress={() => this.rateApp()}>
+                        <Text style={about_styles.sure}>Sure!</Text>
+                    </Button>
                 </View>
             </View>
         );
@@ -63,7 +106,7 @@ module.exports = class Settings extends Component {
 const about_styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#486bdd',
+        backgroundColor: '#060e4c',
     },
     header: {
         flex: 1,
@@ -72,28 +115,55 @@ const about_styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 6,
         width: width,
-        backgroundColor: '#12046c',
+        backgroundColor: '#486bdd',
     },
     about_container: {
-        flex: 13,
+        flex: 15,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    text_container: {
-        flex: 3,
-        justifyContent: 'center',
-        padding: 6,
-
+    header_text: {
+        color: '#e3e004',
+        fontSize: 18,
     },
     text: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 18,
+        marginBottom: 10
+    },
+    mediumPrint: {
+        color: '#e3e004',
+        fontSize: 16,
+        marginLeft: 32,
+        marginRight: 32,
+        marginTop: 6,
+        marginBottom:6,
+        textAlign: 'center',
+    },
+    finePrint: {
+        color: '#999999',
+        fontSize: 14,
+    },
+    sure: {
+        color: '#111111',
+        fontSize: 14,
     },
     divider: {
         height: StyleSheet.hairlineWidth,
-        width: width * 0.9,
+        width: width * 0.75,
         backgroundColor: '#333333',
-        marginTop: 20,
+        margin: 20,
     },
+    button: {
+        height: 40,
+        width: width * 0.6,
+        backgroundColor: '#4aeeb2',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 60,
+        borderWidth: 1,
+        borderColor: 'yellow',
+        borderRadius: 2
+    }
 });
