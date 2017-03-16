@@ -311,7 +311,8 @@ class SplashScreen extends Component {
             }
             if (titleIndex !== -1){
                 puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
-                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].product_id = puzzleData[levels[i]].data[titleIndex].product_id;
+                puzzleData[20 + i].num_puzzles = puzzleData[levels[i]].data[titleIndex].num_puzzles;
                 puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
             }else{
                 puzzleData[20 + i].show = 'false';

@@ -263,7 +263,7 @@ class PuzzleContents extends Component{
                             keepInList.push(this.props.puzzleData[item.index].data[i]);
                         }
                     }
-
+                    keepInList = keepInList.reverse();
                     this.props.navigator.push({
                         id: 'store',
                         passProps: {
@@ -317,7 +317,6 @@ class PuzzleContents extends Component{
                     this.props.navigator.push({
                         id: 'about',
                         passProps: {
-                            destination: 'about',
                             puzzleData: this.props.puzzleData,
                         }
                     });
@@ -358,8 +357,10 @@ class PuzzleContents extends Component{
             color: strToReturn,
         };
     }
-    getTitle(title){
+    getTitle(title, numPuzzles){
+        var appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
         var titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
+        titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
     }
     startPurchase=(item_name, itemID)=>{
@@ -460,7 +461,6 @@ class PuzzleContents extends Component{
             });
         });
     }
-
     render() {
         const menu = <Menu onItemSelected={this.onMenuItemSelected} data = {this.props.puzzleData} />;
         if(this.state.isLoading == true){
@@ -481,8 +481,7 @@ class PuzzleContents extends Component{
                             <Button style={{left: 15}} onPress={ () => this.toggle() }>
                                 <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
                             </Button>
-                            <Text style={styles.header_text} >Contents
-                            </Text>
+                            <Image source={ require('../images/logo.png') } style={ { width: 120, height: 40 } } />
                             <Button style={{right: 15}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
                             </Button>
@@ -496,7 +495,7 @@ class PuzzleContents extends Component{
                                                  <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color, rowData.product_id)}
                                                                      style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
                                                                      underlayColor={rowData.bg_color} >
-                                                     <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title)}</Text>
+                                                     <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title, rowData.num_puzzles)}</Text>
                                                  </TouchableHighlight>
                                              </View>
                                          }
@@ -514,10 +513,6 @@ class PuzzleContents extends Component{
 var container_styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    loading_image: {
-        width: 200,
-        height: 200,
     },
     spinner: {
         position: 'absolute',
@@ -540,7 +535,7 @@ var container_styles = StyleSheet.create({
         paddingBottom: 40
     },
     header: {
-        flex: 4,
+        flex: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -548,16 +543,10 @@ var container_styles = StyleSheet.create({
         backgroundColor: '#12046c',
     },
     puzzles_container: {
-        flex: 45,
+        flex: 48,
         backgroundColor: '#486bdd',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    footer: {
-        flex: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#09146d',
     },
     launcher: {
         width: TILE_WIDTH,
