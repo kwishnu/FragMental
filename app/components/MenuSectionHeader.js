@@ -1,3 +1,5 @@
+//section header for SideMenu:
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 var {width, height} = require('Dimensions').get('window');
