@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert, Platform, Linking, AppState } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert, Platform, Linking, AppState, NetInfo } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 var Sound = require('react-native-sound');
@@ -830,30 +830,34 @@ class Game extends Component {
         }
     }
 	showRatingDialog() {
-		let storeUrl = Platform.OS === 'ios' ?
-			'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=': //+ _config.appStoreId + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
-			'market://details?id=' + 'com.baked.listanywhere';//+ _config.appStoreId;
 		Alert.alert(
 			'More hints?',
 			'Always get 6 hints if you take just a moment to give our app a kind rating!',
 			[
 				{ text: 'Maybe next time', style: 'cancel' },
 				{ text: 'Sure!', onPress: () => {
-                    this.setState({hasRated: 'true'});
-                    try {
-                        AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
-                            Linking.openURL(storeUrl);
-                        });
-                    } catch (error) {
-                        window.alert('AsyncStorage error: ' + error.message);
-                    }
-
+                    NetInfo.isConnected.fetch().then(isConnected => {
+                        if (isConnected){
+                            let storeUrl = Platform.OS === 'ios' ?
+                                'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=': //+ _config.appStoreId + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+                                'market://details?id=' + 'com.baked.listanywhere';//+ _config.appStoreId;
+                            this.setState({hasRated: 'true'});
+                            try {
+                                AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
+                                    Linking.openURL(storeUrl);
+                                });
+                            } catch (error) {
+                                window.alert('AsyncStorage error: ' + error.message);
+                            }
+                        }else{
+                            Alert.alert('No Connection', 'Sorry, no internet available right now. Please try again later!');
+                        }
+                    });
 				}},
 			],
 			{ cancelable: false }
 		);
     }
-
     getClueText(which){
         var textToReturn = '';
         var currClue = this.state.currentClue;

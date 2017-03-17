@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, BackAndroid, Platform, AsyncStorage, Linking, AppState } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert, BackAndroid, Platform, AsyncStorage, Linking, AppState, NetInfo } from 'react-native';
 import Button from '../components/Button';
 import configs from '../config/configs';
 import moment from 'moment';
@@ -52,18 +52,24 @@ module.exports = class Settings extends Component {
     }
 
     rateApp(){
-		let storeUrl = Platform.OS === 'ios' ?
-			'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + _configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
-			'market://details?id=' + configs.appStoreID;
-        try {
-            AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
-                this.setState({ratedApp: true});
-                this.props.navigator.pop({});
-            });
-                Linking.openURL(storeUrl);
-        } catch (error) {
-            window.alert('AsyncStorage error: ' + error.message);
-        }
+        NetInfo.isConnected.fetch().then(isConnected => {
+            if (isConnected){
+                let storeUrl = Platform.OS === 'ios' ?
+                    'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + _configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+                    'market://details?id=' + configs.appStoreID;
+                try {
+                    AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
+                        this.setState({ratedApp: true});
+                        this.props.navigator.pop({});
+                    });
+                        Linking.openURL(storeUrl);
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }else{
+                Alert.alert('No Connection', 'Sorry, no internet available right now. Please try again later!');
+            }
+        });
     }
     render() {
         return (
