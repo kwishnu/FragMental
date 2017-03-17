@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, Picker, BackAndroid, AsyncStorage } from 'react-native';
 import {Switch} from '../components/Switch';
 import Button from '../components/Button';
 import PushNotification from 'react-native-push-notification';
@@ -213,9 +213,8 @@ module.exports = class Settings extends Component {
                 </View>
 
                 <View style={ settings_styles.settings_container }>
-                    <ScrollView>
                         <View>
-                            <View style={[settings_styles.parameter_container, {marginTop: 40}]}>
+                            <View style={settings_styles.parameter_container}>
                                 <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
                                     <Text style={settings_styles.text}>{this.state.sounds_text}</Text>
                                 </View>
@@ -287,7 +286,6 @@ module.exports = class Settings extends Component {
                             </View>
 
                         </View>
-                    </ScrollView>
                 </View>
             </View>
         );
@@ -298,7 +296,7 @@ module.exports = class Settings extends Component {
 const settings_styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#486bdd',
+        backgroundColor: '#12046c',
     },
     header: {
         flex: 1,
@@ -307,10 +305,10 @@ const settings_styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 6,
         width: width,
-        backgroundColor: '#12046c',
+        backgroundColor: '#486bdd',
     },
     settings_container: {
-        flex: 13,
+        flex: 15,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
@@ -325,7 +323,6 @@ const settings_styles = StyleSheet.create({
         flex: 3,
         justifyContent: 'center',
         padding: 6,
-
     },
     switch_container: {
         flex: 2,
