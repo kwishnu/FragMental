@@ -1,9 +1,9 @@
 
 
 export const configs = {
-    versionCode: 3,
-    versionName: '1.0.3',
-    appStoreID: 'com.baked.listanywhere'
+    versionCode: 4,
+    versionName: '1.0.4',
+    appStoreID: 'com.fragmental'
 };
 
 export default configs;
