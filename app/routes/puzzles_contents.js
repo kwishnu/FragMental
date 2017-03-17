@@ -101,6 +101,7 @@ var puzzleData = {};
 var sArray = [];
 var solvedTodayOrNot = false;
 
+
 class PuzzleContents extends Component{
     constructor(props) {
         super(props);
@@ -363,7 +364,7 @@ class PuzzleContents extends Component{
         titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
     }
-    startPurchase=(item_name, itemID)=>{
+    startPurchase(itemName, itemID){
         InAppBilling.open()
         .then(() => InAppBilling.purchase(itemID))
         .then((details) => {
@@ -371,7 +372,7 @@ class PuzzleContents extends Component{
                 id: 'splash screen',
                 passProps: {
                     motive: 'purchase',
-                    packName: item_name
+                    packName: itemName
                 }
             });
             console.log("You purchased: ", details)

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
-var InAppBilling = require("react-native-billing");
+var InAppBilling = require('react-native-billing');
 var { width, height } = require('Dimensions').get('window');
 var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
 var CELL_HEIGHT = CELL_WIDTH * .5;
