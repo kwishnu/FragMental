@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, BackAndroid, AsyncStorage, Animated, ActivityIndicator, Easing, Alert, Platform, Linking, AppState, NetInfo } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
+import configs from '../config/configs';
 var Sound = require('react-native-sound');
 
 function randomNum(low, high) {
@@ -146,7 +147,7 @@ class Game extends Component {
             currentClue: '',//this.props.theCluesArray[0],
             currentFrags: '',//this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')),
             numFrags: 0,//(this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')).split('|')).length,
-            answer_text: '',
+            answerText: '',
             score: 10,
             onThisClue: 0,
             onThisFrag: 0,
@@ -172,9 +173,9 @@ class Game extends Component {
             answer13: '',
             answer14: '',
             isLoading: true,
-            puzzle_solved: false,
+            puzzleSolved: false,
             wentBust: false,
-            score_color: '#ffffff',
+            scoreColor: '#ffffff',
             hint1Color: '#ffffff',
             hint2Color: '#ffffff',
             hint3Color: '#ffffff',
@@ -346,7 +347,7 @@ class Game extends Component {
         var arr = Array(this.state.solvedArray.length).fill('');
         var resetOpacity = new Animated.Value(1);
         this.setState({ theData: data,
-                        answer_text: '',
+                        answerText: '',
                         fadeAnim: resetOpacity,
                         starImage1: require('../images/star_grey.png'),
                         starImage2: require('../images/star_grey.png'),
@@ -361,7 +362,7 @@ class Game extends Component {
                         numFrags:  (this.state.theCluesArray[0].substring(0, this.state.theCluesArray[0].indexOf(':')).split('|')).length,
                         solvedArray: arr,
                         score: 10,
-                        score_color: '#ffffff',
+                        scoreColor: '#ffffff',
                         hint1Color: '#ffffff',
                         hint2Color: '#ffffff',
                         hint3Color: '#ffffff',
@@ -385,7 +386,7 @@ class Game extends Component {
                         answer12: '',
                         answer13: '',
                         answer14: '',
-                        puzzle_solved: false,
+                        puzzleSolved: false,
                         wentBust: false,
                         isLoading: false,
                         bgColor: this.props.bgColor,
@@ -464,12 +465,12 @@ class Game extends Component {
         }
     }
     guess(which, howMuchToScore) {
-        if(this.state.puzzle_solved == true){this.nextGame();}
-        var solved = this.state.puzzle_solved;
+        if(this.state.puzzleSolved == true){this.nextGame();}
+        var solved = this.state.puzzleSolved;
         var bust = this.state.wentBust;
             if(solved || bust){return}
 
-        var entire_puzzle_solved = false;
+        var entire_puzzleSolved = false;
         var theFrag = '';
         var scoreToAdd = 1;
         var data =  this.state.theData;
@@ -488,10 +489,10 @@ class Game extends Component {
         var onFrag = this.state.onThisFrag;
         if(theFrag == guessFragsArray[onFrag] || (theFrag == this.state.keyFrag && guessFragsArray[onFrag] == '^')){
             if(which<100){
-                data[which].frag = '';
+                //data[which].frag = '';
                 data[which].opacity = 0;
             }
-            var theWord = this.state.answer_text;
+            var theWord = this.state.answerText;
             theWord += theFrag;
             onFrag++;
             var newCurrentFrags = currClue.substring(0, currClue.indexOf(':'));
@@ -513,7 +514,7 @@ class Game extends Component {
                 onFrag  = 0;
                 scoreToAdd = 3;
                 sArray[onClue]='solved';
-                entire_puzzle_solved = true;
+                entire_puzzleSolved = true;
                 colSort++;
                 switch(gl){
                     case 250:
@@ -532,14 +533,14 @@ class Game extends Component {
                     if(sArray[goThru_sArray % sArray.length]==''){
                         onClue = goThru_sArray % sArray.length;
                         currClue =  this.state.theCluesArray[onClue]
-                        entire_puzzle_solved = false;
+                        entire_puzzleSolved = false;
                         newCurrentFrags = currClue.substring(0, currClue.indexOf(':'));
                         newNumFrags = (currClue.substring(0, currClue.indexOf(':')).split('|')).length;
 
                         break;
                     }
                 }
-                if (entire_puzzle_solved){
+                if (entire_puzzleSolved){
                     if(useSounds == 'true')fanfare.play();
                     if(this.props.fromWhere == 'daily launcher'){
                         dsArray[this.state.index] = '1';
@@ -582,12 +583,12 @@ class Game extends Component {
             }
             this.setState({ theData: data,
                             daily_solvedArray: dsArray,
-                            answer_text: theWord,
+                            answerText: theWord,
                             onThisClue: onClue,
                             onThisFrag: onFrag,
                             currentFrags: newCurrentFrags,
                             numFrags: newNumFrags,
-                            puzzle_solved: entire_puzzle_solved,
+                            puzzleSolved: entire_puzzleSolved,
                             solvedArray: sArray,
                             goLeft: gl,
                             columnSort: colSort,
@@ -604,8 +605,8 @@ class Game extends Component {
             this.score_decrement(1);
         }
         if (solved){//at least one clue is solved
-            if(useSounds == 'true' && !entire_puzzle_solved)slide.play();//only a word, not the entire puzzle
-            this.animate_word(currClue, theWord, colSort, gl, entire_puzzle_solved);
+            if(useSounds == 'true' && !entire_puzzleSolved)slide.play();//only a word, not the entire puzzle
+            this.animate_word(currClue, theWord, colSort, gl, entire_puzzleSolved);
         };
     }
     animate_word(newClue, ansWord, whichCol, direction, endOfGame){
@@ -622,12 +623,12 @@ class Game extends Component {
                 this.state.fadeAnim, {
                     toValue: 0,
                     easing: Easing.linear,
-                    duration: 750,
+                    duration: 250,
                 }),
         ]).start(() => this.restore_word(newClue, ansWord, whichCol, endOfGame));
     }
     restore_word(newClue, ansWord, whichCol, endOfGame){
-        this.setState({ answer_text:''});
+        this.setState({ answerText:''});
         Animated.sequence([
             Animated.spring(
                 this.state.pan, {
@@ -698,7 +699,7 @@ class Game extends Component {
         var score = parseInt(this.state.score, 10);
         score += howMuch;
         this.setState({score: score,
-                       score_color: 'green',
+                       scoreColor: 'green',
                       });
     }
     score_decrement(howMuch){
@@ -708,25 +709,25 @@ class Game extends Component {
         var bgc = (score < 1)?'#cd0404':this.state.bgColor;
         var bustOrNot = (score < 1)?true:false;
         this.setState({score: score,
-                       score_color: 'red',
+                       scoreColor: 'red',
                        bgColor: bgc,
                        wentBust: bustOrNot,
                       });
     }
     skip_to_next(){
-        var solved = this.state.puzzle_solved;
+        var solved = this.state.puzzleSolved;
         var bust = this.state.wentBust;
             if(solved || bust){return}
+        var data =  this.state.theData;
         var onFrag = this.state.onThisFrag;
-        if(onFrag > 0){
-            this.give_hint(false);
-        }else{
-            var onClue = this.state.onThisClue;
-            var currClue = this.state.currentClue;
-            var sArray = this.state.solvedArray;
-            var newCurrentFrags = currClue.substring(0, currClue.indexOf(':'));
-            var newNumFrags = (currClue.substring(0, currClue.indexOf(':')).split('|')).length;
-
+        var onClue = this.state.onThisClue;
+        var currClue = this.state.currentClue;
+        var sArray = this.state.solvedArray;
+        var newCurrentFrags = currClue.substring(0, currClue.indexOf(':'));
+        var newNumFrags = (currClue.substring(0, currClue.indexOf(':')).split('|')).length;
+        var guessFragsArray = this.state.currentFrags.split('|');
+        var theScore = this.state.score;
+        var theScoreColor = this.state.scoreColor;
             for(goThru_sArray=this.state.onThisClue + 1;goThru_sArray<this.state.onThisClue + sArray.length;goThru_sArray++){
                 if(sArray[goThru_sArray % sArray.length]==''){
                     onClue = goThru_sArray % sArray.length;
@@ -736,13 +737,29 @@ class Game extends Component {
                     break;
                 }
             }
+        if(onFrag > 0){
+            for (restoreFrags=0; restoreFrags<onFrag; restoreFrags++){
+                for (checkFrags=0; checkFrags<data.length; checkFrags++){
+                    if (guessFragsArray[restoreFrags] == data[checkFrags].frag){
+                        data[checkFrags].opacity = 1;
+                        continue;
+                    }
+                }
+            }
+            theScoreColor = '#ffffff';
+            theScore = theScore - onFrag;
+            onFrag = 0;
+        }else{
+        }
             this.setState({ currentClue: currClue,
                             onThisClue: onClue,
                             onThisFrag: onFrag,
                             currentFrags: newCurrentFrags,
                             numFrags: newNumFrags,
+                            score: theScore,
+                            scoreColor: theScoreColor,
+                            answerText: ''
                             });
-        }
     }
     give_hint(fromHintButton){
         if(this.state.numHints > 0 || !fromHintButton){
@@ -808,7 +825,7 @@ class Game extends Component {
                     }
                 }
             }
-            var solved = this.state.puzzle_solved;
+            var solved = this.state.puzzleSolved;
             var bust = this.state.wentBust;
                 if(solved || bust)return;
             var data =  this.state.theData;
@@ -839,8 +856,8 @@ class Game extends Component {
                     NetInfo.isConnected.fetch().then(isConnected => {
                         if (isConnected){
                             let storeUrl = Platform.OS === 'ios' ?
-                                'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=': //+ _config.appStoreId + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
-                                'market://details?id=' + 'com.baked.listanywhere';//+ _config.appStoreId;
+                                'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+                                'market://details?id=' + configs.appStoreID;
                             this.setState({hasRated: 'true'});
                             try {
                                 AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
@@ -861,7 +878,7 @@ class Game extends Component {
     getClueText(which){
         var textToReturn = '';
         var currClue = this.state.currentClue;
-        var solved = this.state.puzzle_solved;
+        var solved = this.state.puzzleSolved;
         var counter = 0;
         for (var letter = 0; letter < this.state.currentFrags.length; letter++){
             if (currClue[letter] == '|')continue;
@@ -964,7 +981,7 @@ class Game extends Component {
                                 </Text>
                             </View>
                             <Animated.View style={this.getStyle()}>
-                                <Text style={[styles.answer_text, {color: this.state.textColor}]} >{this.state.answer_text}
+                                <Text style={[styles.answer_text, {color: this.state.textColor}]} >{this.state.answerText}
                                 </Text>
                             </Animated.View>
                         </View>
@@ -979,7 +996,7 @@ class Game extends Component {
 
                     <View style={ game_styles.footer }>
                         <View style={ game_styles.score_container }>
-                            <Text style={[styles.answer_text, {right: 10}, {color: this.state.score_color}]} >{this.state.score}
+                            <Text style={[styles.answer_text, {right: 10}, {color: this.state.scoreColor}]} >{this.state.score}
                             </Text>
                         </View>
                         <View style={ game_styles.buttons_container }>
