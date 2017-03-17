@@ -749,17 +749,16 @@ class Game extends Component {
             theScoreColor = '#ffffff';
             theScore = theScore - onFrag;
             onFrag = 0;
-        }else{
         }
-            this.setState({ currentClue: currClue,
-                            onThisClue: onClue,
-                            onThisFrag: onFrag,
-                            currentFrags: newCurrentFrags,
-                            numFrags: newNumFrags,
-                            score: theScore,
-                            scoreColor: theScoreColor,
-                            answerText: ''
-                            });
+        this.setState({ currentClue: currClue,
+                        onThisClue: onClue,
+                        onThisFrag: onFrag,
+                        currentFrags: newCurrentFrags,
+                        numFrags: newNumFrags,
+                        score: theScore,
+                        scoreColor: theScoreColor,
+                        answerText: ''
+        });
     }
     give_hint(fromHintButton){
         if(this.state.numHints > 0 || !fromHintButton){
