@@ -381,7 +381,8 @@ class PuzzleLaunch extends Component{
                 fromWhere: 'puzzle launcher',
                 daily_solvedArray: this.props.daily_solvedArray,
                 dataElement: this.props.dataElement,
-                isPremium: this.props.isPremium,
+                isPremium: this.state.isPremium,
+                hasRated: this.props.hasRated,
                 bgColor: this.props.bgColor,
                 myTitle: this.props.title
             },

@@ -77,14 +77,6 @@ var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
-var NUM_WIDE = 4;
-var NUM_HIGH = 5;
-var CELL_WIDTH = Math.floor(width * .24); // 24% of the screen width
-var CELL_HEIGHT = CELL_WIDTH * .55;
-var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 8% of the cell width
-var BORDER_RADIUS = CELL_PADDING * .2;
-var TILE_WIDTH = CELL_WIDTH - CELL_PADDING * 2;
-var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
 var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
 var timeoutHandle;
 var KEY_Puzzles = 'puzzlesKey';
@@ -98,6 +90,11 @@ var dataBackup = {};
 var puzzleData = {};
 var dsArray = [];
 var playedPlinkLast = false;
+const click = new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    window.alert('Sound file not found');
+  }
+});
 const plink1 = new Sound('plink.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
@@ -315,27 +312,6 @@ class Game extends Component {
             currentFrags: fragsPlusClueArr[0].substring(0, fragsPlusClueArr[0].indexOf(':')),
             numFrags: (fragsPlusClueArr[0].substring(0, fragsPlusClueArr[0].indexOf(':')).split('|')).length,
         });
-    }
-    drawTiles() {
-        var result = [];
-        var data = this.state.theData;
-        for (var index = 0; index < data.length; ++index) {
-            var style = {
-                left: (parseInt(data[index].col, 10) * CELL_WIDTH) + CELL_PADDING + 6,
-                top: (parseInt(data[index].row, 10) * CELL_HEIGHT) + CELL_PADDING,
-                opacity: parseInt(data[index].opacity, 10)
-            }
-            var text = data[index].frag;
-        result.push(this.drawTile(index, style, text));
-        }
-        return result;
-    }
-    drawTile(key, style, frag ) {
-        return (
-            <View  key={ key } style={ [styles.tile, style] } onStartShouldSetResponder={() => this.guess(key, 1)} >
-                    <Text style={ styles.puzzle_text_large }>{ frag }</Text>
-            </View>
-        );
     }
     reset_scene(){
         this.setRated();
@@ -715,6 +691,7 @@ class Game extends Component {
                       });
     }
     skip_to_next(){
+        click.play();
         var solved = this.state.puzzleSolved;
         var bust = this.state.wentBust;
             if(solved || bust){return}
@@ -918,6 +895,29 @@ class Game extends Component {
                 });
         }
     }
+    drawTiles() {
+        var result = [];
+        var data = this.state.theData;
+        for (var index = 0; index < data.length; ++index) {
+            var style = {
+                left: (parseInt(data[index].col, 10) * configs.CELL_WIDTH),
+                top: (parseInt(data[index].row, 10) * configs.CELL_HEIGHT),
+                opacity: parseInt(data[index].opacity, 10)
+            }
+            var text = data[index].frag;
+        result.push(this.drawTile(index, style, text));
+        }
+        return result;
+    }
+    drawTile(key, style, frag ) {
+        return (
+            <View key={ key } style={[styles.cell, style]}>
+            <View  key={ key } style={ styles.tile } onStartShouldSetResponder={() => this.guess(key, 1)} >
+                    <Text style={ styles.puzzle_text_large }>{ frag }</Text>
+            </View>
+            </View>
+        );
+    }
 
     render() {
         if(this.state.isLoading == true){
@@ -933,7 +933,7 @@ class Game extends Component {
                         <Button style={{left: 15}} onPress={ () => this.closeGame() }>
                             <Image source={ require('../images/close.png') } style={{ width: 50, height: 50 }} />
                         </Button>
-                        <Text style={[{fontSize: 18}, {color: this.state.titleColor}]}>{this.state.title}
+                        <Text style={[styles.header_text, {color: this.state.titleColor}]}>{this.state.title}
                         </Text>
                         <Button style={{right: 15}} onPress={ () => this.reset_scene() }>
                             <Image source={require('../images/replay.png')} style={{ width: 50, height: 50 }} />
@@ -995,7 +995,7 @@ class Game extends Component {
 
                     <View style={ game_styles.footer }>
                         <View style={ game_styles.score_container }>
-                            <Text style={[styles.answer_text, {right: 10}, {color: this.state.scoreColor}]} >{this.state.score}
+                            <Text style={[styles.score_text, {color: this.state.scoreColor}]} >{this.state.score}
                             </Text>
                         </View>
                         <View style={ game_styles.buttons_container }>
@@ -1020,7 +1020,7 @@ class Game extends Component {
                                     <Text style={[game_styles.hint, {color: this.state.hint2Color}]}>*</Text>
                             </View>
                             <View style={ [game_styles.hint_row, {marginTop: 6}]}>
-                                    <Text style={{fontSize: 14, color: '#ffffff'}}>hints</Text>
+                                    <Text style={ game_styles.hint_text }>hints</Text>
                             </View>
 
 
@@ -1049,7 +1049,7 @@ var game_styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: window.width,
+        width: width,
     },
     display_area: {
         flex: 24,
@@ -1071,7 +1071,7 @@ var game_styles = StyleSheet.create({
     },
     clue_container: {
         flex: 9,
-        width: width - 30,
+        width: width *0.9,
         padding: 10,
         borderRadius: 10,
         margin: 10,
@@ -1097,13 +1097,13 @@ var game_styles = StyleSheet.create({
         justifyContent: 'center',
     },
     word_and_frag: {
-        flex: 6,
+        flex: 5,
         flexDirection: 'row',
         marginBottom: 3,
-        paddingLeft: 15,
+        paddingLeft: height/35,
     },
     frag_container: {
-        flex: 4,
+        flex: 6,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ffffff',
@@ -1114,20 +1114,22 @@ var game_styles = StyleSheet.create({
         paddingBottom: 8,
     },
     word_container: {
-        flex: 17,
+        flex: 22,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: 'transparent',
-        paddingLeft: 12,
-        padding: 6,
+        paddingLeft: height/30,
+
+        paddingBottom: height/90,
     },
     tiles_container: {
-        flex: 19,
+        flex: 21,
+        left: (width - (height/1.84))/2,
+        width: height/1.75,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
-        padding: 10,
     },
     footer: {
         flex: 6,
@@ -1138,7 +1140,7 @@ var game_styles = StyleSheet.create({
     },
     buttons_container: {
         flexDirection: 'row',
-        flex: 3,
+        flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
@@ -1150,21 +1152,25 @@ var game_styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
-        paddingRight: 10,
     },
     hint_row: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 50,
-        height: 10,
+        width: height/18,
+        height: height/65,
         backgroundColor: 'transparent',
     },
     hint: {
-        fontSize: 14,
-        marginBottom: 4,
+        fontSize: configs.LETTER_SIZE * 0.5,
+        marginBottom: 2,
         marginLeft: 6,
         marginRight: 6,
+    },
+    hint_text: {
+        fontSize: configs.LETTER_SIZE * 0.5,
+        color: '#ffffff',
+        textAlign: 'center'
     },
     score_container: {
         flexDirection: 'row',
@@ -1172,7 +1178,6 @@ var game_styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'transparent',
-        paddingLeft: 15,
     },
 });
 

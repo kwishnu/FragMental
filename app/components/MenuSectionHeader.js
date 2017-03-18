@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import configs from '../config/configs';
 var {width, height} = require('Dimensions').get('window');
 
 const styles = StyleSheet.create({
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#12046c',
   },
   text: {
-    fontSize: 18,
+    fontSize: configs.LETTER_SIZE * 0.55,
     color: '#fbf70e',
   },
 });

@@ -2,20 +2,21 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import configs from '../config/configs';
 var {width, height} = require('Dimensions').get('window');
 
 const styles = StyleSheet.create({
   container: {
     width: width,
-    padding: 8,
-    paddingLeft: 20,
+    padding: height/90,
+    paddingLeft: height/30,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#0000FF',
   },
   text: {
-    fontSize: 20,
+    fontSize: configs.LETTER_SIZE * 0.7,
     color: '#FFF600',
   },
 });

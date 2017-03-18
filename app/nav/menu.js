@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { ListView, StyleSheet, Text, View, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
 import MenuSectionHeader  from '../components/MenuSectionHeader';
+import configs from '../config/configs';
 
 var {width, height} = require('Dimensions').get('window');
-var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
-var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
-var BORDER_RADIUS = CELL_PADDING * .3;
 
 const styles = require('../styles/styles');
 
@@ -92,14 +89,14 @@ var menu_styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingLeft: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingLeft: height/36,
+        paddingTop: height/70,
+        paddingBottom: height/70,
         backgroundColor: '#e1fed2',
     },
     launcher_text: {
         color: '#464646',
-        fontSize: 16,
+        fontSize: configs.LETTER_SIZE * 0.55,
         fontWeight: 'bold'
     },
     separator: {

@@ -4,6 +4,7 @@ import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
 import Meteor from 'react-native-meteor';
+import configs from '../config/configs';
 
 function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
@@ -413,7 +414,7 @@ class PuzzleContents extends Component{
                 });
                 return;
             case 'Last Three Days':
-                gripeText = 'Purchase any puzzle pack and always have access here to the last 30 days of FragMental puzzles!';
+                gripeText = 'Purchase any puzzle pack and always have access here to the previous 30 days of FragMental puzzles!';
             case 'Last Thirty Days':  //fallthrough
                 theDestination = 'daily launcher';
                 theTitle = 'Daily Puzzles';
@@ -482,7 +483,7 @@ class PuzzleContents extends Component{
                             <Button style={{left: 15}} onPress={ () => this.toggle() }>
                                 <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
                             </Button>
-                            <Image source={ require('../images/logo.png') } style={ { width: 120, height: 40 } } />
+                            <Image source={ require('../images/logo.png') } style={ { width: height/5, height: height/15 } } />
                             <Button style={{right: 15}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
                             </Button>
@@ -541,7 +542,7 @@ var container_styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: window.width,
-        backgroundColor: '#12046c',
+        backgroundColor: '#060e4c',
     },
     puzzles_container: {
         flex: 48,
@@ -559,7 +560,7 @@ var container_styles = StyleSheet.create({
         marginBottom: 1,
     },
     launcher_text: {
-        fontSize: 20,
+        fontSize: configs.LETTER_SIZE * 0.75,
     },
 });
 module.exports = PuzzleContents;

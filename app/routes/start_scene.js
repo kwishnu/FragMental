@@ -104,10 +104,10 @@ class StartScene extends Component {
                         </View>
                     </View>
                     <View style={styles.info}>
-                        <View level={15}><Text style={styles.description}>Welcome to</Text></View>
+                        <View level={15}><Text style={styles.swipeText}>Welcome to</Text></View>
                         <View level={10}><Text style={styles.title}>FragMental!</Text></View>
                         <View style={styles.center_text_view}>
-                            <View level={0}><Text style={styles.description}>Swipe through for a quick tutorial...</Text></View>
+                            <View level={0}><Text style={styles.swipeText}>Swipe through for a quick tutorial...</Text></View>
                         </View>
                     </View>
                 </View>
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     paddingBottom: 20,
   },
-  description: {
+  swipeText: {
     color: '#fff',
     fontSize: 20,
     textAlign: 'center',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     width: width*.7,
     flexDirection: 'column',
     flexWrap: 'wrap',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 40
   },

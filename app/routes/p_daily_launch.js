@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, Animated, AsyncStorage  } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
+import configs from '../config/configs';
 
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -367,10 +368,6 @@ class DailyLaunch extends Component{
                          <View style={container_styles.center_text_view}>
                              <Text numberOfLines={5} style={container_styles.gripe_text}>{this.props.gripeText}</Text>
                          </View>
-
-                    <View style={ container_styles.footer }>
-                        <Text style={ styles.copyright }>Some fine print...</Text>
-                    </View>
                  </View>
             </SideMenu>
         );
@@ -391,12 +388,13 @@ var container_styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'center',
         position: 'absolute',
-        padding: 20,
+        padding: height/12,
         top: height/2,
     },
     gripe_text: {
         color: '#e3e004',
-        fontSize: 18,
+        fontSize: configs.LETTER_SIZE * 0.55,
+        textAlign: 'center',
     },
     listview: {
         flexDirection: 'row',
@@ -405,7 +403,7 @@ var container_styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     header: {
-        flex: 4,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -413,17 +411,11 @@ var container_styles = StyleSheet.create({
         backgroundColor: '#09146d',
     },
     tiles_container: {
-        flex: 45,
+        flex: 15,
         backgroundColor: '#486bdd',
         paddingLeft: 6,
         paddingRight: 6,
         paddingTop: 15,
-    },
-    footer: {
-        flex: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#09146d',
     },
     launcher: {
         width: TILE_WIDTH,
