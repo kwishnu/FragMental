@@ -55,7 +55,7 @@ module.exports = class Settings extends Component {
         NetInfo.isConnected.fetch().then(isConnected => {
             if (isConnected){
                 let storeUrl = Platform.OS === 'ios' ?
-                    'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + _configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
+                    'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
                     'market://details?id=' + configs.appStoreID;
                 try {
                     AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
