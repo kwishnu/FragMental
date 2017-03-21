@@ -137,7 +137,7 @@ class StartScene extends Component {
                     </View>
                 </View>
 
-               <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
+               <View style={[styles.slide, { backgroundColor: '#081262' }]}>
                     <View style={[styles.header, {marginTop:-40}]}>
                         <View>
                             <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/page4bg.png')} />
