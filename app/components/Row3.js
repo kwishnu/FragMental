@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import configs from '../config/configs';
+
 var InAppBilling = require('react-native-billing');
 var { width, height } = require('Dimensions').get('window');
 var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
@@ -102,35 +104,35 @@ const Row3 = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>this.buyCombo( props.name, props.product_id, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[0])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[0])]}>
                   {`${props.num_puzzles[0]}`}
                 </Text>
-                <Text style={[{fontSize: 20}, this.getTextColor(props.color[0])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[0])]}>
                   {`${props.name[0]}`}
                 </Text>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[0])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[0])]}>
                   {`${props.difficulty[0]}`}
                 </Text>
             </View>
             <View style={[styles.mid_section, this.getBgColor(props.color[1])]}>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[1])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[1])]}>
                   {`${props.num_puzzles[1]}`}
                 </Text>
-                <Text style={[{fontSize: 20}, this.getTextColor(props.color[1])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[1])]}>
                   {`${props.name[1]}`}
                 </Text>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[1])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[1])]}>
                   {`${props.difficulty[1]}`}
                 </Text>
             </View>
             <View style={[styles.bottom_section, this.getBgColor(props.color[2])]}>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[2])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[2])]}>
                   {`${props.num_puzzles[2]}`}
                 </Text>
-                <Text style={[{fontSize: 20}, this.getTextColor(props.color[2])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[2])]}>
                   {`${props.name[2]}`}
                 </Text>
-                <Text style={[{fontSize: 10}, this.getTextColor(props.color[2])]}>
+                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[2])]}>
                   {`${props.difficulty[2]}`}
                 </Text>
             </View>
@@ -152,16 +154,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderTopLeftRadius: BORDER_RADIUS,
         borderTopRightRadius: BORDER_RADIUS,
-        paddingLeft: 10,
-        paddingRight: 10
+        paddingLeft: height * .02,
+        paddingRight: height * .02
     },
     mid_section: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10
+        paddingLeft: height * .02,
+        paddingRight: height * .02
     },
     bottom_section: {
         flex: 1,
@@ -170,8 +172,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderBottomLeftRadius: BORDER_RADIUS,
         borderBottomRightRadius: BORDER_RADIUS,
-        paddingLeft: 10,
-        paddingRight: 10
+        paddingLeft: height * .02,
+        paddingRight: height * .02
     },
     text: {
         fontSize: 20,

@@ -75,12 +75,12 @@ module.exports = class Settings extends Component {
         return (
             <View style={about_styles.container}>
                 <View style={ about_styles.header }>
-                    <Button style={{left: 10}} onPress={ () => this.goSomewhere() }>
-                        <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                    <Button style={{left: height*.02}} onPress={ () => this.goSomewhere() }>
+                        <Image source={ require('../images/arrow_back.png') } style={ { width: height*.05, height: height*.05 } } />
                     </Button>
-                    <Text style={about_styles.header_text} >About FragMental</Text>
-                    <Button>
-                        <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                    <Text style={styles.header_text} >About FragMental</Text>
+                    <Button style={{right: height*.02}}>
+                        <Image source={ require('../images/no_image.png') } style={ { width: height*.05, height: height*.05 } } />
                     </Button>
                 </View>
                 <View style={ about_styles.about_container }>
@@ -129,18 +129,14 @@ const about_styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    header_text: {
-        color: '#e3e004',
-        fontSize: 18,
-    },
     text: {
         color: 'white',
-        fontSize: 18,
+        fontSize: configs.LETTER_SIZE * 0.45,
         marginBottom: 10
     },
     mediumPrint: {
         color: '#e3e004',
-        fontSize: 16,
+        fontSize: configs.LETTER_SIZE * 0.5,
         marginLeft: 32,
         marginRight: 32,
         marginTop: 6,
@@ -149,11 +145,11 @@ const about_styles = StyleSheet.create({
     },
     finePrint: {
         color: '#999999',
-        fontSize: 14,
+        fontSize: configs.LETTER_SIZE * 0.35,
     },
     sure: {
         color: '#111111',
-        fontSize: 14,
+        fontSize: configs.LETTER_SIZE * 0.5,
     },
     divider: {
         height: StyleSheet.hairlineWidth,
@@ -163,7 +159,7 @@ const about_styles = StyleSheet.create({
     },
     button: {
         height: 40,
-        width: width * 0.6,
+        width: height * 0.2,
         backgroundColor: '#4aeeb2',
         justifyContent: 'center',
         alignItems: 'center',

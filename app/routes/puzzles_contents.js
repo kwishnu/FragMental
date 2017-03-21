@@ -398,7 +398,7 @@ class PuzzleContents extends Component{
         switch(title){
             case 'Today\'s Puzzle':
                 theDestination = 'game board';
-                this.props.navigator.push({
+                this.props.navigator.replace({
                     id: 'game board',
                     passProps: {
                         puzzleData: this.props.puzzleData,
@@ -433,7 +433,7 @@ class PuzzleContents extends Component{
                     },
                 });
                 return;
-            default:
+            default://a puzzle pack launcher:
         }
         AsyncStorage.getItem(KEY_Color).then((colors) => {
             if (colors !== null) {
@@ -480,12 +480,12 @@ class PuzzleContents extends Component{
 
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
-                            <Button style={{left: 15}} onPress={ () => this.toggle() }>
-                                <Image source={ require('../images/menu.png') } style={ { width: 50, height: 50 } } />
+                            <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
+                                <Image source={ require('../images/menu.png') } style={ { width: height*.07, height: height*.07 } } />
                             </Button>
                             <Image source={ require('../images/logo.png') } style={ { width: height/5, height: height/15 } } />
-                            <Button style={{right: 15}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                            <Button style={{right: height*.02}}>
+                                <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
                             </Button>
                         </View>
                         <View style={ container_styles.puzzles_container }>

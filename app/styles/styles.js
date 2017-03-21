@@ -22,6 +22,7 @@ module.exports = StyleSheet.create({
     },
     skip_button: {
         flex:1,
+        height: height * 0.075,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#64aefa',
@@ -32,6 +33,7 @@ module.exports = StyleSheet.create({
     },
     hint_button: {
         flex:1,
+        height: height * 0.075,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#4aeeb2',
@@ -42,7 +44,7 @@ module.exports = StyleSheet.create({
     },
     puzzle_text_large: {
         color: '#000',
-        fontSize: configs.LETTER_SIZE,
+        fontSize: configs.LETTER_SIZE * 0.9,
     },
     contents_text: {
         color: '#fff',

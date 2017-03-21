@@ -14,6 +14,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#0000FF',
+    borderBottomWidth: 2,
+    borderBottomColor: '#222222'
   },
   text: {
     fontSize: configs.LETTER_SIZE * 0.7,

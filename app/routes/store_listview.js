@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage } from 'react-native';
 //import Row from '../components/Row';
 import Button from '../components/Button';
+import configs from '../config/configs';
+
 var styles = require('../styles/styles');
 var InAppBilling = require("react-native-billing");
 var { width, height } = require('Dimensions').get('window');
@@ -55,13 +57,13 @@ module.exports = class StoreListView extends Component {
         return (
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
-                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                        <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.05, height: height*.05 } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
-                        <Button>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                        <Button style={{right: height*.02}}>
+                            <Image source={ require('../images/no_image.png') } style={ { width: height*.05, height: height*.05 } } />
                         </Button>
                     </View>
                     <View style={ store_styles.listview_container }>
@@ -101,7 +103,7 @@ const Row = ({props, navigator}) => (
             <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}
             </Text>
-            <Text style={[{fontSize: 20}, this.getTextColor(props.color)]}>
+            <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color)]}>
               {`${props.name}`}
             </Text>
             <Text style={[store_styles.text_small, {color: props.color}]}>
@@ -130,12 +132,12 @@ const store_styles = StyleSheet.create({
         flex: 13,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: 16,
-        paddingRight: 16,
+        paddingLeft: height * .02,
+        paddingRight: height * .02,
     },
     listview: {
-        marginTop: 16,
-        paddingBottom: 40,
+        marginTop: height * .02,
+        paddingBottom: height * .04,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -146,8 +148,8 @@ const store_styles = StyleSheet.create({
         alignItems: 'center',
     },
     text_small: {
-        fontSize: 10,
-        marginLeft: 10
+        fontSize: configs.LETTER_SIZE * .4,
+        marginLeft: height * .02
     },
     launcher: {
         width: TILE_WIDTH,

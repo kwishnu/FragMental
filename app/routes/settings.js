@@ -4,6 +4,7 @@ import {Switch} from '../components/Switch';
 import Button from '../components/Button';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
+import configs from '../config/configs';
 
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
@@ -202,13 +203,13 @@ module.exports = class Settings extends Component {
         return (
             <View style={settings_styles.container}>
                 <View style={ settings_styles.header }>
-                    <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                        <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                    <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Image source={ require('../images/arrow_back.png') } style={ { width: height*.05, height: height*.05 } } />
                     </Button>
                     <Text style={styles.header_text} >Settings
                     </Text>
-                    <Button>
-                        <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                    <Button style={{right: height*.02}}>
+                        <Image source={ require('../images/no_image.png') } style={ { width: height*.05, height: height*.05 } } />
                     </Button>
                 </View>
 
@@ -230,7 +231,7 @@ module.exports = class Settings extends Component {
 
 
 
-                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                                 <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
                                     <Text style={settings_styles.text}>{this.state.use_colors}</Text>
                                 </View>
@@ -244,7 +245,7 @@ module.exports = class Settings extends Component {
                                 </View>
                             </View>
 
-                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                                 <View style={settings_styles.text_container}>
                                     <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
                                 </View>
@@ -257,7 +258,7 @@ module.exports = class Settings extends Component {
                                     <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
                                 </View>
                             </View>
-                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                                 <Picker
                                     enabled={this.state.notifs_state}
                                     style={settings_styles.picker}
@@ -276,7 +277,7 @@ module.exports = class Settings extends Component {
                                 <View style={settings_styles.divider}>
                                 </View>
                             </View>
-                            <View style={[settings_styles.parameter_container, {marginTop: 20}]}>
+                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                                 <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
                                     <Text style={settings_styles.text}>{this.state.nl_text}</Text>
                                 </View>
@@ -332,7 +333,7 @@ const settings_styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: 15,
+        fontSize: configs.LETTER_SIZE * 0.5,
     },
     picker: {
         width: 100,
