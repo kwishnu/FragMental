@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator  } from 'react-native';
 import Button from '../components/Button';
+import configs from '../config/configs';
 
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -189,7 +190,7 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'game board':
-                    this.props.navigator.push({
+                    this.props.navigator.replace({
                         id: 'game board',
                         passProps: {
                             puzzleData: this.props.puzzleData,
@@ -372,7 +373,7 @@ class PuzzleLaunch extends Component{
     }
     onSelect(index) {
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
-        this.props.navigator.push({
+        this.props.navigator.replace({
             id: 'game board',
             passProps: {
                 puzzleData: this.state.puzzleData,
@@ -406,12 +407,11 @@ class PuzzleLaunch extends Component{
 
                     <View style={ [container_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [container_styles.header, {backgroundColor: this.state.headerColor}]}>
-                            <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                                <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                            <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                                <Image source={ require('../images/arrow_back.png') } style={ { width: height*.05, height: height*.05 } } />
                             </Button>
-                            <Text style={{fontSize: 18, color: '#fff'}} >{this.props.title}
-                            </Text>
-                            <Button style={{right: 15}}>
+                            <Text style={{fontSize: configs.LETTER_SIZE * 0.6, color: this.state.titleColor}} >{this.props.title}</Text>
+                            <Button style={{right: height*.02}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
                             </Button>
                         </View>

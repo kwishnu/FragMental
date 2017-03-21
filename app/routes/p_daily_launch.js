@@ -120,7 +120,7 @@ class DailyLaunch extends Component{
                     });
                     break;
                 case 'game board':
-                    this.props.navigator.push({
+                    this.props.navigator.replace({
                         id: 'game board',
                         passProps: {
                             puzzleData: this.props.puzzleData,
@@ -312,7 +312,7 @@ class DailyLaunch extends Component{
             }
         }
 
-        this.props.navigator.push({
+        this.props.navigator.replace({
             id: 'game board',
             passProps: {
                 puzzleData: this.state.puzzleData,

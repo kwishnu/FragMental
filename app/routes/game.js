@@ -195,7 +195,8 @@ class Game extends Component {
             shouldShowDropdown: false,
             dropdownImage: require('../images/dropdown.png'),
             soundString: 'Mute Sounds',
-            useSounds: true
+            useSounds: true,
+            wentToRate: false
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -240,9 +241,8 @@ class Game extends Component {
         return true;
     }
     handleAppStateChange=(appState)=>{
-        if(appState == 'active'){
+        if(appState == 'active' && this.state.wentToRate == true){
             this.reset_scene();
-
         }
      }
     setRated(){
@@ -408,7 +408,7 @@ class Game extends Component {
             }
         }
         try {
-            this.props.navigator.pop({
+            this.props.navigator.replace({
                 id: this.props.fromWhere,
                 passProps: {
                     puzzleData: puzzleData,
@@ -703,7 +703,7 @@ class Game extends Component {
                       });
     }
     skip_to_next(){
-        click.play();
+        if(this.state.useSounds == true){click.play();}
         var solved = this.state.puzzleSolved;
         var bust = this.state.wentBust;
             if(solved || bust){return}
@@ -846,9 +846,12 @@ class Game extends Component {
                             let storeUrl = Platform.OS === 'ios' ?
                                 'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
                                 'market://details?id=' + configs.appStoreID;
-                            this.setState({hasRated: 'true'});
+                            this.setState({hasRated: 'true',
+                                            wentToRate: true
+                            });
                             try {
                                 AsyncStorage.setItem(KEY_ratedTheApp, 'true').then(()=>{
+
                                     Linking.openURL(storeUrl);
                                 });
                             } catch (error) {
@@ -967,9 +970,8 @@ class Game extends Component {
             case 2://reset scene:
                 this.reset_scene();
                 break;
-            case 3://go to app intro:
+            case 3://go to app intro 2nd page:
         try {
-
             this.props.navigator.push({
                 id: 'start scene',
                 passProps: {
@@ -1177,9 +1179,9 @@ var game_styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderWidth: 1,
         borderColor: '#000',
-        borderRadius: 2,
-        padding: 6,
-        paddingBottom: 8,
+        borderRadius: configs.BORDER_RADIUS,
+        padding: height * .003,
+        paddingBottom: height * .015,
     },
     word_container: {
         flex: 22,
@@ -1188,7 +1190,6 @@ var game_styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: 'transparent',
         paddingLeft: height/30,
-
         paddingBottom: height/90,
     },
     tiles_container: {
