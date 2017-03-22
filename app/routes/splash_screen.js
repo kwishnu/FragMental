@@ -4,6 +4,7 @@ import Meteor from 'react-native-meteor';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
+var InAppBilling = require("react-native-billing");
 var seedPuzzleData = require('../data/data.js');
 var KEY_Premium = 'premiumOrNot';
 var KEY_Puzzles = 'puzzlesKey';
@@ -11,14 +12,13 @@ var KEY_SeenStart = 'seenStartKey';
 var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
 var seenStart = false;
-//var puzzleData = {};
 var ready = false;
 var nowISO = moment().valueOf();
 var launchDay = moment('2017 02', 'YYYY-MM');//Feb 1, 2017
 var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 1/1/2017
 var startNum = parseInt(dayDiff, 10) - 28;
 var tonightMidnight = moment().endOf('day').valueOf();
-let handle = {};
+let ownedPacks = [];
 
 function randomNum(low, high) {
     high++;
@@ -53,6 +53,7 @@ class SplashScreen extends Component {
             seenStart: 'false',
             notif_time: '',
             hasPremium: 'false',
+            connectionBool: true,
             isLoading: true
         };
     }
@@ -60,7 +61,14 @@ class SplashScreen extends Component {
         let puzzleData = {};
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
-            AsyncStorage.getItem(KEY_Puzzles).then((puzzles) => {
+            InAppBilling.open()
+            .then(() => InAppBilling.listOwnedProducts())
+            .then((details) => {
+                ownedPacks = details;
+                return InAppBilling.close();
+            }).then(()=> {
+                return AsyncStorage.getItem(KEY_Puzzles);
+            }).then((puzzles) => {
                 if (puzzles !== null) {//get current Puzzle data:
                     puzzleData = JSON.parse(puzzles)
                 }else{//store seed Puzzle data:
@@ -106,7 +114,6 @@ class SplashScreen extends Component {
                             var flag = 'skip';
                             var i = 30;
                             var puzzStringArray = [];
-
                             for (var key in d_puzzles) {
                                 if (!d_puzzles.hasOwnProperty(key)) continue;
                                 var obj = d_puzzles[key];
@@ -121,21 +128,84 @@ class SplashScreen extends Component {
                                     }
                                 }
                             }
-                            puzzleData[16].puzzles[0] = puzzStringArray[0];
+                            puzzleData[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
                             puzzStringArray.shift();
                             for(var j=0; j<puzzStringArray.length; j++){
-                                if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}
-                                puzzleData[18].puzzles[j] = puzzStringArray[j];
+                                if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}//load last 3 days
+                                puzzleData[18].puzzles[j] = puzzStringArray[j];//load last 30 days
                             }
                         },
                         onStop: function () {
                             window.alert('Sorry, can\'t connect to our server right now');
                         }
                     });
-                    return {
-                        ready: handle.ready(),
-                    };
+                }else{
+                    this.setState({connectionBool: false})
                 }
+                return isConnected;
+            }).then((isConnected) => {
+                let promises = [];
+                if(isConnected){
+                    let packNames = [];
+                    let packsOnDevice = [];
+                    Object.keys(puzzleData).forEach((key)=>{
+                        var obj = puzzleData[key];
+                        if(obj.type == 'mypack'){
+                            if(obj.product_id != ''){
+                                packsOnDevice.push(obj.product_id);
+                            }
+                        }
+                    });
+                    for (let k=0; k<ownedPacks.length; k++){
+                        if (packsOnDevice.indexOf(ownedPacks[k]) < 0){
+                            let idArray = ownedPacks[k].split('.');
+                            if (idArray.length < 4){//e.g. android.test.product
+                                console.log('Skipped: ', ownedPacks[k]);
+                                continue;
+                            }else if (idArray.length == 4){//single pack
+                                let packTitle = '';
+                                let packNameArray = idArray[2].split('_');
+                                switch (packNameArray.length){
+                                    case 1:
+                                        packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1);
+                                        break;
+                                    case 2:
+                                        packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
+                                        break;
+                                    case 3:
+                                        packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' and ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
+                                        break;
+                                    default:
+                                }
+                                promises.push(this.getPuzzlePack(packTitle));
+                            }else if (idArray.length == 5){//combo pack
+                                let packTitleArray = [];
+                                for (let m=0; m<3; m++){
+                                    let idTitle = idArray[m + 2];
+                                    let packTitle = '';
+                                    let packNameArray = idTitle.split('_');
+                                    switch (packNameArray.length){
+                                        case 1:
+                                            packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1);
+                                            break;
+                                        case 2:
+                                            packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
+                                            break;
+                                        case 3:
+                                            packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' and ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
+                                            break;
+                                        default:
+                                    }
+                                    packTitleArray.push(packTitle)
+                                }
+                                promises.push(this.getPuzzlePack(packTitleArray));
+                            }else{
+                                console.log('Unknown Product: ', ownedPacks[k]);
+                            }
+                        }
+                    }
+                }
+                return Promise.all(promises);
             }).then(() => {
                 var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
                 this.setNotifications();
@@ -318,6 +388,7 @@ class SplashScreen extends Component {
                 puzzleData[20 + i].show = 'false';
             }
         }
+        let connected = this.state.connectionBool;
 
         this.setState({isLoading: false});
         this.props.navigator.replace({
@@ -327,6 +398,7 @@ class SplashScreen extends Component {
                 isPremium: this.state.hasPremium,
                 seenIntro: this.state.seenStart,
                 introIndex: 0,
+                connectionBool: connected,
                 destination: 'puzzles contents'
                 },
        });
