@@ -52,6 +52,7 @@ class StartScene extends Component {
                 id: goToHere,
                 passProps: {
                     puzzleData: this.props.puzzleData,
+                    connectionBool: this.props.connectionBool
                 },
            });
         }else{
