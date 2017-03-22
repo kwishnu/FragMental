@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FragMental</string>
     <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgw09n9uzW1W3Wk+hSZQvnoTGVIrwhOAqkUfocAa836dt4V71UNZOaA0DZCuLbAdVxzKDfpn/kOl8hrz/q2Wflub53PQaYyS33+jat8se2SQ0wRS/VH+TlaxsEYha6T/AAanQW2tMuEDavUhT/95vytHLuVFxJqwpFcn4XvFKE+XnWS83BaxOOXtk/nOCicuOUtgJ1ClLP5CqgqArpjHg1w6OZvv9klzRrNlfFhSW8JslxZLe5gdKfecs1zHG+d/JSPmntmuSfkt2nT22pUAoASvOW7yztbCS3rqnU5CRs21P9tOmhcpkVBWWmvOvYl6RHOYYaWoL+NFDzHgHZ/wmKwIDAQAB</string>
+    <string name="facebook_app_id">790062294479424</string>
 </resources>

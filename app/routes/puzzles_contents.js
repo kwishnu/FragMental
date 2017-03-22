@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert, Linking } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -293,7 +293,6 @@ class PuzzleContents extends Component{
                             keepInList.splice(i, 1);
                         }
                     }
-
                     this.props.navigator.push({
                         id: 'combo store',
                         passProps: {
@@ -305,10 +304,38 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'facebook':
-                    window.alert('Device not configured');
+                    Linking.canOpenURL(configs.FB_URL_APP)
+                    .then(supported => {
+                        if (supported) {
+                            Linking.openURL(configs.FB_URL_APP);
+                        } else {
+                            Linking.canOpenURL(configs.FB_URL_BROWSER)
+                            .then(isSupported => {
+                                if (isSupported) {
+                                    Linking.openURL(configs.FB_URL_BROWSER);
+                                } else {
+                                    console.log('Don\'t know how to open URL: ' + configs.FB_URL_BROWSER);
+                                }
+                            });
+                        }
+                    });
                     break;
                 case 'twitter':
-                    window.alert('Device not configured');
+                    Linking.canOpenURL(configs.TWITTER_URL_APP)
+                    .then(supported => {
+                        if (supported) {
+                            Linking.openURL(configs.TWITTER_URL_APP);
+                        } else {
+                            Linking.canOpenURL(configs.TWITTER_URL_BROWSER)
+                            .then(isSupported => {
+                                if (isSupported) {
+                                    Linking.openURL(configs.TWITTER_URL_BROWSER);
+                                } else {
+                                    console.log('Don\'t know how to open URL: ' + configs.TWITTER_URL_BROWSER);
+                                }
+                            });
+                        }
+                    });
                     break;
                 case 'settings':
                     this.props.navigator.push({
