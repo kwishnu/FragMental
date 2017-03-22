@@ -4,7 +4,7 @@ import Meteor from 'react-native-meteor';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
-var InAppBilling = require("react-native-billing");
+var InAppBilling = require('react-native-billing');
 var seedPuzzleData = require('../data/data.js');
 var KEY_Premium = 'premiumOrNot';
 var KEY_Puzzles = 'puzzlesKey';
@@ -410,7 +410,7 @@ class SplashScreen extends Component {
         var tomorrowAM = new Date(Date.now() + (moment(tonightMidnight).add(parseInt(time, 10), 'hours').valueOf()) - nowISO);
 
         PushNotification.localNotificationSchedule({
-            message: "A new Daily Puzzle is in!",
+            message: 'A new Daily Puzzle is in!',
             vibrate: true,
             soundName: 'plink.mp3',
             //repeatType: 'day',//can be 'time', if so use following:
