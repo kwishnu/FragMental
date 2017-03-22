@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -202,9 +202,12 @@ class PuzzleContents extends Component{
             }
             var ready = 'loaded';
             return ready;
-            }).then((ready)=>{
-                this.setState({isLoading: false});
-            });
+        }).then((ready)=>{
+            this.setState({isLoading: false});
+        });
+        if (this.props.connectionBool == false){
+            Alert.alert('No Connection...', 'Sorry, an internet connection is required to load Daily Puzzles');
+        }
     }
     componentWillUnmount(){
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
