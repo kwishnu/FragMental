@@ -304,15 +304,15 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'facebook':
-                    Linking.canOpenURL(configs.FB_URL_APP)
+                    Linking.canOpenURL(configs.FB_URL_BROWSER)
                     .then(supported => {
                         if (supported) {
-                            Linking.openURL(configs.FB_URL_APP);
+                            Linking.openURL(configs.FB_URL_BROWSER);
                         } else {
-                            Linking.canOpenURL(configs.FB_URL_BROWSER)
+                            Linking.canOpenURL(configs.FB_URL_APP)
                             .then(isSupported => {
                                 if (isSupported) {
-                                    Linking.openURL(configs.FB_URL_BROWSER);
+                                    Linking.openURL(configs.FB_URL_APP);
                                 } else {
                                     console.log('Don\'t know how to open URL: ' + configs.FB_URL_BROWSER);
                                 }
