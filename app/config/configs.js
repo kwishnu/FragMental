@@ -10,8 +10,8 @@ const TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
 const LETTER_SIZE = Math.floor(TILE_HEIGHT * .7);
 
 export const configs = {
-    versionCode: 5,
-    versionName: '1.0.5',
+    versionCode: 7,
+    versionName: '1.0.7',
     appStoreID: 'com.fragmental',
     NUM_WIDE: 4,
     CELL_WIDTH: CELL_WIDTH,
@@ -21,8 +21,8 @@ export const configs = {
     TILE_WIDTH: TILE_WIDTH,
     TILE_HEIGHT: TILE_HEIGHT,
     LETTER_SIZE: LETTER_SIZE,
-    FB_URL_APP: 'fb://profile/FragMental-1534171629956651',
-    FB_URL_BROWSER: 'https://www.facebook.com/FragMental-1534171629956651/',
+    FB_URL_APP: 'fb://profile/FragMental-1326113510814230',//1326113070814274
+    FB_URL_BROWSER: 'https://www.facebook.com/FragMental-1326113070814274/',
     TWITTER_URL_APP: 'twitter://user?id=844683961427120129',
     TWITTER_URL_BROWSER: 'https://twitter.com/FragMentalApp'
 
