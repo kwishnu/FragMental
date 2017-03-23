@@ -12,6 +12,7 @@ const StoreListView = require('../routes/store_listview');
 const ComboStore = require('../routes/store_listview3');
 const Settings = require('../routes/settings');
 const About = require('../routes/about');
+const Social = require('../routes/social');
 
 class AppNavigator extends React.Component {
     constructor(props) {
@@ -39,6 +40,8 @@ class AppNavigator extends React.Component {
                 return Settings;
             case 'about':
                 return About;
+            case 'social':
+                return Social;
 
             // Add more ids here
         }

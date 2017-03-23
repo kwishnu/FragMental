@@ -273,10 +273,22 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'facebook':
-                    window.alert('Device not configured');
+                    this.props.navigator.push({
+                        id: 'social',
+                        passProps: {
+                            which: 'FB',
+                            color: '#3b5998',
+                        }
+                    });
                     break;
-                case 'twitter':
-                    window.alert('Device not configured');
+                case 'twitter'://#1da1f2
+                    this.props.navigator.push({
+                        id: 'social',
+                        passProps: {
+                            which: 'TW',
+                            color: '#1da1f2',
+                        }
+                    });
                     break;
                 case 'settings':
                     this.props.navigator.push({

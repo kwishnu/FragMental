@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert, Linking } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -304,36 +304,20 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'facebook':
-                    Linking.canOpenURL(configs.FB_URL_BROWSER)
-                    .then(supported => {
-                        if (supported) {
-                            Linking.openURL(configs.FB_URL_BROWSER);
-                        } else {
-                            Linking.canOpenURL(configs.FB_URL_APP)
-                            .then(isSupported => {
-                                if (isSupported) {
-                                    Linking.openURL(configs.FB_URL_APP);
-                                } else {
-                                    console.log('Don\'t know how to open URL: ' + configs.FB_URL_BROWSER);
-                                }
-                            });
+                    this.props.navigator.push({
+                        id: 'social',
+                        passProps: {
+                            which: 'FB',
+                            color: '#3b5998',
                         }
                     });
                     break;
-                case 'twitter':
-                    Linking.canOpenURL(configs.TWITTER_URL_APP)
-                    .then(supported => {
-                        if (supported) {
-                            Linking.openURL(configs.TWITTER_URL_APP);
-                        } else {
-                            Linking.canOpenURL(configs.TWITTER_URL_BROWSER)
-                            .then(isSupported => {
-                                if (isSupported) {
-                                    Linking.openURL(configs.TWITTER_URL_BROWSER);
-                                } else {
-                                    console.log('Don\'t know how to open URL: ' + configs.TWITTER_URL_BROWSER);
-                                }
-                            });
+                case 'twitter'://#1da1f2
+                    this.props.navigator.push({
+                        id: 'social',
+                        passProps: {
+                            which: 'TW',
+                            color: '#1da1f2',
                         }
                     });
                     break;
@@ -511,11 +495,11 @@ class PuzzleContents extends Component{
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
-                                <Image source={ require('../images/menu.png') } style={ { width: height*.07, height: height*.07 } } />
+                                <Image source={ require('../images/menu.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
                             <Image source={ require('../images/logo.png') } style={ { width: height/5, height: height/15 } } />
                             <Button style={{right: height*.02}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
+                                <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
                         </View>
                         <View style={ container_styles.puzzles_container }>
