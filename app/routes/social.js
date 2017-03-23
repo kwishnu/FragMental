@@ -93,8 +93,8 @@ module.exports = class Social extends Component {
                         </Button>
                     </View>
                 </View>
-    );
-  }
+        );
+    }
 };
 
 
