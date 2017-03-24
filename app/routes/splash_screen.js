@@ -61,11 +61,11 @@ class SplashScreen extends Component {
         let puzzleData = {};
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
-            InAppBilling.open()
-            .then(() => InAppBilling.listOwnedProducts())
-            .then((details) => {
-                ownedPacks = details;
-                return InAppBilling.close();
+                    InAppBilling.open()
+                    .then(() => InAppBilling.listOwnedProducts())
+                    .then((details) => {
+                        ownedPacks = details;
+                    return InAppBilling.close();
             }).then(()=> {
                 return AsyncStorage.getItem(KEY_Puzzles);
             }).then((puzzles) => {
@@ -74,7 +74,7 @@ class SplashScreen extends Component {
                 }else{//store seed Puzzle data:
                     puzzleData = seedPuzzleData;
                     try {
-                        AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//
+                        AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(seedPuzzleData));//return NetInfo.isConnected.fetch();
                     } catch (error) {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
@@ -148,14 +148,14 @@ class SplashScreen extends Component {
                 if(isConnected){
                     let packNames = [];
                     let packsOnDevice = [];
-                    Object.keys(puzzleData).forEach((key)=>{
-                        var obj = puzzleData[key];
-                        if(obj.type == 'mypack'){
-                            if(obj.product_id != ''){
-                                packsOnDevice.push(obj.product_id);
+                    for (var key in puzzleData){
+                        if (puzzleData[key].type == 'mypack'){
+                            if(puzzleData[key].product_id != ''){
+                                packsOnDevice.push(puzzleData[key].product_id);
                             }
                         }
-                    });
+                    }
+                    console.log(packsOnDevice);
                     for (let k=0; k<ownedPacks.length; k++){
                         if (packsOnDevice.indexOf(ownedPacks[k]) < 0){
                             let idArray = ownedPacks[k].split('.');
@@ -389,7 +389,6 @@ class SplashScreen extends Component {
             }
         }
         let connected = this.state.connectionBool;
-
         this.setState({isLoading: false});
         this.props.navigator.replace({
             id: whichScene,
