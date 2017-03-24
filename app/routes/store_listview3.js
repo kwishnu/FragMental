@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage } from 'react-native';
 import Row3 from '../components/Row3';
 import Button from '../components/Button';
-var styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const styles = require('../styles/styles');
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
@@ -45,22 +46,22 @@ module.exports = class ComboStore extends Component {
 
 
     render() {
-        const rows = this.dataSource.cloneWithRows(this.props.availableList); //(this.props.puzzleData[this.props.dataIndex].data);
+        const rows = this.dataSource.cloneWithRows(this.props.availableList);
         return (
                 <View style={store_styles.container}>
-                    <View style={ store_styles.header }>
-                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                    <View style={store_styles.header}>
+                        <Button style={{left: height*.02}} onPress={() => this.handleHardwareBackButton()}>
+                            <Image source={require('../images/arrow_back.png')} style={{width: height*.08, height: height*.08}} />
                         </Button>
-                        <Text style={styles.header_text} >{this.props.title}
+                        <Text style={styles.header_text}>{this.props.title}
                         </Text>
-                        <Button style={{right: 10}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                        <Button style={{right: height*.02}}>
+                            <Image source={require('../images/no_image.png') } style={{width: height*.08, height: height*.08}} />
                         </Button>
                     </View>
-                    <View style={ store_styles.listview_container }>
+                    <View style={store_styles.listview_container}>
                         <ListView  showsVerticalScrollIndicator ={false}
-                                contentContainerStyle={ store_styles.listview }
+                                contentContainerStyle={store_styles.listview}
                                 dataSource={rows}
                                 renderRow={(data) => <Row3 props= {data} navigator= {this.props.navigator} />}
                         />
