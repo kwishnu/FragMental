@@ -205,6 +205,7 @@ class DailyLaunch extends Component{
                         passProps: {
                             which: 'FB',
                             color: '#3b5998',
+                            puzzleData: this.props.puzzleData,
                         }
                     });
                     break;
@@ -214,6 +215,7 @@ class DailyLaunch extends Component{
                         passProps: {
                             which: 'TW',
                             color: '#1da1f2',
+                            puzzleData: this.props.puzzleData,
                         }
                     });
                     break;
