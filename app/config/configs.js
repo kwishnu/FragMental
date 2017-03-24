@@ -10,8 +10,8 @@ const TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
 const LETTER_SIZE = Math.floor(TILE_HEIGHT * .7);
 
 export const configs = {
-    versionCode: 7,
-    versionName: '1.0.7',
+    versionCode: 8,
+    versionName: '1.0.8',
     appStoreID: 'com.fragmental',
     NUM_WIDE: 4,
     CELL_WIDTH: CELL_WIDTH,
