@@ -21,7 +21,11 @@ module.exports = class Social extends Component {
     }
     handleHardwareBackButton() {
         try {
-            this.props.navigator.pop();
+            this.props.navigator.pop({
+                passProps: {
+                    puzzleData: this.props.puzzleData,
+                }
+            });
         }
         catch(err) {
             window.alert(err.message);
@@ -30,15 +34,15 @@ module.exports = class Social extends Component {
     }
     linkToUrl(which){
         if (this.props.which == 'FB'){
-            Linking.canOpenURL(configs.FB_URL_BROWSER)
+            Linking.canOpenURL(configs.FB_URL_APP)
             .then(supported => {
                 if (supported) {
-                    Linking.openURL(configs.FB_URL_BROWSER);
+                    Linking.openURL(configs.FB_URL_APP);
                 } else {
-                    Linking.canOpenURL(configs.FB_URL_APP)
+                    Linking.canOpenURL(configs.FB_URL_BROWSER)
                     .then(isSupported => {
                         if (isSupported) {
-                            Linking.openURL(configs.FB_URL_APP);
+                            Linking.openURL(configs.FB_URL_BROWSER);
                         } else {
                             console.log('Don\'t know how to open URL: ' + configs.FB_URL_BROWSER);
                         }
