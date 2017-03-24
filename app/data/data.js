@@ -80,7 +80,7 @@ module.exports = [
                     {
                     name: 'Mango Tango',
                     product_id: 'fm.e.mango_tango.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'E',
@@ -89,7 +89,7 @@ module.exports = [
                     {
                     name: 'Hot Phlox',
                     product_id: 'fm.e.hot_phlox.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'E',
@@ -98,7 +98,7 @@ module.exports = [
                     {
                     name: 'Tasty Turquoise',
                     product_id: 'fm.e.tasty_turquoise.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'E',
@@ -107,7 +107,7 @@ module.exports = [
                     {
                     name: 'Wild Strawberry',
                     product_id: 'fm.e.wild_strawberry.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'E',
@@ -178,7 +178,7 @@ module.exports = [
                     {
                     name: 'Tropics',
                     product_id: 'fm.m.tropics.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'M',
@@ -187,7 +187,7 @@ module.exports = [
                     {
                     name: 'Vacation',
                     product_id: 'fm.m.vacation.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'M',
@@ -196,7 +196,7 @@ module.exports = [
                     {
                     name: 'Villa',
                     product_id: 'fm.m.villa.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'M',
@@ -205,7 +205,7 @@ module.exports = [
                     {
                     name: 'Weekender',
                     product_id: 'fm.m.weekender.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'M',
@@ -276,7 +276,7 @@ module.exports = [
                     {
                     name: 'Squall',
                     product_id: 'fm.h.squall.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'H',
@@ -285,7 +285,7 @@ module.exports = [
                     {
                     name: 'Tempest',
                     product_id: 'fm.h.tempest.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'H',
@@ -294,7 +294,7 @@ module.exports = [
                     {
                     name: 'Thunderstorm',
                     product_id: 'fm.h.thunderstorm.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'H',
@@ -303,7 +303,7 @@ module.exports = [
                     {
                     name: 'Typhoon',
                     product_id: 'fm.h.typhoon.100',
-                    price: '$2.99',
+                    price: '$2.49',
                     show: 'true',
                     num_puzzles: '100',
                     difficulty: 'H',
