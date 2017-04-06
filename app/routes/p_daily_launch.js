@@ -73,7 +73,6 @@ class DailyLaunch extends Component{
                     var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
                     rand0to9 = shuffleArray(rand0to9);
                     for (var r=0; r<10; r++){
-        //                var rand0to9 = randomNum(0, 9);
                         if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
                             titleIndex = rand0to9[r];
                             break;
@@ -152,7 +151,6 @@ class DailyLaunch extends Component{
                 case 'store':
                     var myPackArray = [];
                     var keepInList = [];
-
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
