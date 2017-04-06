@@ -225,7 +225,6 @@ class PuzzleLaunch extends Component{
                 case 'store':
                     var myPackArray = [];
                     var keepInList = [];
-
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
@@ -424,7 +423,7 @@ class PuzzleLaunch extends Component{
                             <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
                                 <Image source={ require('../images/arrow_back.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
-                            <Text style={{fontSize: configs.LETTER_SIZE * 0.6, color: this.state.titleColor}} >{this.props.title}</Text>
+                            <Text style={{fontSize: configs.LETTER_SIZE * 0.7, color: this.state.titleColor}} >{this.props.title}</Text>
                             <Button style={{right: height*.02}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
