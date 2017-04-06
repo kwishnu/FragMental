@@ -155,11 +155,11 @@ class PuzzleContents extends Component{
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
-        });
-        AsyncStorage.getItem(KEY_ratedTheApp).then((rated) => {
+            return AsyncStorage.getItem(KEY_ratedTheApp);
+        }).then((rated) => {
             if(rated == 'true'){this.setState({hasRated: rated})}
-        });
-        AsyncStorage.getItem(KEY_daily_solved_array).then((theArray) => {
+            return AsyncStorage.getItem(KEY_daily_solved_array);
+        }).then((theArray) => {
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
             } else {
@@ -171,8 +171,8 @@ class PuzzleContents extends Component{
                    window.alert('AsyncStorage error: ' + error.message);
                 }
             }
-            return AsyncStorage.getItem(KEY_midnight)
-            }).then( (value) => {
+            return AsyncStorage.getItem(KEY_midnight);
+        }).then( (value) => {
             if (value !== null) {
                 var storedMidnight = parseInt(JSON.parse(value), 10);
                 var milliSecsOver = nowISO - storedMidnight;
@@ -257,7 +257,6 @@ class PuzzleContents extends Component{
                 case 'store':
                     var myPackArray = [];
                     var keepInList = [];
-
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
@@ -389,10 +388,10 @@ class PuzzleContents extends Component{
                 id: 'splash screen',
                 passProps: {
                     motive: 'purchase',
-                    packName: itemName
+                    packName: item_name,
+                    productID: itemID
                 }
             });
-            console.log("You purchased: ", details)
             return InAppBilling.close()
         }).catch((err) => {
             console.log(err);
@@ -499,7 +498,7 @@ class PuzzleContents extends Component{
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
                                 <Image source={ require('../images/menu.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
-                            <Image source={ require('../images/logo.png') } style={ { width: height/5, height: height/15 } } />
+                            <Image source={ require('../images/logo2.png') } style={ { width: height/3.75, height: height/16 } } />
                             <Button style={{right: height*.02}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
                             </Button>
