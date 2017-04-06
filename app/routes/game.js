@@ -419,7 +419,7 @@ class Game extends Component {
                     textColor: this.props.textColor,
                     bgColor: this.props.bgColor,
                     title: this.props.myTitle,
-                    },
+                },
             });
             return true;
         } catch(err)  {
@@ -927,9 +927,9 @@ class Game extends Component {
     drawTile(key, style, frag ) {
         return (
             <View key={ key } style={[styles.cell, style]}>
-            <View  key={ key } style={ styles.tile } onStartShouldSetResponder={() => this.guess(key, 1)} >
+                <View  key={ key } style={ styles.tile } onStartShouldSetResponder={() => this.guess(key, 1)} >
                     <Text style={ styles.puzzle_text_large }>{ frag }</Text>
-            </View>
+                </View>
             </View>
         );
     }
@@ -1065,14 +1065,15 @@ class Game extends Component {
 
                         <View style={ game_styles.footer }>
                             <View style={ game_styles.score_container }>
-                                <Text style={[styles.score_text, {color: this.state.scoreColor}]} >{this.state.score}
-                                </Text>
+                                <View style={ [game_styles.score_box, {backgroundColor: this.state.headerColor}] }>
+                                    <Text style={[styles.score_text, {color: this.state.scoreColor}]} >{this.state.score}</Text>
+                                </View>
                             </View>
                             <View style={ game_styles.buttons_container }>
-                                <Button style={[styles.skip_button, this.darkBorder('#64aefa')]} onPress={ () => this.skip_to_next() }>
+                                <Button style={[game_styles.skip_button, this.darkBorder('#64aefa')]} onPress={ () => this.skip_to_next() }>
                                     <Image source={ require('../images/skip.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
-                                <Button style={[styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint(true) }>
+                                <Button style={[game_styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint(true) }>
                                     <Image source={ require('../images/question.png')} style={{ width: 60, height: 60 }} />
                                 </Button>
                             </View>
@@ -1181,7 +1182,6 @@ var game_styles = StyleSheet.create({
         borderColor: '#000',
         borderRadius: configs.BORDER_RADIUS,
         padding: height * .003,
-        paddingBottom: height * .015,
     },
     word_container: {
         flex: 22,
@@ -1206,6 +1206,28 @@ var game_styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
+    },
+    skip_button: {
+        flex:1,
+        height: height * 0.075,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#64aefa',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginRight: 3,
+        padding: 10,
+    },
+    hint_button: {
+        flex:1,
+        height: height * 0.075,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#4aeeb2',
+        borderWidth: 1,
+        borderRadius: 12,
+        marginLeft: 3,
+        padding: 12,
     },
     buttons_container: {
         flexDirection: 'row',
@@ -1241,8 +1263,17 @@ var game_styles = StyleSheet.create({
         color: '#ffffff',
         textAlign: 'center'
     },
+    score_box: {
+        width: configs.LETTER_SIZE * 2.5,
+        height: height * 0.075,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: 5,
+        borderColor: "#ffffff",
+        paddingBottom: 3
+    },
     score_container: {
-        flexDirection: 'row',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
