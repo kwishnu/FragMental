@@ -3,7 +3,6 @@ import { View, Image, StyleSheet, NetInfo, AsyncStorage, ActivityIndicator } fro
 import Meteor from 'react-native-meteor';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
-
 var InAppBilling = require('react-native-billing');
 var seedPuzzleData = require('../data/data.js');
 var KEY_Premium = 'premiumOrNot';
@@ -15,15 +14,10 @@ var seenStart = false;
 var ready = false;
 var nowISO = moment().valueOf();
 var launchDay = moment('2017 02', 'YYYY-MM');//Feb 1, 2017
-var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 1/1/2017
+var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 2/1/2017
 var startNum = parseInt(dayDiff, 10) - 28;
 var tonightMidnight = moment().endOf('day').valueOf();
-let ownedPacks = [];
-
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
-}
+let ownedPacks = ['null.value'];
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -32,12 +26,6 @@ function shuffleArray(array) {
         array[j] = temp;
     }
     return array;
-}
-function toObject(arr) {
-  var rv = {};
-  for (var i = 0; i < arr.length; ++i)
-    rv[i] = arr[i];
-  return rv;
 }
 //'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
 //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
@@ -58,13 +46,14 @@ class SplashScreen extends Component {
         };
     }
     componentDidMount() {
-        let puzzleData = {};
+        let puzzleData = [];
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
                     InAppBilling.open()
                     .then(() => InAppBilling.listOwnedProducts())
                     .then((details) => {
                         ownedPacks = details;
+                        ownedPacks.push('null.value')
                     return InAppBilling.close();
             }).then(()=> {
                 return AsyncStorage.getItem(KEY_Puzzles);
@@ -114,25 +103,16 @@ class SplashScreen extends Component {
                             var flag = 'skip';
                             var i = 30;
                             var puzzStringArray = [];
-                            for (var key in d_puzzles) {
-                                if (!d_puzzles.hasOwnProperty(key)) continue;
-                                var obj = d_puzzles[key];
-                                for (var prop in obj) {
-                                    if(!obj.hasOwnProperty(prop)) continue;
-                                    if(prop=='pnum' && (obj[prop] >= startNum) && (obj[prop] < (startNum + 31))){
-                                        flag = 'load'
-                                    }
-                                    if(prop=='puzz' && flag == 'load'){
-                                        puzzStringArray.unshift(obj[prop]);
-                                        flag = 'skip';
-                                    }
-                                }
-                            }
+                            d_puzzles.forEach(function (row) {
+                                 if((parseInt(row.pnum, 10) >= startNum) && (parseInt(row.pnum, 10) < (startNum + 31))){
+                                     puzzStringArray.push(row.puzz);
+                                 }
+                             });
                             puzzleData[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
                             puzzStringArray.shift();
-                            for(var j=0; j<puzzStringArray.length; j++){
-                                if(j < 3){puzzleData[17].puzzles[j] = puzzStringArray[j];}//load last 3 days
-                                puzzleData[18].puzzles[j] = puzzStringArray[j];//load last 30 days
+                            for(var jj=0; jj<puzzStringArray.length; jj++){
+                                if(jj < 3){puzzleData[17].puzzles[jj] = puzzStringArray[jj];}//load last 3 days
+                                puzzleData[18].puzzles[jj] = puzzStringArray[jj];//load last 30 days
                             }
                         },
                         onStop: function () {
@@ -146,23 +126,21 @@ class SplashScreen extends Component {
             }).then((isConnected) => {
                 let promises = [];
                 if(isConnected){
-                    let packNames = [];
-                    let packsOnDevice = [];
-                    for (var key in puzzleData){
-                        if (puzzleData[key].type == 'mypack'){
-                            if(puzzleData[key].product_id != ''){
-                                packsOnDevice.push(puzzleData[key].product_id);
+                    let packNames = ['null.value'];
+                    let packsOnDevice = ['null.value'];
+                    for (var k=0; k<puzzleData.length; k++){
+                        if (puzzleData[k].type == 'mypack'){
+                            if(puzzleData[k].product_id != ''){
+                                packsOnDevice.push(puzzleData[k].product_id);
                             }
                         }
                     }
-                    console.log(packsOnDevice);
-                    for (let k=0; k<ownedPacks.length; k++){
-                        if (packsOnDevice.indexOf(ownedPacks[k]) < 0){
-                            let idArray = ownedPacks[k].split('.');
-                            if (idArray.length < 4){//e.g. android.test.product
-                                console.log('Skipped: ', ownedPacks[k]);
+                    for (let kk=0; kk<ownedPacks.length; kk++){
+                        if (packsOnDevice.indexOf(ownedPacks[kk]) < 0){
+                            let idArray = ownedPacks[kk].split('.');
+                            if (idArray && idArray.length < 4){//e.g. android.test.purchased
                                 continue;
-                            }else if (idArray.length == 4){//single pack
+                            }else if (idArray && idArray.length == 4){//single pack
                                 let packTitle = '';
                                 let packNameArray = idArray[2].split('_');
                                 switch (packNameArray.length){
@@ -177,8 +155,8 @@ class SplashScreen extends Component {
                                         break;
                                     default:
                                 }
-                                promises.push(this.getPuzzlePack(packTitle));
-                            }else if (idArray.length == 5){//combo pack
+                                promises.push(this.getPuzzlePack(packTitle, ownedPacks[kk], puzzleData));
+                            }else if (idArray && idArray.length == 5){//combo pack
                                 let packTitleArray = [];
                                 for (let m=0; m<3; m++){
                                     let idTitle = idArray[m + 2];
@@ -198,7 +176,7 @@ class SplashScreen extends Component {
                                     }
                                     packTitleArray.push(packTitle)
                                 }
-                                promises.push(this.getPuzzlePack(packTitleArray));
+                                promises.push(this.getPuzzlePack(packTitleArray, ownedPacks[kk], puzzleData));
                             }else{
                                 console.log('Unknown Product: ', ownedPacks[k]);
                             }
@@ -213,8 +191,7 @@ class SplashScreen extends Component {
                 this.gotoScene(whereToGo, puzzleData);
             })
             .catch(function(error) {
-                window.alert(error.message);
-                throw error;
+                window.alert('214: ' + error.message);
             });
         }else{//purchased puzzle pack...
             this.setState({hasPremium: 'true'});
@@ -224,46 +201,45 @@ class SplashScreen extends Component {
                 puzzleData[18].show = 'true';
                 return puzzleData;
             }).then((theData) => {
-                let pushPack = this.getPuzzlePack(this.props.packName, theData);
+                let pushPack = this.getPuzzlePack(this.props.packName, this.props.productID, theData);
                 return pushPack;
             }).then((data) => {
                 this.gotoScene('puzzles contents', data);
             }).catch(function(error) {
-                window.alert(error.message);
-                throw error;
+                window.alert('230: ' + error.message);
             });
         }
     }
-    getPuzzlePack(name, puzzleData){
+    getPuzzlePack(name, ID, puzzleData){
         return new Promise(
             function (resolve, reject) {
                 if (Array.isArray(name)){//combo pack
                     let title = [];
                     let index = [];
                     let num_puzzles = [];
+                    let product_id = '';
                     let bg_color = [];
                     let puzzles = [[],[],[]];
                     let combinedName = name[0] + ' ' + name[1] + ' ' + name[2];
 
                     for (let k = 0; k < 3; k++){
-                        Object.keys(puzzleData).forEach((key)=>{
-                            var obj = puzzleData[key];
+                      for (let b = 0; b < puzzleData.length; b++){
+                            let obj = puzzleData[b];
                             for (var el in obj) {
                                 if (el == 'data'){
                                     for(let j=0; j<obj[el].length; j++){
-                                        if(puzzleData[key].data[j].name == name[k]){
-                                            title[k] = puzzleData[key].data[j].name;
+                                        if(puzzleData[b].data[j].name == name[k]){
+                                            title[k] = puzzleData[b].data[j].name;
                                             index[k] = (puzzleData.length + k).toString();
-                                            num_puzzles[k] = puzzleData[key].data[j].num_puzzles;
-                                            bg_color[k] = puzzleData[key].data[j].color;
+                                            num_puzzles[k] = puzzleData[b].data[j].num_puzzles;
+                                            bg_color[k] = puzzleData[b].data[j].color;
                                             continue;
                                         }
                                     }
                                 }
                             }
-                        });
+                        }
                     }
-
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
                                 const d_puzzles = Meteor.collection('dataC').find({pack: combinedName});
@@ -291,6 +267,7 @@ class SplashScreen extends Component {
                                         num_puzzles: num_puzzles[push],
                                         num_solved: '0',
                                         solved: 'false',
+                                        product_id: ID,
                                         bg_color: bg_color[push],
                                         puzzles: puzzles[push]
                                     });
@@ -302,7 +279,6 @@ class SplashScreen extends Component {
                             reject(error.reason);
                         }
                     });
-
                 }else{
                     let title = '';
                     let index = '';
@@ -310,23 +286,22 @@ class SplashScreen extends Component {
                     let bg_color = '';
                     let puzzles = [];
 
-                    Object.keys(puzzleData).forEach((key)=>{
-                        var obj = puzzleData[key];
+                    for (let k = 0; k < puzzleData.length; k++){
+                    let obj = puzzleData[k];
                         for (var el in obj) {
                             if (el == 'data'){
                                 for(let j=0; j<obj[el].length; j++){
-                                    if(puzzleData[key].data[j].name == name){
-                                        title = puzzleData[key].data[j].name;
+                                    if(puzzleData[k].data[j].name == name){
+                                        title = puzzleData[k].data[j].name;
                                         index = puzzleData.length.toString();
-                                        num_puzzles = puzzleData[key].data[j].num_puzzles;
-                                        bg_color = puzzleData[key].data[j].color;
+                                        num_puzzles = puzzleData[k].data[j].num_puzzles;
+                                        bg_color = puzzleData[k].data[j].color;
                                         continue;
                                     }
                                 }
                             }
                         }
-                    });
-
+                    }
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
                                 const d_puzzles = Meteor.collection('dataP').find({pack: name});
@@ -346,6 +321,7 @@ class SplashScreen extends Component {
                                     num_puzzles: num_puzzles,
                                     num_solved: '0',
                                     solved: 'false',
+                                    product_id: ID,
                                     bg_color: bg_color,
                                     puzzles: puzzles
                                 });
@@ -373,7 +349,6 @@ class SplashScreen extends Component {
             var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
             rand0to9 = shuffleArray(rand0to9);
             for (var r=0; r<puzzleData[levels[i]].data.length; r++){
-//                var rand0to9 = randomNum(0, 9);
                 if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
                     titleIndex = rand0to9[r];
                     break;
@@ -424,7 +399,7 @@ class SplashScreen extends Component {
         if(this.state.isLoading == true){
             return(
                 <View style={ splash_styles.container }>
-                    <Image style={{ width: 200, height: 200 }} source={require('../images/icon.png')} />
+                    <Image style={{ width: 200, height: 200 }} source={require('../images/icon_round.png')} />
                     <ActivityIndicator style={splash_styles.spinner} animating={true} size={'large'}/>
                 </View>
             )
@@ -453,6 +428,5 @@ var splash_styles = StyleSheet.create({
         right: 0,
     },
 });
-
 
 module.exports = SplashScreen;
