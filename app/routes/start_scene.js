@@ -13,6 +13,7 @@ import {
 import AppIntro from 'react-native-app-intro';
 var KEY_UseNumLetters = 'numLetters';
 var KEY_ratedTheApp = 'ratedApp';
+var KEY_expandInfo = 'expandInfoKey';
 var {width, height} = require('Dimensions').get('window');
 
 
@@ -34,6 +35,11 @@ class StartScene extends Component {
             }
             try {
                 AsyncStorage.setItem(KEY_ratedTheApp, 'false');//
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+            try {
+                AsyncStorage.setItem(KEY_expandInfo, '1.1.1.1');//
             } catch (error) {
                 window.alert('AsyncStorage error: ' + error.message);
             }
