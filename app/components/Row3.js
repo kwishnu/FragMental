@@ -89,7 +89,8 @@ buyCombo=(item_name, itemID, nav)=>{
             id: 'splash screen',
             passProps: {
                 motive: 'purchase',
-                packName: item_name
+                packName: item_name,
+                productID: itemID
             }
         });
         console.log("You purchased: ", details)
