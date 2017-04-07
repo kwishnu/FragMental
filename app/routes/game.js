@@ -1037,6 +1037,9 @@ class Game extends Component {
 
                             <View style={[game_styles.clue_container, {backgroundColor: this.state.cluesBgColor}]}>
                                 <View style = {game_styles.top_part_clue}>
+                                    <Text style={[styles.clue_text_small, {color: this.state.clueTextColor}]} >{(this.state.onThisClue + 1).toString() + '/' + this.state.theCluesArray.length.toString()}</Text>
+                                </View>
+                                <View style = {game_styles.middle_part_clue}>
                                     <Text style={[styles.clue_text_bold, {color: this.state.clueTextColor}]} >{this.getClueText('clue')}</Text>
                                 </View>
                                 <View style = {game_styles.bottom_part_clue}>
@@ -1046,12 +1049,10 @@ class Game extends Component {
 
                             <View style={ game_styles.word_and_frag }>
                                 <View style={ [game_styles.frag_container, {opacity: this.state.fragOpacity}, this.darkBorder(this.state.bgColor)] } onStartShouldSetResponder={() => this.guess(100, 1)}>
-                                    <Text style={styles.keyfrag_text} >{this.state.keyFrag}
-                                    </Text>
+                                    <Text style={game_styles.keyfrag_text} >{this.state.keyFrag}</Text>
                                 </View>
                                 <Animated.View style={this.getStyle()}>
-                                    <Text style={[styles.answer_text, {color: this.state.textColor}]} >{this.state.answerText}
-                                    </Text>
+                                    <Text style={[styles.answer_text, {color: this.state.textColor}]} >{this.state.answerText}</Text>
                                 </Animated.View>
                             </View>
                         </View>
@@ -1150,7 +1151,15 @@ var game_styles = StyleSheet.create({
         justifyContent: 'center'
     },
     top_part_clue: {
-        flex: 4,
+        flex: 1,
+        flexDirection: 'row',
+        width: width - 30,
+        paddingLeft: 10,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+    middle_part_clue: {
+        flex: 8,
         width: width - 30,
         paddingTop: 4,
         paddingBottom: 2,
@@ -1161,7 +1170,7 @@ var game_styles = StyleSheet.create({
         justifyContent: 'center',
     },
     bottom_part_clue: {
-        flex: 1,
+        flex: 2,
         width: width - 30,
         paddingTop: 6,
         alignItems: 'center',
@@ -1181,7 +1190,11 @@ var game_styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#000',
         borderRadius: configs.BORDER_RADIUS,
-        padding: height * .003,
+    },
+    keyfrag_text: {
+        color: '#038c30',
+        fontSize: configs.LETTER_SIZE,
+        fontWeight: 'bold',
     },
     word_container: {
         flex: 22,
