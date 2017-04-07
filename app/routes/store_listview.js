@@ -45,7 +45,7 @@ module.exports = class StoreListView extends Component {
                         break;
                     case '4':
                         tf = (expandArr[1] == '1')?true:false;
-                        this.setState({expand: tf, infoString: '\'Moderate\' puzzles will always have the Key fragment somewhere in their answers'});
+                        this.setState({expand: tf, infoString: '\'Moderate\' puzzles always have the Key fragment somewhere in their answers'});
                         break;
                     case '5':
                         tf = (expandArr[2] == '1')?true:false;
@@ -108,6 +108,7 @@ module.exports = class StoreListView extends Component {
 
         });
     }
+
     render() {
         const rows = this.dataSource.cloneWithRows(this.props.availableList);
        if(this.state.expand){
@@ -130,7 +131,7 @@ module.exports = class StoreListView extends Component {
                             </View>
                             <View style={ store_styles.button_container }>
                                 <Button style={ store_styles.button } onPress={ () => this.toggleInfoBox(this.state.expand) }>
-                                        <Text style={[store_styles.button_text, {color: 'red'}]}>X   </Text>
+                                        <Text style={[store_styles.button_text, {color: 'red'}]}> X   </Text>
                                         <Text style={[store_styles.button_text, {color: '#ffffff'}]} > Got it!</Text>
                                 </Button>
                             </View>
@@ -172,9 +173,9 @@ module.exports = class StoreListView extends Component {
     }
 };
 startPurchase=(item_name, itemID, nav)=>{
-//    InAppBilling.open()
-//    .then(() => InAppBilling.purchase(itemID))
-//    .then((details) => {
+    InAppBilling.open()
+    .then(() => InAppBilling.purchase(itemID))
+    .then((details) => {
         nav.pop({});
         nav.replace({
             id: 'splash screen',
@@ -184,12 +185,12 @@ startPurchase=(item_name, itemID, nav)=>{
                 productID: itemID
             }
         });
-//        console.log("You purchased: ", details)
-//        return InAppBilling.close()
-//    }).catch((err) => {
-//        console.log(err);
-//        return InAppBilling.close()
-//    });
+        console.log("You purchased: ", details)
+        return InAppBilling.close()
+    }).catch((err) => {
+        console.log(err);
+        return InAppBilling.close()
+    });
 }
 
 const Row = ({props, navigator}) => (
@@ -227,10 +228,11 @@ const store_styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#12046c',
-        padding: 12
-
-
+        backgroundColor: '#666666',
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 8,
+        paddingRight: 8,
     },
     button_text: {
         fontSize: configs.LETTER_SIZE * .6,
@@ -255,7 +257,7 @@ const store_styles = StyleSheet.create({
         marginTop: 16
     },
     text_container: {
-        flex: 4,
+        flex: 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -298,4 +300,3 @@ const store_styles = StyleSheet.create({
         marginBottom: 1,
     },
 });
-
