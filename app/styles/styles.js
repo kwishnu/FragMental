@@ -44,10 +44,8 @@ module.exports = StyleSheet.create({
     clue_text: {
         fontSize: configs.LETTER_SIZE * 0.5,
     },
-    keyfrag_text: {
-        color: '#038c30',
-        fontSize: configs.LETTER_SIZE * 1.1,
-        fontWeight: 'bold',
+    clue_text_small: {
+        fontSize: configs.LETTER_SIZE * 0.4,
     },
     score_text: {
         fontSize: configs.LETTER_SIZE * 5/3,
