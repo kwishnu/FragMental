@@ -120,7 +120,7 @@ class StartScene extends Component {
                 </View>
 
                 <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
-                    <View style={[styles.header, {marginTop:-40}]}>
+                    <View style={[styles.header, {marginTop:-35}]}>
                         <View>
                             <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2/p2.png')} />
                         </View>
@@ -128,7 +128,7 @@ class StartScene extends Component {
                 </View>
 
                 <View style={[styles.slide, { backgroundColor: '#3ff14c' }]}>
-                    <View style={[styles.header, {marginTop:-40}]}>
+                    <View style={[styles.header, {marginTop:-35}]}>
                         <View>
                             <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/page3bg.png')} />
                         </View>
@@ -145,7 +145,7 @@ class StartScene extends Component {
                 </View>
 
                <View style={[styles.slide, { backgroundColor: '#081262' }]}>
-                    <View style={[styles.header, {marginTop:-40}]}>
+                    <View style={styles.header}>
                         <View>
                             <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/page4bg.png')} />
                         </View>
@@ -166,13 +166,13 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   header: {
     flex: 1,
     width: width,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   pic: {
     position: 'absolute',
