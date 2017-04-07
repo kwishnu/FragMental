@@ -5,7 +5,15 @@ import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
 import Meteor from 'react-native-meteor';
 import configs from '../config/configs';
-
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
 function invertColor(hex, bw) {
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
@@ -267,7 +275,7 @@ class PuzzleContents extends Component{
                             keepInList.push(this.props.puzzleData[item.index].data[i]);
                         }
                     }
-                    keepInList = keepInList.reverse();
+                    keepInList = shuffleArray(keepInList);
                     this.props.navigator.push({
                         id: 'store',
                         passProps: {
@@ -380,28 +388,67 @@ class PuzzleContents extends Component{
         titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
     }
-    startPurchase(itemName, itemID){
-        InAppBilling.open()
-        .then(() => InAppBilling.purchase(itemID))
-        .then((details) => {
-            this.props.navigator.replace({
-                id: 'splash screen',
-                passProps: {
-                    motive: 'purchase',
-                    packName: item_name,
-                    productID: itemID
-                }
-            });
-            return InAppBilling.close()
-        }).catch((err) => {
-            console.log(err);
-            return InAppBilling.close()
-        });
-    }
     onSelect(index, title, bg, productID) {
         if (title.indexOf('*') > -1){
             let theName = title.substring(1);
-            this.startPurchase(theName, productID);
+            var myPackArray = [];
+            var keepInList = [];
+            var theIndex = '';
+            var titlePrefix = '';
+            var gotIt = false;
+            var itemIndex = 0;
+            for (var j=0; j<this.props.puzzleData.length; j++){
+                if (this.props.puzzleData[j].type == 'mypack'){
+                    myPackArray.push(this.props.puzzleData[j].title);
+                }
+                if (!gotIt && this.props.puzzleData[j].link == 'store'){
+                    for (var k=0; k<this.props.puzzleData[j].data.length; k++){
+                        if(this.props.puzzleData[j].data[k].name == theName){
+                            theIndex = this.props.puzzleData[j].index;
+                            gotIt = true;
+                            continue;
+                        }
+                    }
+                }
+            }
+            switch(theIndex){
+                case '3':
+                    titlePrefix = 'Easy';
+                    break;
+                case '4':
+                    titlePrefix = 'Moderate';
+                    break;
+                case '5':
+                    titlePrefix = 'Hard';
+                    break;
+                case '6':
+                    titlePrefix = 'Theme';
+                    break;
+            }
+            for (var i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
+                if(myPackArray.indexOf(this.props.puzzleData[parseInt(theIndex, 10)].data[i].name) < 0){
+                    keepInList.push(this.props.puzzleData[parseInt(theIndex, 10)].data[i]);
+                }
+            }
+            let putMeBack = null;
+            for(let whatsLeft = 0; whatsLeft<keepInList.length; whatsLeft++){
+                if(keepInList[whatsLeft].name == theName){
+                    putMeBack = keepInList.splice(whatsLeft, 1);
+                    continue;
+                }
+            }
+            keepInList = shuffleArray(keepInList);
+            keepInList.unshift(putMeBack[0]);
+            this.props.navigator.push({
+                id: 'store',
+                passProps: {
+                    dataIndex: theIndex,
+                    title: titlePrefix + ' Puzzle Packs',
+                    availableList: keepInList,
+                    puzzleData: this.props.puzzleData,
+                }
+            });
+            this.toggle();
             return;
         }
         var theDestination = 'puzzle launcher';
