@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Image, StyleSheet, NetInfo, AsyncStorage, ActivityIndicator } from 'react-native';
+import { View, Image, StyleSheet, NetInfo, AsyncStorage, ActivityIndicator, StatusBar } from 'react-native';
 import Meteor from 'react-native-meteor';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
@@ -46,6 +46,7 @@ class SplashScreen extends Component {
         };
     }
     componentDidMount() {
+        StatusBar.setHidden(true);
         let puzzleData = [];
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
