@@ -12,12 +12,9 @@ var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
 var seenStart = false;
 var ready = false;
-var nowISO = moment().valueOf();
-var launchDay = moment('2017 02', 'YYYY-MM');//Feb 1, 2017
-var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 2/1/2017
-var startNum = parseInt(dayDiff, 10) - 28;
-var tonightMidnight = moment().endOf('day').valueOf();
 let ownedPacks = ['null.value'];
+let nowISO = 0;
+let tonightMidnight = 0;
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -48,9 +45,15 @@ class SplashScreen extends Component {
     componentDidMount() {
         StatusBar.setHidden(true);
         let puzzleData = [];
+        nowISO = moment().valueOf();
+        tonightMidnight = moment().endOf('day').valueOf();
+        let launchDay = moment('2017 03', 'YYYY-MM');//Mar 1, 2017
+        let dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 3/1/2017
+        let startNum = parseInt(dayDiff, 10) - 28;
         if(this.props.motive == 'initialize'){
             puzzleData = seedPuzzleData;
-                    InAppBilling.open()
+                    InAppBilling.close()
+                    .then(() => InAppBilling.open())
                     .then(() => InAppBilling.listOwnedProducts())
                     .then((details) => {
                         ownedPacks = details;
