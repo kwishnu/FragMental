@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert, AppState } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
@@ -82,33 +82,29 @@ function formatData(data) {
         }
         return { dataBlob, sectionIds, rowIds };
     }
-var InAppBilling = require("react-native-billing");
-var Orientation = require('react-native-orientation');
-var SideMenu = require('react-native-side-menu');
-var Menu = require('../nav/menu');
-var deepCopy = require('../data/deepCopy.js');
-var fragData = require('../data/objPassed.js');
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
-var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
-var BORDER_RADIUS = CELL_PADDING * .3;
-var KEY_daily_solved_array = 'solved_array';
-var KEY_Color = 'colorKey';
-var KEY_midnight = 'midnight';
-var KEY_Premium = 'premiumOrNot';
-var KEY_Puzzles = 'puzzlesKey';
-var KEY_solvedTP = 'solvedTP';
-var KEY_ratedTheApp = 'ratedApp';
-var nowISO = moment().valueOf();
-var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
-var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
-var daysToSkip = parseInt(dayDiff, 10) - 31;
-var tonightMidnight = moment().endOf('day').valueOf();
-var puzzleData = {};
-var sArray = [];
-var solvedTodayOrNot = false;
+let InAppBilling = require("react-native-billing");
+let Orientation = require('react-native-orientation');
+let SideMenu = require('react-native-side-menu');
+let Menu = require('../nav/menu');
+let deepCopy = require('../data/deepCopy.js');
+let fragData = require('../data/objPassed.js');
+let styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
+const CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
+const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
+const BORDER_RADIUS = CELL_PADDING * .3;
+const KEY_daily_solved_array = 'solved_array';
+const KEY_Color = 'colorKey';
+const KEY_midnight = 'midnight';
+const KEY_Premium = 'premiumOrNot';
+const KEY_Puzzles = 'puzzlesKey';
+const KEY_Time = 'timeKey';
+const KEY_solvedTP = 'solvedTP';
+const KEY_ratedTheApp = 'ratedApp';
+let puzzleData = {};
+let sArray = [];
+let solvedTodayOrNot = false;
 
 
 class PuzzleContents extends Component{
@@ -144,8 +140,14 @@ class PuzzleContents extends Component{
     }
     componentDidMount() {
         Orientation.lockToPortrait();
+        AppState.addEventListener('change', this.handleAppStateChange);
+        let nowISO = moment().valueOf();
+        let launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
+        let dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
+        let tonightMidnight = moment().endOf('day').valueOf();
         try {
             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
+            AsyncStorage.setItem(KEY_Time, JSON.stringify(nowISO));
         } catch (error) {
             window.alert('AsyncStorage error: ' + error.message);
         }
@@ -219,7 +221,31 @@ class PuzzleContents extends Component{
     }
     componentWillUnmount(){
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.removeEventListener('change', this.handleAppStateChange);
     }
+    handleAppStateChange=(appState)=>{
+        if(appState == 'active'){
+            var timeNow = moment().valueOf();
+            AsyncStorage.getItem(KEY_Time).then((storedTime) => {
+                let sT = JSON.parse(storedTime);
+                let diff = (timeNow - sT)/1000;
+                if(diff>7200){
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                    this.props.navigator.replace({
+                        id: 'splash screen',
+                        passProps: {
+                            motive: 'initialize'
+                        }
+                    });
+
+                }
+            });
+        }
+     }
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {

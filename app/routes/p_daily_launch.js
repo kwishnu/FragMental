@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, Animated, AsyncStorage  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, Animated, AsyncStorage, AppState  } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
@@ -30,6 +30,7 @@ var CELL_PADDING = Math.floor(CELL_WIDTH * .05); // 5% of the cell width...+
 var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
 var puzzleData = {};
+const KEY_Time = 'timeKey';
 
 
 class DailyLaunch extends Component{
@@ -49,10 +50,35 @@ class DailyLaunch extends Component{
     }
     componentDidMount() {
         puzzleData = this.state.puzzleData;
+        AppState.addEventListener('change', this.handleAppStateChange);
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+    handleAppStateChange=(appState)=>{
+        if(appState == 'active'){
+            var timeNow = moment().valueOf();
+            AsyncStorage.getItem(KEY_Time).then((storedTime) => {
+                let sT = JSON.parse(storedTime);
+                let diff = (timeNow - sT)/1000;
+                if(diff>7200){
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                    this.props.navigator.replace({
+                        id: 'splash screen',
+                        passProps: {
+                            motive: 'initialize'
+                        }
+                    });
+
+                }
+            });
+        }
     }
     handleHardwareBackButton() {
         if (this.state.isOpen) {

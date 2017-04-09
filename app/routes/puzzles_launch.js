@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, AppState  } from 'react-native';
+import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
-
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -80,6 +80,7 @@ var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
 var BORDER_RADIUS = CELL_PADDING * .2 + 3;
 var KEY_daily_solved_array = 'solved_array';
 var puzzleData = {};
+const KEY_Time = 'timeKey';
 
 class PuzzleLaunch extends Component{
     constructor(props) {
@@ -102,11 +103,36 @@ class PuzzleLaunch extends Component{
     componentDidMount() {
         puzzleData = this.state.puzzleData;
         this.setColors();
+        AppState.addEventListener('change', this.handleAppStateChange);
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         setTimeout(() => {this.stopSpinner()}, 10);
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+    handleAppStateChange=(appState)=>{
+        if(appState == 'active'){
+            var timeNow = moment().valueOf();
+            AsyncStorage.getItem(KEY_Time).then((storedTime) => {
+                let sT = JSON.parse(storedTime);
+                let diff = (timeNow - sT)/1000;
+                if(diff>7200){
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                    this.props.navigator.replace({
+                        id: 'splash screen',
+                        passProps: {
+                            motive: 'initialize'
+                        }
+                    });
+
+                }
+            });
+        }
     }
     stopSpinner(){
         this.setState({isLoading: false});
