@@ -77,12 +77,12 @@ module.exports = class Social extends Component {
                 <View style={[social_styles.container, {borderColor: this.props.color}]}>
                     <View style={ [social_styles.header, {backgroundColor: this.props.color}] }>
                         <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.08, height: height*.08 } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
                         <Button style={{right: height*.02}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
+                            <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
                         </Button>
                     </View>
                     <View style={ social_styles.image_container }>
@@ -109,32 +109,31 @@ const social_styles = StyleSheet.create({
         borderWidth: 5,
     },
     header: {
-        flex: 1,
+        flex: 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 6,
         width: window.width,
     },
     image_container: {
-        flex: 7,
+        flex: 24,
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
     body_container: {
-        flex: 4,
+        flex: 8,
         justifyContent: 'center',
         alignItems: 'center',
         paddingLeft: 30,
         paddingRight: 30,
     },
     button_container: {
-        flex: 4,
+        flex: 8,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
     button_text: {
-        fontSize: configs.LETTER_SIZE * .6,
+        fontSize: configs.LETTER_SIZE * .7,
         color: '#ffffff'
     },
     body_text: {

@@ -51,12 +51,12 @@ module.exports = class ComboStore extends Component {
                 <View style={store_styles.container}>
                     <View style={store_styles.header}>
                         <Button style={{left: height*.02}} onPress={() => this.handleHardwareBackButton()}>
-                            <Image source={require('../images/arrow_back.png')} style={{width: height*.08, height: height*.08}} />
+                            <Image source={require('../images/arrow_back.png')} style={{width: height*.07, height: height*.07}} />
                         </Button>
                         <Text style={styles.header_text}>{this.props.title}
                         </Text>
                         <Button style={{right: height*.02}}>
-                            <Image source={require('../images/no_image.png') } style={{width: height*.08, height: height*.08}} />
+                            <Image source={require('../images/no_image.png') } style={{width: height*.07, height: height*.07}} />
                         </Button>
                     </View>
                     <View style={store_styles.listview_container}>
