@@ -12,7 +12,6 @@ var KEY_Notifs = 'notifsKey';
 var KEY_NotifTime = 'notifTimeKey';
 var seenStart = false;
 var ready = false;
-let ownedPacks = ['null.value'];
 let nowISO = 0;
 let tonightMidnight = 0;
 function shuffleArray(array) {
@@ -51,19 +50,23 @@ class SplashScreen extends Component {
         let dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 3/1/2017
         let startNum = parseInt(dayDiff, 10) - 28;
         if(this.props.motive == 'initialize'){
+            let ownedPacks = [];
             puzzleData = seedPuzzleData;
                     InAppBilling.close()
                     .then(() => InAppBilling.open())
                     .then(() => InAppBilling.listOwnedProducts())
                     .then((details) => {
                         ownedPacks = details;
-                        ownedPacks.push('null.value')
-                    return InAppBilling.close();
+                   return InAppBilling.close();
             }).then(()=> {
                 return AsyncStorage.getItem(KEY_Puzzles);
             }).then((puzzles) => {
                 if (puzzles !== null) {//get current Puzzle data:
-                    puzzleData = JSON.parse(puzzles)
+                    puzzleData = JSON.parse(puzzles);
+                    if(ownedPacks.length > 0){
+                        puzzleData[17].show = 'false';
+                        puzzleData[18].show = 'true';
+                    }
                 }else{//store seed Puzzle data:
                     puzzleData = seedPuzzleData;
                     try {
@@ -130,8 +133,8 @@ class SplashScreen extends Component {
             }).then((isConnected) => {
                 let promises = [];
                 if(isConnected){
-                    let packNames = ['null.value'];
-                    let packsOnDevice = ['null.value'];
+                    let packNames = [];
+                    let packsOnDevice = [];
                     for (var k=0; k<puzzleData.length; k++){
                         if (puzzleData[k].type == 'mypack'){
                             if(puzzleData[k].product_id != ''){
@@ -195,7 +198,7 @@ class SplashScreen extends Component {
                 this.gotoScene(whereToGo, puzzleData);
             })
             .catch(function(error) {
-                window.alert('214: ' + error.message);
+                window.alert('197: ' + error.message);
             });
         }else{//purchased puzzle pack...
             this.setState({hasPremium: 'true'});
@@ -210,7 +213,7 @@ class SplashScreen extends Component {
             }).then((data) => {
                 this.gotoScene('puzzles contents', data);
             }).catch(function(error) {
-                window.alert('230: ' + error.message);
+                window.alert('212: ' + error.message);
             });
         }
     }
