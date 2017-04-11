@@ -150,10 +150,10 @@ class StartScene extends Component {
                             <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/page4bg.png')} />
                         </View>
                     </View>
-                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={-20}>
+                    <View style={[styles.pic, {top: 0, left: 0}]} level={-10}>
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/key.png')} />
                     </View>
-                    <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={30}>
+                    <View style={[styles.pic, {top: 0, left: 10}]} level={10}>
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/hint.png')} />
                     </View>
                 </View>
