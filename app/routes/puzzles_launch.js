@@ -447,11 +447,11 @@ class PuzzleLaunch extends Component{
                     <View style={ [container_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [container_styles.header, {backgroundColor: this.state.headerColor}]}>
                             <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                                <Image source={ require('../images/arrow_back.png') } style={ { width: height*.08, height: height*.08 } } />
+                                <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
                             </Button>
                             <Text style={{fontSize: configs.LETTER_SIZE * 0.7, color: this.state.titleColor}} >{this.props.title}</Text>
                             <Button style={{right: height*.02}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
+                                <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
                             </Button>
                         </View>
                         <View style={ [container_styles.tiles_container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>

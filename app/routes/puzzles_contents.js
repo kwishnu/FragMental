@@ -569,11 +569,11 @@ class PuzzleContents extends Component{
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
-                                <Image source={ require('../images/menu.png') } style={ { width: height*.08, height: height*.08 } } />
+                                <Image source={ require('../images/menu2.png') } style={ { width: height/15, height: height/15 } } />
                             </Button>
                             <Image source={ require('../images/logo2.png') } style={ { width: height/3.75, height: height/16 } } />
                             <Button style={{right: height*.02}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
+                                <Image source={ require('../images/no_image.png') } style={ { width: height/15, height: height/15 } } />
                             </Button>
                         </View>
                         <View style={ container_styles.puzzles_container }>
