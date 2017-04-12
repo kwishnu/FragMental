@@ -5,6 +5,7 @@ import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
 import Meteor from 'react-native-meteor';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -569,11 +570,11 @@ class PuzzleContents extends Component{
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
-                                <Image source={ require('../images/menu2.png') } style={ { width: height/15, height: height/15 } } />
+                                <Image source={ require('../images/menu2.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
                             <Image source={ require('../images/logo2.png') } style={ { width: height/3.75, height: height/16 } } />
                             <Button style={{right: height*.02}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: height/15, height: height/15 } } />
+                                <Image source={ require('../images/no_image.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
                         </View>
                         <View style={ container_styles.puzzles_container }>
@@ -648,7 +649,7 @@ var container_styles = StyleSheet.create({
         marginBottom: 1,
     },
     launcher_text: {
-        fontSize: configs.LETTER_SIZE * 0.75,
+        fontSize: normalize(configs.LETTER_SIZE * 0.65),
     },
 });
 module.exports = PuzzleContents;

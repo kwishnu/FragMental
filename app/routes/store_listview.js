@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroi
 //import Row from '../components/Row';
 import Button from '../components/Button';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 
 var styles = require('../styles/styles');
 var InAppBilling = require("react-native-billing");
@@ -151,11 +152,11 @@ module.exports = class StoreListView extends Component {
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
                         <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}</Text>
                         <Button style={{right: height*.02}} onPress={ () => this.toggleInfoBox() }>
-                            <Image source={ require('../images/info_question.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/info_question.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                         </Button>
                     </View>
                     <View style={store_styles.listview_container}>
@@ -199,7 +200,7 @@ const Row = ({props, navigator}) => (
             <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}
             </Text>
-            <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color)]}>
+            <Text style={[store_styles.launcher_text, this.getTextColor(props.color)]}>
               {`${props.name}`}
             </Text>
             <Text style={[store_styles.text_small, {color: props.color}]}>
@@ -285,11 +286,14 @@ const store_styles = StyleSheet.create({
         alignItems: 'center',
     },
     text_small: {
-        fontSize: configs.LETTER_SIZE * .4,
+        fontSize: normalize(configs.LETTER_SIZE * .4),
         marginLeft: height * .02
     },
+    launcher_text: {
+        fontSize: normalize(configs.LETTER_SIZE * .7),
+    },
     info_text: {
-        fontSize: configs.LETTER_SIZE * .7,
+        fontSize: normalize(configs.LETTER_SIZE * .6),
         color: '#333333'
     },
     launcher: {
