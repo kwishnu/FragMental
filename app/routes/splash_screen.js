@@ -115,21 +115,22 @@ class SplashScreen extends Component {
                                      puzzStringArray.push(row.puzz);
                                  }
                              });
-                            puzzleData[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
-                            puzzStringArray.shift();
-                            for(var jj=0; jj<puzzStringArray.length; jj++){
-                                if(jj < 3){puzzleData[17].puzzles[jj] = puzzStringArray[jj];}//load last 3 days
+                            puzzleData[16].puzzles[0] = puzzStringArray[30];//load today's puzzle
+                            puzzStringArray.pop();
+                            for(var jj=puzzStringArray.length; jj>=0; jj--){
                                 puzzleData[18].puzzles[jj] = puzzStringArray[jj];//load last 30 days
+                                if(jj < 3){puzzleData[17].puzzles[jj] = puzzStringArray[jj];}//load last 3 days
                             }
                         },
                         onStop: function () {
                             window.alert('Sorry, can\'t connect to our server right now');
                         }
                     });
+                    return isConnected;
                 }else{
                     this.setState({connectionBool: false})
+                    return isConnected;
                 }
-                return isConnected;
             }).then((isConnected) => {
                 let promises = [];
                 if(isConnected){
@@ -157,8 +158,8 @@ class SplashScreen extends Component {
                                     case 2:
                                         packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
                                         break;
-                                    case 3:
-                                        packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' and ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
+                                    case 3://_and_ in product ID, '&' in title
+                                        packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' & ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
                                         break;
                                     default:
                                 }
@@ -176,8 +177,8 @@ class SplashScreen extends Component {
                                         case 2:
                                             packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
                                             break;
-                                        case 3:
-                                            packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' and ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
+                                        case 3://_and_ in product ID, '&' in title
+                                            packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' & ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
                                             break;
                                         default:
                                     }
