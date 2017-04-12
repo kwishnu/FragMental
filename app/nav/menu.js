@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ListView, StyleSheet, Text, View, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
 import MenuSectionHeader  from '../components/MenuSectionHeader';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 
 var {width, height} = require('Dimensions').get('window');
 
@@ -96,7 +97,7 @@ var menu_styles = StyleSheet.create({
     },
     launcher_text: {
         color: '#464646',
-        fontSize: configs.LETTER_SIZE * 0.55,
+        fontSize: normalize(configs.LETTER_SIZE * 0.5),
         fontWeight: 'bold'
     },
     separator: {

@@ -4,8 +4,8 @@ import moment from 'moment';
 import Button from '../components/Button';
 import DropdownMenu from '../components/DropdownMenu';
 import configs from '../config/configs';
-var Sound = require('react-native-sound');
-
+import normalize from '../config/pixelRatio';
+let Sound = require('react-native-sound');
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
@@ -72,24 +72,22 @@ function shuffleArray(array) {
     }
     return array;
 }
-
-
-var deepCopy = require('../data/deepCopy.js');
-var fragData = require('../data/objPassed.js');
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
-var timeoutHandle;
-var KEY_Puzzles = 'puzzlesKey';
-var KEY_solvedTP = 'solvedTP';
-var KEY_daily_solved_array = 'solved_array';
-var KEY_Sound = 'soundKey';
-var KEY_UseNumLetters = 'numLetters';
-var KEY_ratedTheApp = 'ratedApp';
-var dataBackup = {};
-var puzzleData = {};
-var dsArray = [];
-var playedPlinkLast = false;
+let deepCopy = require('../data/deepCopy.js');
+let fragData = require('../data/objPassed.js');
+let styles = require('../styles/styles');
+let {width, height} = require('Dimensions').get('window');
+let SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
+let timeoutHandle;
+const KEY_Puzzles = 'puzzlesKey';
+const KEY_solvedTP = 'solvedTP';
+const KEY_daily_solved_array = 'solved_array';
+const KEY_Sound = 'soundKey';
+const KEY_UseNumLetters = 'numLetters';
+const KEY_ratedTheApp = 'ratedApp';
+let dataBackup = {};
+let puzzleData = {};
+let dsArray = [];
+let playedPlinkLast = false;
 const click = new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
@@ -188,12 +186,10 @@ class Game extends Component {
             clueTextColor: '',
             titleColor: '',
             textColor: '',
-            arrowImage: require('../images/arrow_forward.png'),
-            replayImage: require('../images/replay.png'),
-            ellipsisImage: require('../images/dropdown.png'),
-            hasRated: this.props.hasRated,
             shouldShowDropdown: false,
             dropdownImage: require('../images/dropdown.png'),
+            arrowImage: require('../images/arrow_forward.png'),
+            hasRated: this.props.hasRated,
             soundString: 'Mute Sounds',
             useSounds: true,
             wentToRate: false
@@ -207,7 +203,7 @@ class Game extends Component {
         this.setColors();
         this.setRated();
         AsyncStorage.getItem(KEY_UseNumLetters).then((value) => {
-            var valueToBool = (value == 'true')?true:false;
+            let valueToBool = (value == 'true')?true:false;
             this.setState({useNumLetters: valueToBool});
             this.storeGameVariables(this.state.index);
             this.setState({isLoading: false});
@@ -242,7 +238,8 @@ class Game extends Component {
     }
     handleAppStateChange=(appState)=>{
         if(appState == 'active' && this.state.wentToRate == true){
-            this.reset_scene();
+            this.setRated();
+            //this.reset_scene();
         }
      }
     setRated(){
@@ -250,12 +247,14 @@ class Game extends Component {
         var opacityToUse = (this.state.hasRated == 'true')?1:0;
         this.setState({
             hintOpacity: opacityToUse,
-            numHints: numToUse
+            numHints: numToUse,
+            hint1Color: '#ffffff',
+            hint2Color: '#ffffff'
         });
     }
     setColors(){
         var bgC = this.props.bgColor;
-        var fieldColor = shadeColor2(bgC, -10);;//(bgC, 50);
+        var fieldColor = shadeColor2(bgC, -10);
         var headColor =  shadeColor2(bgC, -30);
         var cluebgColor = shadeColor2(bgC, 30);
         var txtColor = invertColor(fieldColor, true);
@@ -1001,12 +1000,12 @@ class Game extends Component {
                     <View style={ [game_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [game_styles.game_header, {backgroundColor: this.state.headerColor}]}>
                             <Button style={{left: 15}} onPress={ () => this.closeGame() }>
-                                <Image source={ require('../images/close.png') } style={{ width: 50, height: 50 }} />
+                                <Image source={ require('../images/close.png') } style={{ width: normalize(height/15), height: normalize(height/15) }} />
                             </Button>
                             <Text style={[styles.header_text, {color: this.state.titleColor}]}>{this.state.title}
                             </Text>
                             <Button style={{right: 15}} onPress={ () => this.showDropdown() }>
-                                <Image source={this.state.dropdownImage} style={{ width: 50, height: 50 }} />
+                                <Image source={this.state.dropdownImage} style={{ width: normalize(height/15), height: normalize(height/15) }} />
                             </Button>
                         </View>
 
@@ -1154,7 +1153,7 @@ var game_styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         width: width - 30,
-        paddingLeft: 10,
+        paddingLeft: height*.02,
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
