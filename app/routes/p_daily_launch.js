@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, Li
 import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -378,12 +379,12 @@ class DailyLaunch extends Component{
                 <View style={ [container_styles.container, this.border('#070f4e')] }>
                     <View style={ container_styles.header }>
                         <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: 50, height: 50 } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
                         <Button style={{right: 15}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: 50, height: 50 } } />
+                            <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                     </View>
                     <View style={ [container_styles.tiles_container, this.border('#070f4e')] }>
@@ -431,7 +432,7 @@ var container_styles = StyleSheet.create({
     },
     gripe_text: {
         color: '#e3e004',
-        fontSize: configs.LETTER_SIZE * 0.55,
+        fontSize: normalize(configs.LETTER_SIZE * 0.55),
         textAlign: 'center',
     },
     listview: {
@@ -449,7 +450,7 @@ var container_styles = StyleSheet.create({
         backgroundColor: '#09146d',
     },
     tiles_container: {
-        flex: 15,
+        flex: 11,
         backgroundColor: '#486bdd',
         paddingLeft: 6,
         paddingRight: 6,
