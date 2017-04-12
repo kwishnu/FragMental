@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Alert, BackAndroid, Platform, AsyncStorage, Linking, AppState, NetInfo } from 'react-native';
 import Button from '../components/Button';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 import moment from 'moment';
 
 var styles = require('../styles/styles');
@@ -76,11 +77,11 @@ module.exports = class Settings extends Component {
             <View style={about_styles.container}>
                 <View style={ about_styles.header }>
                     <Button style={{left: height*.02}} onPress={ () => this.goSomewhere() }>
-                        <Image source={ require('../images/arrow_back.png') } style={ { width: height*.08, height: height*.08 } } />
+                        <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                     <Text style={styles.header_text} >About FragMental</Text>
                     <Button style={{right: height*.02}}>
-                        <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
+                        <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                 </View>
                 <View style={ about_styles.about_container }>
@@ -131,12 +132,12 @@ const about_styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: configs.LETTER_SIZE * 0.45,
+        fontSize: normalize(configs.LETTER_SIZE * 0.45),
         marginBottom: 10
     },
     mediumPrint: {
         color: '#e3e004',
-        fontSize: configs.LETTER_SIZE * 0.5,
+        fontSize: normalize(configs.LETTER_SIZE * 0.5),
         marginLeft: 32,
         marginRight: 32,
         marginTop: 6,
@@ -145,11 +146,11 @@ const about_styles = StyleSheet.create({
     },
     finePrint: {
         color: '#999999',
-        fontSize: configs.LETTER_SIZE * 0.35,
+        fontSize: normalize(configs.LETTER_SIZE * 0.35),
     },
     sure: {
         color: '#111111',
-        fontSize: configs.LETTER_SIZE * 0.5,
+        fontSize: normalize(configs.LETTER_SIZE * 0.5),
     },
     divider: {
         height: StyleSheet.hairlineWidth,
