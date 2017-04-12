@@ -7,9 +7,9 @@ import Meteor from 'react-native-meteor';
 import configs from '../config/configs';
 import normalize from '../config/pixelRatio';
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -26,7 +26,7 @@ function invertColor(hex, bw) {
     if (hex.length !== 6) {
         throw new Error('Invalid HEX color.');
     }
-    var r = parseInt(hex.slice(0, 2), 16),
+    let r = parseInt(hex.slice(0, 2), 16),
         g = parseInt(hex.slice(2, 4), 16),
         b = parseInt(hex.slice(4, 6), 16);
     if (bw) {
@@ -42,9 +42,9 @@ function invertColor(hex, bw) {
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 function shadeColor(color, percent) {
-        var R = parseInt(color.substring(1,3),16);
-        var G = parseInt(color.substring(3,5),16);
-        var B = parseInt(color.substring(5,7),16);
+        let R = parseInt(color.substring(1,3),16);
+        let G = parseInt(color.substring(3,5),16);
+        let B = parseInt(color.substring(5,7),16);
 
         R = parseInt(R * (100 + percent) / 100);
         G = parseInt(G * (100 + percent) / 100);
@@ -54,9 +54,9 @@ function shadeColor(color, percent) {
         G = (G<255)?G:255;
         B = (B<255)?B:255;
 
-        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+        let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
 
         return '#'+RR+GG+BB;
 }
@@ -120,7 +120,6 @@ class PuzzleContents extends Component{
           getRowData,
         });
         const { dataBlob, sectionIds, rowIds } = formatData(this.props.puzzleData);
-
         this.state = {
             id: 'puzzles contents',
             isLoading: true,
@@ -128,6 +127,7 @@ class PuzzleContents extends Component{
             todayFull: null,
             isPremium: this.props.isPremium,
             hasRated: 'false',
+            menuImage: require('../images/menu.png'),
             puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
@@ -153,7 +153,7 @@ class PuzzleContents extends Component{
             window.alert('AsyncStorage error: ' + error.message);
         }
         puzzleData = this.state.puzzleData;
-        var todayfull = moment().format('MMMM D, YYYY');
+        let todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
         AsyncStorage.getItem(KEY_solvedTP).then((solvedTodays) => {
             if (solvedTodays !== null) {
@@ -174,7 +174,7 @@ class PuzzleContents extends Component{
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
             } else {
-                var solvedArray = new Array(30).fill('0');
+                let solvedArray = new Array(30).fill('0');
                 sArray = solvedArray;
                 try {
                    AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(solvedArray));
@@ -185,14 +185,13 @@ class PuzzleContents extends Component{
             return AsyncStorage.getItem(KEY_midnight);
         }).then( (value) => {
             if (value !== null) {
-                var storedMidnight = parseInt(JSON.parse(value), 10);
-                var milliSecsOver = nowISO - storedMidnight;
-
+                let storedMidnight = parseInt(JSON.parse(value), 10);
+                let milliSecsOver = nowISO - storedMidnight;
                 if(milliSecsOver > 0){//at least the next day, update daily solved array
                     solvedTodayOrNot = false;
-                    var numDays = Math.ceil(milliSecsOver/86400000);
+                    let numDays = Math.ceil(milliSecsOver/86400000);
                     numDays=(numDays>30)?30:numDays;
-                    for (var shiftArray=0; shiftArray<numDays; shiftArray++){
+                    for (let shiftArray=0; shiftArray<numDays; shiftArray++){
                         sArray.unshift('0');
                         sArray.pop();
                     }
@@ -204,20 +203,20 @@ class PuzzleContents extends Component{
                         window.alert('AsyncStorage error: ' + error.message);
                     }
                 }
+                return true;
             } else {
                 try {
                     AsyncStorage.setItem(KEY_midnight, JSON.stringify(tonightMidnight));
                 } catch (error) {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
+                return true;
             }
-            var ready = 'loaded';
-            return ready;
         }).then((ready)=>{
             this.setState({isLoading: false});
         });
         if (this.props.connectionBool == false){
-            Alert.alert('No Connection...', 'Sorry, an internet connection is required to load Daily Puzzles');
+            Alert.alert('No Connection', 'Sorry, an internet connection is required to load Daily Puzzles');
         }
     }
     componentWillUnmount(){
@@ -226,7 +225,7 @@ class PuzzleContents extends Component{
     }
     handleAppStateChange=(appState)=>{
         if(appState == 'active'){
-            var timeNow = moment().valueOf();
+            let timeNow = moment().valueOf();
             AsyncStorage.getItem(KEY_Time).then((storedTime) => {
                 let sT = JSON.parse(storedTime);
                 let diff = (timeNow - sT)/1000;
@@ -242,7 +241,6 @@ class PuzzleContents extends Component{
                             motive: 'initialize'
                         }
                     });
-
                 }
             });
         }
@@ -258,12 +256,16 @@ class PuzzleContents extends Component{
     updateMenuState(isOpen) {
         this.setState({ isOpen: isOpen });
         if (isOpen) {
+            this.setState({menuImage: require('../images/arrow_back.png')});
             BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         } else {
+            this.setState({menuImage: require('../images/menu.png')});
             BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
         }
     }
     onMenuItemSelected = (item) => {
+            let myPackArray = [];
+            let keepInList = [];
             switch (item.link){
                 case 'puzzles contents':
                     this.toggle();
@@ -290,14 +292,12 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'store':
-                    var myPackArray = [];
-                    var keepInList = [];
-                    for (var j=0; j<this.props.puzzleData.length; j++){
+                    for (let j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
                         }
                     }
-                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                    for (let i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
                         if(myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name) < 0){
                             keepInList.push(this.props.puzzleData[item.index].data[i]);
                         }
@@ -314,15 +314,13 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'store3':
-                    var myPackArray = [];
-                    var keepInList = this.props.puzzleData[item.index].data;
-
-                    for (var j=0; j<this.props.puzzleData.length; j++){
+                    keepInList = this.props.puzzleData[item.index].data;
+                    for (let j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
                         }
                     }
-                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                    for (let i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
                         if((myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[2]) > -1)){
                             keepInList.splice(i, 1);
                         }
@@ -382,22 +380,22 @@ class PuzzleContents extends Component{
         };
     }
     lightBorder(color, type) {
-        var lighterColor = shadeColor(color, 60);
-        var bordWidth = (type == 'daily')? 1:6;
+        let lighterColor = shadeColor(color, 60);
+        let bordWidth = (type == 'daily')? 1:6;
             return {
                 borderColor: lighterColor,
                 borderWidth: bordWidth,
             };
     }
     bg(colorSent) {
-        var strToReturn=colorSent.replace(/\"/g, "");
+        let strToReturn=colorSent.replace(/\"/g, "");
         return {
             backgroundColor: strToReturn
         };
 
     }
     getTextColor(bg, index){
-        var strToReturn = invertColor(bg, true);
+        let strToReturn = invertColor(bg, true);
         if(index == '16' && solvedTodayOrNot){
             strToReturn = '#555';
             return {
@@ -410,26 +408,26 @@ class PuzzleContents extends Component{
         };
     }
     getTitle(title, numPuzzles){
-        var appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
-        var titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
+        let appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
+        let titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
         titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
     }
     onSelect(index, title, bg, productID) {
         if (title.indexOf('*') > -1){
             let theName = title.substring(1);
-            var myPackArray = [];
-            var keepInList = [];
-            var theIndex = '';
-            var titlePrefix = '';
-            var gotIt = false;
-            var itemIndex = 0;
-            for (var j=0; j<this.props.puzzleData.length; j++){
+            let myPackArray = [];
+            let keepInList = [];
+            let theIndex = '';
+            let titlePrefix = '';
+            let gotIt = false;
+            let itemIndex = 0;
+            for (let j=0; j<this.props.puzzleData.length; j++){
                 if (this.props.puzzleData[j].type == 'mypack'){
                     myPackArray.push(this.props.puzzleData[j].title);
                 }
                 if (!gotIt && this.props.puzzleData[j].link == 'store'){
-                    for (var k=0; k<this.props.puzzleData[j].data.length; k++){
+                    for (let k=0; k<this.props.puzzleData[j].data.length; k++){
                         if(this.props.puzzleData[j].data[k].name == theName){
                             theIndex = this.props.puzzleData[j].index;
                             gotIt = true;
@@ -452,7 +450,7 @@ class PuzzleContents extends Component{
                     titlePrefix = 'Theme';
                     break;
             }
-            for (var i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
+            for (let i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
                 if(myPackArray.indexOf(this.props.puzzleData[parseInt(theIndex, 10)].data[i].name) < 0){
                     keepInList.push(this.props.puzzleData[parseInt(theIndex, 10)].data[i]);
                 }
@@ -478,12 +476,11 @@ class PuzzleContents extends Component{
             this.toggle();
             return;
         }
-        var theDestination = 'puzzle launcher';
-        var theTitle = title;
-        var gripeText = '';
-        var useColors = '';
-        var bgColorToSend = '';
-
+        let theDestination = 'puzzle launcher';
+        let theTitle = title;
+        let gripeText = '';
+        let useColors = '';
+        let bgColorToSend = '';
         switch(title){
             case 'Today\'s Puzzle':
                 theDestination = 'game board';
@@ -522,8 +519,8 @@ class PuzzleContents extends Component{
                     },
                 });
                 return;
-            default://a puzzle pack launcher:
         }
+    //a puzzle pack launcher:
         AsyncStorage.getItem(KEY_Color).then((colors) => {
             if (colors !== null) {
                 useColors = colors;
@@ -552,6 +549,7 @@ class PuzzleContents extends Component{
             });
         });
     }
+
     render() {
         const menu = <Menu onItemSelected={this.onMenuItemSelected} data = {this.props.puzzleData} />;
         if(this.state.isLoading == true){
@@ -570,7 +568,7 @@ class PuzzleContents extends Component{
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
-                                <Image source={ require('../images/menu2.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
+                                <Image source={this.state.menuImage} style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
                             <Image source={ require('../images/logo2.png') } style={ { width: height/3.75, height: height/16 } } />
                             <Button style={{right: height*.02}}>
@@ -601,7 +599,7 @@ class PuzzleContents extends Component{
 }
 
 
-var container_styles = StyleSheet.create({
+const container_styles = StyleSheet.create({
     container: {
         flex: 1,
     },
