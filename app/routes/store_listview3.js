@@ -4,6 +4,8 @@ import Row3 from '../components/Row3';
 import Button from '../components/Button';
 const {width, height} = require('Dimensions').get('window');
 const styles = require('../styles/styles');
+import normalize from '../config/pixelRatio';
+
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
@@ -51,12 +53,12 @@ module.exports = class ComboStore extends Component {
                 <View style={store_styles.container}>
                     <View style={store_styles.header}>
                         <Button style={{left: height*.02}} onPress={() => this.handleHardwareBackButton()}>
-                            <Image source={require('../images/arrow_back.png')} style={{width: height*.07, height: height*.07}} />
+                            <Image source={require('../images/arrow_back.png')} style={{width: normalize(height*0.07), height: normalize(height*0.07)}} />
                         </Button>
                         <Text style={styles.header_text}>{this.props.title}
                         </Text>
                         <Button style={{right: height*.02}}>
-                            <Image source={require('../images/no_image.png') } style={{width: height*.07, height: height*.07}} />
+                            <Image source={require('../images/no_image.png') } style={{width: normalize(height*0.07), height: normalize(height*0.07)}} />
                         </Button>
                     </View>
                     <View style={store_styles.listview_container}>
@@ -87,7 +89,7 @@ const store_styles = StyleSheet.create({
         backgroundColor: '#12046c',
     },
     listview_container: {
-        flex: 13,
+        flex: 12,
         justifyContent: 'center',
         alignItems: 'center',
         paddingLeft: 16,

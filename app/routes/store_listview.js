@@ -152,11 +152,11 @@ module.exports = class StoreListView extends Component {
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
                         <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}</Text>
                         <Button style={{right: height*.02}} onPress={ () => this.toggleInfoBox() }>
-                            <Image source={ require('../images/info_question.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
+                            <Image source={ require('../images/info_question.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                     </View>
                     <View style={store_styles.listview_container}>
@@ -240,7 +240,7 @@ const store_styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     listview_container: {
-        flex: 13,
+        flex: 12,
         justifyContent: 'center',
         alignItems: 'center',
         paddingLeft: height * .02,
@@ -290,7 +290,7 @@ const store_styles = StyleSheet.create({
         marginLeft: height * .02
     },
     launcher_text: {
-        fontSize: normalize(configs.LETTER_SIZE * .7),
+        fontSize: normalize(configs.LETTER_SIZE * .65),
     },
     info_text: {
         fontSize: normalize(configs.LETTER_SIZE * .6),
