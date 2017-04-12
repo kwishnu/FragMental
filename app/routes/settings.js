@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 
 var styles = require('../styles/styles');
 var {width, height} = require('Dimensions').get('window');
@@ -204,89 +205,88 @@ module.exports = class Settings extends Component {
             <View style={settings_styles.container}>
                 <View style={ settings_styles.header }>
                     <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                        <Image source={ require('../images/arrow_back.png') } style={ { width: height*.08, height: height*.08 } } />
+                        <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                     <Text style={styles.header_text} >Settings
                     </Text>
                     <Button style={{right: height*.02}}>
-                        <Image source={ require('../images/no_image.png') } style={ { width: height*.08, height: height*.08 } } />
+                        <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                 </View>
 
                 <View style={ settings_styles.settings_container }>
-                        <View>
-                            <View style={settings_styles.parameter_container}>
-                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>{this.state.sounds_text}</Text>
-                                </View>
-                                <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.sounds_state} onValueChange={(state)=>{this.toggleGameSounds(state)}}/>
-                                </View>
+                    <View>
+                        <View style={settings_styles.parameter_container}>
+                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                <Text style={settings_styles.text}>{this.state.sounds_text}</Text>
                             </View>
-
-                            <View style={settings_styles.parameter_container}>
-                                <View style={settings_styles.divider}>
-                                </View>
+                            <View style={settings_styles.switch_container}>
+                                <Switch value={this.state.sounds_state} onValueChange={(state)=>{this.toggleGameSounds(state)}}/>
                             </View>
-
-
-
-                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
-                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>{this.state.use_colors}</Text>
-                                </View>
-                                <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.color_state} onValueChange={(state)=>{this.toggleColor(state)}}/>
-                                </View>
-                            </View>
-
-                            <View style={settings_styles.parameter_container}>
-                                <View style={settings_styles.divider}>
-                                </View>
-                            </View>
-
-                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
-                                <View style={settings_styles.text_container}>
-                                    <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
-                                </View>
-                            </View>
-                            <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
-                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>{this.state.notif_text}</Text>
-                                </View>
-                                <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
-                                </View>
-                            </View>
-                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
-                                <Picker
-                                    enabled={this.state.notifs_state}
-                                    style={settings_styles.picker}
-                                    selectedValue={this.state.notif_time}
-                                    onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
-                                >
-                                    <Picker.Item label='5:00 am' value={'5'} />
-                                    <Picker.Item label='6:00 am' value={'6'} />
-                                    <Picker.Item label='7:00 am' value={'7'} />
-                                    <Picker.Item label='8:00 am' value={'8'} />
-                                    <Picker.Item label='9:00 am' value={'9'} />
-                                </Picker>
-                            </View>
-
-                            <View style={settings_styles.parameter_container}>
-                                <View style={settings_styles.divider}>
-                                </View>
-                            </View>
-                            <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
-                                <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
-                                    <Text style={settings_styles.text}>{this.state.nl_text}</Text>
-                                </View>
-                                <View style={settings_styles.switch_container}>
-                                    <Switch value={this.state.nl_state} onValueChange={(state)=>{this.toggleLetters(state)}}/>
-                                </View>
-                            </View>
-
                         </View>
+
+                        <View style={settings_styles.parameter_container}>
+                            <View style={settings_styles.divider}>
+                            </View>
+                        </View>
+
+
+
+                        <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
+                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                <Text style={settings_styles.text}>{this.state.use_colors}</Text>
+                            </View>
+                            <View style={settings_styles.switch_container}>
+                                <Switch value={this.state.color_state} onValueChange={(state)=>{this.toggleColor(state)}}/>
+                            </View>
+                        </View>
+
+                        <View style={settings_styles.parameter_container}>
+                            <View style={settings_styles.divider}>
+                            </View>
+                        </View>
+
+                        <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
+                            <View style={settings_styles.text_container}>
+                                <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
+                            </View>
+                        </View>
+                        <View style={[settings_styles.parameter_container, {marginTop: 8}]}>
+                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                <Text style={settings_styles.text}>{this.state.notif_text}</Text>
+                            </View>
+                            <View style={settings_styles.switch_container}>
+                                <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
+                            </View>
+                        </View>
+                        <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
+                            <Picker
+                                enabled={this.state.notifs_state}
+                                style={settings_styles.picker}
+                                selectedValue={this.state.notif_time}
+                                onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
+                            >
+                                <Picker.Item label='5:00 am' value={'5'} />
+                                <Picker.Item label='6:00 am' value={'6'} />
+                                <Picker.Item label='7:00 am' value={'7'} />
+                                <Picker.Item label='8:00 am' value={'8'} />
+                                <Picker.Item label='9:00 am' value={'9'} />
+                            </Picker>
+                        </View>
+
+                        <View style={settings_styles.parameter_container}>
+                            <View style={settings_styles.divider}>
+                            </View>
+                        </View>
+                        <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
+                            <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
+                                <Text style={settings_styles.text}>{this.state.nl_text}</Text>
+                            </View>
+                            <View style={settings_styles.switch_container}>
+                                <Switch value={this.state.nl_state} onValueChange={(state)=>{this.toggleLetters(state)}}/>
+                            </View>
+                        </View>
+                    </View>
                 </View>
             </View>
         );

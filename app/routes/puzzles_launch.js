@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, Li
 import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -447,11 +448,11 @@ class PuzzleLaunch extends Component{
                     <View style={ [container_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [container_styles.header, {backgroundColor: this.state.headerColor}]}>
                             <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                                <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
+                                <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                             </Button>
                             <Text style={{fontSize: configs.LETTER_SIZE * 0.7, color: this.state.titleColor}} >{this.props.title}</Text>
                             <Button style={{right: height*.02}}>
-                                <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
+                                <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                             </Button>
                         </View>
                         <View style={ [container_styles.tiles_container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
@@ -493,21 +494,15 @@ var container_styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     tiles_container: {
-        flex: 45,
+        flex: 11,
         paddingLeft: 6,
         paddingRight: 6,
     },
     header: {
-        flex: 4,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: window.width,
-    },
-    footer: {
-        flex: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
         width: window.width,
     },
     launcher: {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, BackAndroid, Linking } from 'react-native';
 import Button from '../components/Button';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 const styles = require('../styles/styles');
 const {width, height} = require('Dimensions').get('window');
 
@@ -77,12 +78,12 @@ module.exports = class Social extends Component {
                 <View style={[social_styles.container, {borderColor: this.props.color}]}>
                     <View style={ [social_styles.header, {backgroundColor: this.props.color}] }>
                         <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
                         <Button style={{right: height*.02}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                     </View>
                     <View style={ social_styles.image_container }>
