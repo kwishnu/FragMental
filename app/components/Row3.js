@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import configs from '../config/configs';
+import normalize from '../config/pixelRatio';
 
 var InAppBilling = require('react-native-billing');
 var { width, height } = require('Dimensions').get('window');
@@ -105,35 +106,35 @@ const Row3 = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>this.buyCombo( props.name, props.product_id, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[0])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[0])]}>
                   {`${props.num_puzzles[0]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[0])]}>
+                <Text style={[styles.launcher_text, this.getTextColor(props.color[0])]}>
                   {`${props.name[0]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[0])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[0])]}>
                   {`${props.difficulty[0]}`}
                 </Text>
             </View>
             <View style={[styles.mid_section, this.getBgColor(props.color[1])]}>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[1])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[1])]}>
                   {`${props.num_puzzles[1]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[1])]}>
+                <Text style={[styles.launcher_text, this.getTextColor(props.color[1])]}>
                   {`${props.name[1]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[1])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[1])]}>
                   {`${props.difficulty[1]}`}
                 </Text>
             </View>
             <View style={[styles.bottom_section, this.getBgColor(props.color[2])]}>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[2])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[2])]}>
                   {`${props.num_puzzles[2]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .65}, this.getTextColor(props.color[2])]}>
+                <Text style={[styles.launcher_text, this.getTextColor(props.color[2])]}>
                   {`${props.name[2]}`}
                 </Text>
-                <Text style={[{fontSize: configs.LETTER_SIZE * .4}, this.getTextColor(props.color[2])]}>
+                <Text style={[styles.small_text, this.getTextColor(props.color[2])]}>
                   {`${props.difficulty[2]}`}
                 </Text>
             </View>
@@ -176,8 +177,11 @@ const styles = StyleSheet.create({
         paddingLeft: height * .02,
         paddingRight: height * .02
     },
-    text: {
-        fontSize: 20,
+    small_text: {
+        fontSize: normalize(configs.LETTER_SIZE * .4),
+    },
+    launcher_text: {
+        fontSize: normalize(configs.LETTER_SIZE * .65),
     },
     launcher: {
         width: TILE_WIDTH,
