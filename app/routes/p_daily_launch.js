@@ -45,7 +45,7 @@ class DailyLaunch extends Component{
             dataElement: this.props.dataElement,
             title: this.props.title,
             isOpen: false,
-            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i + 1)),
+            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i + 1))//[1,2,3...]
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
