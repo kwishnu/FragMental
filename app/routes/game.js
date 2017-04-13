@@ -207,8 +207,8 @@ class Game extends Component {
             this.setState({useNumLetters: valueToBool});
             this.storeGameVariables(this.state.index);
             this.setState({isLoading: false});
-        });
-        AsyncStorage.getItem(KEY_Sound).then((sounds) => {
+            return AsyncStorage.getItem(KEY_Sound);
+        }).then((sounds) => {
             if (sounds !== null) {
                 var soundStr = (sounds == 'true')?'Mute Sounds':'Use Sounds';
                 var soundBool = (sounds == 'true')?true:false;
@@ -392,7 +392,6 @@ class Game extends Component {
             var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
             rand0to9 = shuffleArray(rand0to9);
             for (var r=0; r<10; r++){
-//                var rand0to9 = randomNum(0, 9);
                 if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
                     titleIndex = rand0to9[r];
                     break;
@@ -475,7 +474,6 @@ class Game extends Component {
         var onFrag = this.state.onThisFrag;
         if(theFrag == guessFragsArray[onFrag] || (theFrag == this.state.keyFrag && guessFragsArray[onFrag] == '^')){
             if(which<100){
-                //data[which].frag = '';
                 data[which].opacity = 0;
             }
             var theWord = this.state.answerText;
@@ -528,9 +526,6 @@ class Game extends Component {
                 }
                 if (entire_puzzleSolved){
                     if(this.state.useSounds == true){fanfare.play();}
-                    if(this.props.fromWhere == 'daily launcher'){
-                        dsArray[this.state.index] = '1';
-                    }
                     if(this.props.fromWhere == 'puzzle launcher'){
                         var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
                         this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
@@ -541,6 +536,8 @@ class Game extends Component {
                         } catch (error) {
                             window.alert('AsyncStorage error: ' + error.message);
                         }
+                    }else{
+                        dsArray[this.state.index] = '1';
                     }
                     try {
                         AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));

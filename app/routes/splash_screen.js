@@ -112,12 +112,12 @@ class SplashScreen extends Component {
                             var puzzStringArray = [];
                             d_puzzles.forEach(function (row) {
                                  if((parseInt(row.pnum, 10) >= startNum) && (parseInt(row.pnum, 10) < (startNum + 31))){
-                                     puzzStringArray.push(row.puzz);
+                                     puzzStringArray.unshift(row.puzz);
                                  }
                              });
-                            puzzleData[16].puzzles[0] = puzzStringArray[30];//load today's puzzle
-                            puzzStringArray.pop();
-                            for(var jj=puzzStringArray.length; jj>=0; jj--){
+                            puzzleData[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
+                            puzzStringArray.shift();
+                            for(let jj=0; jj<puzzStringArray.length; jj++){
                                 puzzleData[18].puzzles[jj] = puzzStringArray[jj];//load last 30 days
                                 if(jj < 3){puzzleData[17].puzzles[jj] = puzzStringArray[jj];}//load last 3 days
                             }

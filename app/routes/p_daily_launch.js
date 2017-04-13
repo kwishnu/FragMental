@@ -45,7 +45,7 @@ class DailyLaunch extends Component{
             dataElement: this.props.dataElement,
             title: this.props.title,
             isOpen: false,
-            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i)),
+            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i + 1)),
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -314,14 +314,6 @@ class DailyLaunch extends Component{
          };
     }
     onSelect(index, date) {
-//            var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-//            for(let i=0; i<4; i++){
-//                var rand0to9 = randomNum(0, 9);
-//                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[rand0to9].name;
-//                puzzleData[20 + i].product_id = '*' + puzzleData[levels[i]].data[rand0to9].product_id;
-//                this.state.puzzleData[20 + i].bg_color = this.props.puzzleData[levels[i]].data[rand0to9].color;
-//            }
-
         var myPackArray = [];
         var str = '';
         for (var key in puzzleData){
@@ -335,7 +327,6 @@ class DailyLaunch extends Component{
             var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
             rand0to9 = shuffleArray(rand0to9);
             for (var r=0; r<10; r++){
-//                var rand0to9 = randomNum(0, 9);
                 if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
                     titleIndex = rand0to9[r];
                     break;
@@ -394,10 +385,10 @@ class DailyLaunch extends Component{
                                     dataSource={this.state.dataSource}
                                     renderRow={(rowData) =>
                                      <View>
-                                         <TouchableHighlight onPress={() => this.onSelect(rowData, moment().subtract(rowData + 1, 'days').format('MMMM D, YYYY'))}
+                                         <TouchableHighlight onPress={() => this.onSelect(rowData, moment().subtract(rowData, 'days').format('MMMM D, YYYY'))}
                                                              underlayColor={rowData.bg_color}
                                                              style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
-                                             <Text  style={[ styles.daily_launcher_text, this.getTextColor(rowData) ] }>{moment().subtract(rowData + 1, 'days').format('M/D/YYYY')}</Text>
+                                             <Text  style={[ styles.daily_launcher_text, this.getTextColor(rowData) ] }>{moment().subtract(rowData, 'days').format('M/D/YYYY')}</Text>
                                          </TouchableHighlight>
                                      </View>}
                          />

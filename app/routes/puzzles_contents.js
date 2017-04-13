@@ -174,7 +174,7 @@ class PuzzleContents extends Component{
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
             } else {
-                let solvedArray = new Array(30).fill('0');
+                let solvedArray = new Array(31).fill('0');
                 sArray = solvedArray;
                 try {
                    AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(solvedArray));
