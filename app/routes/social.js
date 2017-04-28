@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, BackAndroid, Linking } from 'react-native';
 import Button from '../components/Button';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 const styles = require('../styles/styles');
 const {width, height} = require('Dimensions').get('window');
 
@@ -134,15 +134,15 @@ const social_styles = StyleSheet.create({
         alignItems: 'center',
     },
     button_text: {
-        fontSize: configs.LETTER_SIZE * .7,
+        fontSize: normalizeFont(configs.LETTER_SIZE * .12),
         color: '#ffffff'
     },
     body_text: {
-        fontSize: configs.LETTER_SIZE * .55,
+        fontSize: normalizeFont(configs.LETTER_SIZE * .085),
         fontWeight: 'bold',
         color: '#000000',
         textAlign: 'center',
-        lineHeight: configs.LETTER_SIZE,
+        lineHeight: configs.LINE_HEIGHT,
     },
     button: {
         height: height * 0.08,
