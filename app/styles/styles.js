@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-var { width, height } = require('Dimensions').get('window');
+import { normalizeFont }  from '../config/pixelRatio';
+const { width, height } = require('Dimensions').get('window');
 
 module.exports = StyleSheet.create({
     cell: {
@@ -23,41 +23,37 @@ module.exports = StyleSheet.create({
     },
     puzzle_text_large: {
         color: '#000',
-        fontSize: normalize(configs.LETTER_SIZE * 0.75),
-    },
-    contents_text: {
-        color: '#fff',
-        fontSize: normalize(configs.LETTER_SIZE),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.11),
     },
     answer_text: {
-        fontSize: normalize(configs.LETTER_SIZE * 1.1),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.18),
         fontWeight: 'bold',
     },
     answer_column_text: {
         color: 'white',
-        fontSize: normalize(configs.LETTER_SIZE * 0.55),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.08),
     },
     clue_text_bold: {
-        fontSize: normalize(configs.LETTER_SIZE * 0.55),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.08),
         fontWeight: 'bold',
         textAlign: 'center',
     },
     clue_text: {
-        fontSize: normalize(configs.LETTER_SIZE * 0.4),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.07),
     },
     clue_text_small: {
-        fontSize: normalize(configs.LETTER_SIZE * 0.35),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.06),
     },
     score_text: {
-        fontSize: normalize(configs.LETTER_SIZE * 1.4),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.2),
         fontWeight: 'bold',
     },
     header_text: {
         color: '#e3e004',
-        fontSize: normalize(configs.LETTER_SIZE * 0.6),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.1),
     },
     daily_launcher_text: {
-        fontSize: normalize(configs.LETTER_SIZE * 0.5),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.07),
     },
     menu: {
         flex: 1,
