@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, ListView, BackAndroid } from 'react-native';
 import Row3 from '../components/Row3';
 import Button from '../components/Button';
+import { normalize }  from '../config/pixelRatio';
 const {width, height} = require('Dimensions').get('window');
 const styles = require('../styles/styles');
-import normalize from '../config/pixelRatio';
-
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
-}
 
 
 module.exports = class ComboStore extends Component {
@@ -17,8 +12,7 @@ module.exports = class ComboStore extends Component {
         super(props);
         this.dataSource = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
-          })
-//        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        })
         this.state = {
             id: 'combo store',
             dataSource: this.props.availableList
