@@ -3,7 +3,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 var {width, height} = require('Dimensions').get('window');
 
 const styles = StyleSheet.create({
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#12046c',
   },
   text: {
-    fontSize: normalize(configs.LETTER_SIZE * 0.55),
+    fontSize: normalizeFont(configs.LETTER_SIZE * 0.09),
     color: '#fbf70e',
   },
 });

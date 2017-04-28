@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { ListView, StyleSheet, Text, View, TouchableHighlight, Image, TouchableOpacity } from 'react-native';
+import { ListView, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
 import MenuSectionHeader  from '../components/MenuSectionHeader';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-
-var {width, height} = require('Dimensions').get('window');
-
+import { normalize, normalizeFont }  from '../config/pixelRatio';
+const {width, height} = require('Dimensions').get('window');
 const styles = require('../styles/styles');
 
 module.exports = class Menu extends Component {
@@ -20,7 +18,6 @@ module.exports = class Menu extends Component {
           getRowData,
         });
         const { dataBlob, sectionIds, rowIds } = this.formatData(this.props.data);
-
         this.state = {
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
@@ -60,6 +57,7 @@ module.exports = class Menu extends Component {
                                 renderRow={(rowData) =>
                                     <View>
                                         <TouchableHighlight onPress={() => this.props.onItemSelected(rowData)}
+                                                            underlayColor={'#d1e4c7'}
                                                             style={[menu_styles.launcher]}>
                                             <Text style={ menu_styles.launcher_text }>{rowData.title}</Text>
                                         </TouchableHighlight>
@@ -97,7 +95,7 @@ var menu_styles = StyleSheet.create({
     },
     launcher_text: {
         color: '#464646',
-        fontSize: normalize(configs.LETTER_SIZE * 0.5),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.08),
         fontWeight: 'bold'
     },
     separator: {
