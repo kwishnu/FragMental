@@ -11,10 +11,12 @@ import {
   BackAndroid
 } from 'react-native';
 import AppIntro from 'react-native-app-intro';
-var KEY_UseNumLetters = 'numLetters';
-var KEY_ratedTheApp = 'ratedApp';
-var KEY_expandInfo = 'expandInfoKey';
-var {width, height} = require('Dimensions').get('window');
+const KEY_UseNumLetters = 'numLetters';
+const KEY_ratedTheApp = 'ratedApp';
+const KEY_expandInfo = 'expandInfoKey';
+const KEY_Premium = 'premiumOrNot';
+const KEY_HighScore = 'highScoreKey';
+const {width, height} = require('Dimensions').get('window');
 
 
 class StartScene extends Component {
@@ -34,12 +36,22 @@ class StartScene extends Component {
                 window.alert('AsyncStorage error: ' + error.message);
             }
             try {
+                AsyncStorage.setItem(KEY_Premium, 'false');//
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+            try {
                 AsyncStorage.setItem(KEY_ratedTheApp, 'false');//
             } catch (error) {
                 window.alert('AsyncStorage error: ' + error.message);
             }
             try {
                 AsyncStorage.setItem(KEY_expandInfo, '1.1.1.1');//
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+            try {
+                AsyncStorage.setItem(KEY_HighScore, '0');//
             } catch (error) {
                 window.alert('AsyncStorage error: ' + error.message);
             }
@@ -52,7 +64,7 @@ class StartScene extends Component {
         this.goSomewhere();
     }
     goSomewhere(){
-        var goToHere = this.props.destination;
+        let goToHere = this.props.destination;
         if (goToHere == 'puzzles contents'){
             this.props.navigator.replace({
                 id: goToHere,
@@ -72,11 +84,9 @@ class StartScene extends Component {
     }
     onSkipBtnHandle = () => {
         this.goSomewhere();
-
     }
     doneBtnHandle = () => {
         this.goSomewhere();
-
     }
 
     render() {
