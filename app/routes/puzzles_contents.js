@@ -5,7 +5,7 @@ import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
 import Meteor from 'react-native-meteor';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
@@ -16,14 +16,14 @@ function shuffleArray(array) {
     return array;
 }
 function invertColor(hex, bw) {
-    if (hex.indexOf('#') === 0) {
+    if (hex.indexOf('#') == 0) {
         hex = hex.slice(1);
     }
     // convert 3-digit hex to 6-digits.
-    if (hex.length === 3) {
+    if (hex.length == 3) {
         hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
     }
-    if (hex.length !== 6) {
+    if (hex.length != 6) {
         throw new Error('Invalid HEX color.');
     }
     let r = parseInt(hex.slice(0, 2), 16),
@@ -142,10 +142,10 @@ class PuzzleContents extends Component{
     componentDidMount() {
         Orientation.lockToPortrait();
         AppState.addEventListener('change', this.handleAppStateChange);
-        let nowISO = moment().valueOf();
-        let launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
-        let dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
-        let tonightMidnight = moment().endOf('day').valueOf();
+        var nowISO = moment().valueOf();
+        var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
+        var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
+        var tonightMidnight = moment().endOf('day').valueOf();
         try {
             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
             AsyncStorage.setItem(KEY_Time, JSON.stringify(nowISO));
@@ -153,7 +153,7 @@ class PuzzleContents extends Component{
             window.alert('AsyncStorage error: ' + error.message);
         }
         puzzleData = this.state.puzzleData;
-        let todayfull = moment().format('MMMM D, YYYY');
+        var todayfull = moment().format('MMMM D, YYYY');
         this.setState({todayFull: todayfull});
         AsyncStorage.getItem(KEY_solvedTP).then((solvedTodays) => {
             if (solvedTodays !== null) {
@@ -174,7 +174,7 @@ class PuzzleContents extends Component{
             if (theArray !== null) {
               sArray = JSON.parse(theArray);
             } else {
-                let solvedArray = new Array(31).fill('0');
+                var solvedArray = new Array(31).fill('0');
                 sArray = solvedArray;
                 try {
                    AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(solvedArray));
@@ -185,13 +185,13 @@ class PuzzleContents extends Component{
             return AsyncStorage.getItem(KEY_midnight);
         }).then( (value) => {
             if (value !== null) {
-                let storedMidnight = parseInt(JSON.parse(value), 10);
-                let milliSecsOver = nowISO - storedMidnight;
+                var storedMidnight = parseInt(JSON.parse(value), 10);
+                var milliSecsOver = nowISO - storedMidnight;
                 if(milliSecsOver > 0){//at least the next day, update daily solved array
                     solvedTodayOrNot = false;
-                    let numDays = Math.ceil(milliSecsOver/86400000);
+                    var numDays = Math.ceil(milliSecsOver/86400000);
                     numDays=(numDays>30)?30:numDays;
-                    for (let shiftArray=0; shiftArray<numDays; shiftArray++){
+                    for (var shiftArray=0; shiftArray<numDays; shiftArray++){
                         sArray.unshift('0');
                         sArray.pop();
                     }
@@ -214,6 +214,8 @@ class PuzzleContents extends Component{
             }
         }).then((ready)=>{
             this.setState({isLoading: false});
+        }).catch(function(error) {
+            window.alert('p_c: ' + error.message);
         });
         if (this.props.connectionBool == false){
             Alert.alert('No Connection', 'Sorry, an internet connection is required to load Daily Puzzles');
@@ -225,10 +227,10 @@ class PuzzleContents extends Component{
     }
     handleAppStateChange=(appState)=>{
         if(appState == 'active'){
-            let timeNow = moment().valueOf();
+            var timeNow = moment().valueOf();
             AsyncStorage.getItem(KEY_Time).then((storedTime) => {
-                let sT = JSON.parse(storedTime);
-                let diff = (timeNow - sT)/1000;
+                var sT = JSON.parse(storedTime);
+                var diff = (timeNow - sT)/1000;
                 if(diff>7200){
                     try {
                         AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
@@ -264,8 +266,8 @@ class PuzzleContents extends Component{
         }
     }
     onMenuItemSelected = (item) => {
-            let myPackArray = [];
-            let keepInList = [];
+            var myPackArray = [];
+            var keepInList = [];
             switch (item.link){
                 case 'puzzles contents':
                     this.toggle();
@@ -292,12 +294,12 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'store':
-                    for (let j=0; j<this.props.puzzleData.length; j++){
+                    for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
                         }
                     }
-                    for (let i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
                         if(myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name) < 0){
                             keepInList.push(this.props.puzzleData[item.index].data[i]);
                         }
@@ -314,13 +316,17 @@ class PuzzleContents extends Component{
                     });
                     break;
                 case 'store3':
+                    if(this.props.puzzleData[item.index].data.length == 0){
+                        Alert.alert('Coming soon...', 'Sorry, no combo packs available yet; please check back!');
+                        return;
+                    }
                     keepInList = this.props.puzzleData[item.index].data;
-                    for (let j=0; j<this.props.puzzleData.length; j++){
+                    for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
                         }
                     }
-                    for (let i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
+                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
                         if((myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[2]) > -1)){
                             keepInList.splice(i, 1);
                         }
@@ -380,22 +386,22 @@ class PuzzleContents extends Component{
         };
     }
     lightBorder(color, type) {
-        let lighterColor = shadeColor(color, 60);
-        let bordWidth = (type == 'daily')? 1:6;
+        var lighterColor = shadeColor(color, 60);
+        var bordWidth = (type == 'daily')? 1:6;
             return {
                 borderColor: lighterColor,
                 borderWidth: bordWidth,
             };
     }
     bg(colorSent) {
-        let strToReturn=colorSent.replace(/\"/g, "");
+        var strToReturn=colorSent.replace(/\"/g, "");
         return {
             backgroundColor: strToReturn
         };
 
     }
     getTextColor(bg, index){
-        let strToReturn = invertColor(bg, true);
+        var strToReturn = invertColor(bg, true);
         if(index == '16' && solvedTodayOrNot){
             strToReturn = '#555';
             return {
@@ -408,26 +414,26 @@ class PuzzleContents extends Component{
         };
     }
     getTitle(title, numPuzzles){
-        let appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
-        let titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
+        var appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
+        var titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
         titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
     }
     onSelect(index, title, bg, productID) {
         if (title.indexOf('*') > -1){
-            let theName = title.substring(1);
-            let myPackArray = [];
-            let keepInList = [];
-            let theIndex = '';
-            let titlePrefix = '';
-            let gotIt = false;
-            let itemIndex = 0;
-            for (let j=0; j<this.props.puzzleData.length; j++){
+            var theName = title.substring(1);
+            var myPackArray = [];
+            var keepInList = [];
+            var theIndex = '';
+            var titlePrefix = '';
+            var gotIt = false;
+            var itemIndex = 0;
+            for (var j=0; j<this.props.puzzleData.length; j++){
                 if (this.props.puzzleData[j].type == 'mypack'){
                     myPackArray.push(this.props.puzzleData[j].title);
                 }
                 if (!gotIt && this.props.puzzleData[j].link == 'store'){
-                    for (let k=0; k<this.props.puzzleData[j].data.length; k++){
+                    for (var k=0; k<this.props.puzzleData[j].data.length; k++){
                         if(this.props.puzzleData[j].data[k].name == theName){
                             theIndex = this.props.puzzleData[j].index;
                             gotIt = true;
@@ -450,13 +456,13 @@ class PuzzleContents extends Component{
                     titlePrefix = 'Theme';
                     break;
             }
-            for (let i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
+            for (var i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
                 if(myPackArray.indexOf(this.props.puzzleData[parseInt(theIndex, 10)].data[i].name) < 0){
                     keepInList.push(this.props.puzzleData[parseInt(theIndex, 10)].data[i]);
                 }
             }
-            let putMeBack = null;
-            for(let whatsLeft = 0; whatsLeft<keepInList.length; whatsLeft++){
+            var putMeBack = null;
+            for(var whatsLeft = 0; whatsLeft<keepInList.length; whatsLeft++){
                 if(keepInList[whatsLeft].name == theName){
                     putMeBack = keepInList.splice(whatsLeft, 1);
                     continue;
@@ -476,11 +482,11 @@ class PuzzleContents extends Component{
             this.toggle();
             return;
         }
-        let theDestination = 'puzzle launcher';
-        let theTitle = title;
-        let gripeText = '';
-        let useColors = '';
-        let bgColorToSend = '';
+        var theDestination = 'puzzle launcher';
+        var theTitle = title;
+        var gripeText = '';
+        var useColors = '';
+        var bgColorToSend = '';
         switch(title){
             case 'Today\'s Puzzle':
                 theDestination = 'game board';
@@ -570,7 +576,7 @@ class PuzzleContents extends Component{
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
                                 <Image source={this.state.menuImage} style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
-                            <Image source={ require('../images/logo2.png') } style={ { width: height/3.75, height: height/16 } } />
+                            <Image source={ require('../images/logo2.png') } style={ { width: normalize(height * .25), height: normalize(height * .06) } } />
                             <Button style={{right: height*.02}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
@@ -647,7 +653,8 @@ const container_styles = StyleSheet.create({
         marginBottom: 1,
     },
     launcher_text: {
-        fontSize: normalize(configs.LETTER_SIZE * 0.65),
-    },
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.1),
+    }
 });
+
 module.exports = PuzzleContents;
