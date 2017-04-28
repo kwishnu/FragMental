@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 var InAppBilling = require('react-native-billing');
-var { width, height } = require('Dimensions').get('window');
-var CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
-var CELL_HEIGHT = CELL_WIDTH * .5;
-var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
-var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
-var BORDER_RADIUS = CELL_PADDING * .3;
+const { width, height } = require('Dimensions').get('window');
+const CELL_WIDTH = Math.floor(width); // one tile's fraction of the screen width
+const CELL_HEIGHT = CELL_WIDTH * .5;
+const CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
+const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
+const TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
+const BORDER_RADIUS = CELL_PADDING * .3;
 
 invertColor=(hex, bw)=> {
     if (hex.indexOf('#') === 0) {
@@ -64,22 +63,22 @@ shadeColor=(color, percent)=> {
 }
 lightBorder=(color)=> {
     var lighterColor = this.shadeColor(color, 60);
-        return {
-            borderColor: lighterColor,
-            borderWidth: 3,
-        };
+    return {
+        borderColor: lighterColor,
+        borderWidth: 3
+    };
 }
 getTextColor=(bg)=>{
-var strToReturn = this.invertColor(bg, true);
-         return {
-         color: strToReturn,
-         };
+    var strToReturn = this.invertColor(bg, true);
+    return {
+        color: strToReturn
+    };
 }
 getBgColor=(color)=>{
-var strToReturn = color;
-         return {
-         backgroundColor: strToReturn,
-         };
+    var strToReturn = color;
+    return {
+        backgroundColor: strToReturn
+    };
 }
 buyCombo=(item_name, itemID, nav)=>{
     InAppBilling.open()
@@ -106,35 +105,35 @@ const Row3 = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>this.buyCombo( props.name, props.product_id, navigator)} style={[styles.launcher, this.lightBorder(props.color[1])]}>
         <View style={styles.column_view}>
             <View style={[styles.top_section, this.getBgColor(props.color[0])]}>
-                <Text style={[styles.small_text, this.getTextColor(props.color[0])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[0])]}>
                   {`${props.num_puzzles[0]}`}
                 </Text>
                 <Text style={[styles.launcher_text, this.getTextColor(props.color[0])]}>
                   {`${props.name[0]}`}
                 </Text>
-                <Text style={[styles.small_text, this.getTextColor(props.color[0])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[0])]}>
                   {`${props.difficulty[0]}`}
                 </Text>
             </View>
             <View style={[styles.mid_section, this.getBgColor(props.color[1])]}>
-                <Text style={[styles.small_text, this.getTextColor(props.color[1])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[1])]}>
                   {`${props.num_puzzles[1]}`}
                 </Text>
                 <Text style={[styles.launcher_text, this.getTextColor(props.color[1])]}>
                   {`${props.name[1]}`}
                 </Text>
-                <Text style={[styles.small_text, this.getTextColor(props.color[1])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[1])]}>
                   {`${props.difficulty[1]}`}
                 </Text>
             </View>
             <View style={[styles.bottom_section, this.getBgColor(props.color[2])]}>
-                <Text style={[styles.small_text, this.getTextColor(props.color[2])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[2])]}>
                   {`${props.num_puzzles[2]}`}
                 </Text>
                 <Text style={[styles.launcher_text, this.getTextColor(props.color[2])]}>
                   {`${props.name[2]}`}
                 </Text>
-                <Text style={[styles.small_text, this.getTextColor(props.color[2])]}>
+                <Text style={[styles.text_small, this.getTextColor(props.color[2])]}>
                   {`${props.difficulty[2]}`}
                 </Text>
             </View>
@@ -177,11 +176,11 @@ const styles = StyleSheet.create({
         paddingLeft: height * .02,
         paddingRight: height * .02
     },
-    small_text: {
-        fontSize: normalize(configs.LETTER_SIZE * .4),
+    text_small: {
+        fontSize: normalizeFont(configs.LETTER_SIZE * .07),
     },
     launcher_text: {
-        fontSize: normalize(configs.LETTER_SIZE * .65),
+        fontSize: normalizeFont(configs.LETTER_SIZE * .1),
     },
     launcher: {
         width: TILE_WIDTH,
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
         borderRadius: BORDER_RADIUS,
         marginTop: 10,
         marginBottom: 1,
-    },
+    }
 });
 
 export default Row3;
