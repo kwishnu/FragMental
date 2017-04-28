@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, Animated, AsyncStorage, AppState  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, Animated, AsyncStorage, AppState } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -18,19 +17,18 @@ function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
 }
-
+var puzzleData = {};
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
-var SideMenu = require('react-native-side-menu');
-var Menu = require('../nav/menu');
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-var NUM_WIDE = 3;
-var CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the screen width
-var CELL_PADDING = Math.floor(CELL_WIDTH * .05); // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
-var BORDER_RADIUS = CELL_PADDING * .2 + 3;
-var puzzleData = {};
+const SideMenu = require('react-native-side-menu');
+const Menu = require('../nav/menu');
+const styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const NUM_WIDE = 3;
+const CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the screen width
+const CELL_PADDING = Math.floor(CELL_WIDTH * .05); // 5% of the cell width...+
+const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
+const BORDER_RADIUS = CELL_PADDING * .2 + 3;
 const KEY_Time = 'timeKey';
 
 
@@ -45,7 +43,7 @@ class DailyLaunch extends Component{
             dataElement: this.props.dataElement,
             title: this.props.title,
             isOpen: false,
-            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i + 1))//[1,2,3...]
+            dataSource: ds.cloneWithRows(Array.from(new Array(parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10)), (x,i) => i))//[0,1,2...]
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -62,8 +60,8 @@ class DailyLaunch extends Component{
         if(appState == 'active'){
             var timeNow = moment().valueOf();
             AsyncStorage.getItem(KEY_Time).then((storedTime) => {
-                let sT = JSON.parse(storedTime);
-                let diff = (timeNow - sT)/1000;
+                var sT = JSON.parse(storedTime);
+                var diff = (timeNow - sT)/1000;
                 if(diff>7200){
                     try {
                         AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
@@ -95,13 +93,13 @@ class DailyLaunch extends Component{
                     }
                 }
                 var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-                for(let i=0; i<4; i++){
+                for(var i=0; i<4; i++){
                     var titleIndex = -1;
-                    var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
-                    rand0to9 = shuffleArray(rand0to9);
-                    for (var r=0; r<10; r++){
-                        if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
-                            titleIndex = rand0to9[r];
+                    var rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
+                    rnd = shuffleArray(rnd);
+                    for (var r=0; r<puzzleData[levels[i]].data.length; r++){
+                        if (myPackArray.indexOf(puzzleData[levels[i]].data[rnd[r]].name) < 0){
+                            titleIndex = rnd[r];
                             break;
                         }
                     }
@@ -136,6 +134,8 @@ class DailyLaunch extends Component{
 
     }
     onMenuItemSelected = (item) => {
+            var myPackArray = [];
+            var keepInList = [];
             switch (item.link){
                 case 'puzzles contents':
                     this.props.navigator.replace({
@@ -176,8 +176,6 @@ class DailyLaunch extends Component{
                     });
                     break;
                 case 'store':
-                    var myPackArray = [];
-                    var keepInList = [];
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
@@ -200,9 +198,11 @@ class DailyLaunch extends Component{
                     });
                     break;
                 case 'store3':
-                    var myPackArray = [];
-                    var keepInList = this.props.puzzleData[item.index].data;
-
+                    if(this.props.puzzleData[item.index].data.length == 0){
+                        Alert.alert('Coming soon...', 'Sorry, no combo packs available yet; please check back!');
+                        return;
+                    }
+                    keepInList = this.props.puzzleData[item.index].data;
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
@@ -213,7 +213,6 @@ class DailyLaunch extends Component{
                             keepInList.splice(i, 1);
                         }
                     }
-
                     this.props.navigator.push({
                         id: 'combo store',
                         passProps: {
@@ -272,7 +271,7 @@ class DailyLaunch extends Component{
     }
     bg(num){
          var strToReturn='';
-         if (this.props.daily_solvedArray[num]==0){
+         if (this.props.daily_solvedArray[num + 1]==0){
              strToReturn='#079707';//green
              }else{
              strToReturn='#999ba0';//grey
@@ -283,7 +282,7 @@ class DailyLaunch extends Component{
      }
     getTextColor(num){
          var strToReturn='';
-         if (this.props.daily_solvedArray[num]==0){
+         if (this.props.daily_solvedArray[num + 1]==0){
              strToReturn='#fff';
              }else{
              strToReturn='#000';
@@ -292,10 +291,9 @@ class DailyLaunch extends Component{
          color: strToReturn
          };
     }
-
     getUnderlay(num){
          var strToReturn='';
-         if (this.props.daily_solvedArray[num]==0){
+         if (this.props.daily_solvedArray[num + 1]==0){
              strToReturn='#079707';//green
              }else{
              strToReturn='#999ba0';//grey
@@ -304,7 +302,7 @@ class DailyLaunch extends Component{
     }
     getBorder(num){
          var strToReturn='';
-         if (this.props.daily_solvedArray[num]==0){
+         if (this.props.daily_solvedArray[num + 1]==0){
              strToReturn='#00ff00';//green
              }else{
              strToReturn='#000000';//black
@@ -314,34 +312,6 @@ class DailyLaunch extends Component{
          };
     }
     onSelect(index, date) {
-        var myPackArray = [];
-        var str = '';
-        for (var key in puzzleData){
-            if (puzzleData[key].type == 'mypack'){
-                myPackArray.push(puzzleData[key].title);
-            }
-        }
-        var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-        for(let i=0; i<4; i++){
-            var titleIndex = -1;
-            var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
-            rand0to9 = shuffleArray(rand0to9);
-            for (var r=0; r<10; r++){
-                if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
-                    titleIndex = rand0to9[r];
-                    break;
-                }
-            }
-            if (titleIndex !== -1){
-                puzzleData[20 + i].title = '*' + puzzleData[levels[i]].data[titleIndex].name;
-                puzzleData[20 + i].product_id = puzzleData[levels[i]].data[titleIndex].product_id;
-                puzzleData[20 + i].num_puzzles = puzzleData[levels[i]].data[titleIndex].num_puzzles;
-                puzzleData[20 + i].bg_color = puzzleData[levels[i]].data[titleIndex].color;
-            }else{
-                puzzleData[20 + i].show = 'false';
-            }
-        }
-
         this.props.navigator.replace({
             id: 'game board',
             passProps: {
@@ -362,18 +332,15 @@ class DailyLaunch extends Component{
     render() {
         const menu = <Menu onItemSelected={ this.onMenuItemSelected } data = {this.props.puzzleData} />;
         return (
-            <SideMenu
-                menu={ menu }
-                isOpen={ this.state.isOpen }
-                onChange={ (isOpen) => this.updateMenuState(isOpen) }>
-
+            <SideMenu   menu={ menu }
+                        isOpen={ this.state.isOpen }
+                        onChange={ (isOpen) => this.updateMenuState(isOpen) }>
                 <View style={ [container_styles.container, this.border('#070f4e')] }>
                     <View style={ container_styles.header }>
                         <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
                             <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
-                        <Text style={styles.header_text} >{this.props.title}
-                        </Text>
+                        <Text style={styles.header_text} >{this.props.title}</Text>
                         <Button style={{right: 15}}>
                             <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
@@ -384,28 +351,26 @@ class DailyLaunch extends Component{
                                     contentContainerStyle={ container_styles.listview }
                                     dataSource={this.state.dataSource}
                                     renderRow={(rowData) =>
-                                     <View>
-                                         <TouchableHighlight onPress={() => this.onSelect(rowData, moment().subtract(rowData, 'days').format('MMMM D, YYYY'))}
-                                                             underlayColor={rowData.bg_color}
-                                                             style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
-                                             <Text  style={[ styles.daily_launcher_text, this.getTextColor(rowData) ] }>{moment().subtract(rowData, 'days').format('M/D/YYYY')}</Text>
-                                         </TouchableHighlight>
-                                     </View>}
+                             <View>
+                                 <TouchableHighlight onPress={() => this.onSelect(rowData, moment().subtract(rowData + 1, 'days').format('MMMM D, YYYY'))}
+                                                     underlayColor={this.getUnderlay(rowData)}
+                                                     style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
+                                     <Text  style={[ styles.daily_launcher_text, this.getTextColor(rowData) ] }>{moment().subtract(rowData + 1, 'days').format('M/D/YYYY')}</Text>
+                                 </TouchableHighlight>
+                             </View>}
                          />
                     </View>
-
-
-                         <View style={container_styles.center_text_view}>
-                             <Text numberOfLines={5} style={container_styles.gripe_text}>{this.props.gripeText}</Text>
-                         </View>
-                 </View>
+                    <View style={container_styles.center_text_view}>
+                        <Text numberOfLines={5} style={container_styles.gripe_text}>{this.props.gripeText}</Text>
+                    </View>
+                </View>
             </SideMenu>
         );
     }
 }
 
 
-var container_styles = StyleSheet.create({
+const container_styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#09146d',
@@ -423,7 +388,7 @@ var container_styles = StyleSheet.create({
     },
     gripe_text: {
         color: '#e3e004',
-        fontSize: normalize(configs.LETTER_SIZE * 0.55),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.09),
         textAlign: 'center',
     },
     listview: {
