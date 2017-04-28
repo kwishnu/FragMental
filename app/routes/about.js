@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, Alert, BackAndroid, Platform, AsyncStorage, Linking, AppState, NetInfo } from 'react-native';
 import Button from '../components/Button';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 import moment from 'moment';
-
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-var year = moment().year();
-var KEY_ratedTheApp = 'ratedApp';
+const styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const KEY_ratedTheApp = 'ratedApp';
+let year = moment().year();
 
 module.exports = class Settings extends Component {
     constructor(props) {
@@ -51,7 +50,6 @@ module.exports = class Settings extends Component {
         }
         return true;
     }
-
     rateApp(){
         NetInfo.isConnected.fetch().then(isConnected => {
             if (isConnected){
@@ -72,6 +70,7 @@ module.exports = class Settings extends Component {
             }
         });
     }
+
     render() {
         return (
             <View style={about_styles.container}>
@@ -85,7 +84,7 @@ module.exports = class Settings extends Component {
                     </Button>
                 </View>
                 <View style={ about_styles.about_container }>
-                    <Image source={ require('../images/logo.png') } style={ { width: 180, height: 60 } } />
+                    <Image source={ require('../images/logo2.png') } style={ { width: normalize(height * .29), height: normalize(height * .07) } } />
                     <View style={about_styles.parameter_container}>
                         <View style={about_styles.divider}>
                         </View>
@@ -132,12 +131,12 @@ const about_styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: normalize(configs.LETTER_SIZE * 0.45),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.45/6),
         marginBottom: 10
     },
     mediumPrint: {
         color: '#e3e004',
-        fontSize: normalize(configs.LETTER_SIZE * 0.5),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.5/6),
         marginLeft: 32,
         marginRight: 32,
         marginTop: 6,
@@ -146,11 +145,11 @@ const about_styles = StyleSheet.create({
     },
     finePrint: {
         color: '#999999',
-        fontSize: normalize(configs.LETTER_SIZE * 0.35),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.35/6),
     },
     sure: {
         color: '#111111',
-        fontSize: normalize(configs.LETTER_SIZE * 0.5),
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.5/6),
     },
     divider: {
         height: StyleSheet.hairlineWidth,
