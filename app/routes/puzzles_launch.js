@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, AppState  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage, ActivityIndicator, AppState } from 'react-native';
 import moment from 'moment';
 import Button from '../components/Button';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
+import { normalize }  from '../config/pixelRatio';
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -12,10 +12,6 @@ function shuffleArray(array) {
         array[j] = temp;
     }
     return array;
-}
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
 }
 function shadeColor(color, percent) {
         var R = parseInt(color.substring(1,3),16);
@@ -67,20 +63,19 @@ function invertColor(hex, bw) {
     // pad each with zeros and return
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
-
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
 var SideMenu = require('react-native-side-menu');
 var Menu = require('../nav/menu');
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-var NUM_WIDE = 5;
-var CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the screen width
-var CELL_PADDING = Math.floor(CELL_WIDTH * .05) + 5; // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
-var BORDER_RADIUS = CELL_PADDING * .2 + 3;
-var KEY_daily_solved_array = 'solved_array';
 var puzzleData = {};
+const styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const NUM_WIDE = 5;
+const CELL_WIDTH = Math.floor(width/NUM_WIDE); // one tile's fraction of the screen width
+const CELL_PADDING = Math.floor(CELL_WIDTH * .05) + 5; // 5% of the cell width...+
+const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2) - 7;
+const BORDER_RADIUS = CELL_PADDING * .2 + 3;
+const KEY_daily_solved_array = 'solved_array';
 const KEY_Time = 'timeKey';
 
 class PuzzleLaunch extends Component{
@@ -116,8 +111,8 @@ class PuzzleLaunch extends Component{
         if(appState == 'active'){
             var timeNow = moment().valueOf();
             AsyncStorage.getItem(KEY_Time).then((storedTime) => {
-                let sT = JSON.parse(storedTime);
-                let diff = (timeNow - sT)/1000;
+                var sT = JSON.parse(storedTime);
+                var diff = (timeNow - sT)/1000;
                 if(diff>7200){
                     try {
                         AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
@@ -164,14 +159,13 @@ class PuzzleLaunch extends Component{
                 }
             }
             var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-            for(let i=0; i<4; i++){
+            for(var i=0; i<4; i++){
                 var titleIndex = -1;
-                var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
-                rand0to9 = shuffleArray(rand0to9);
-                for (var r=0; r<10; r++){
-    //                var rand0to9 = randomNum(0, 9);
-                    if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
-                        titleIndex = rand0to9[r];
+                var rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
+                rnd = shuffleArray(rnd);
+                for (var r=0; r<puzzleData[levels[i]].data.length; r++){
+                    if (myPackArray.indexOf(puzzleData[levels[i]].data[rnd[r]].name) < 0){
+                        titleIndex = rnd[r];
                         break;
                     }
                 }
@@ -207,6 +201,8 @@ class PuzzleLaunch extends Component{
 
     }
     onMenuItemSelected = (item) => {
+            var myPackArray = [];
+            var keepInList = [];
             switch (item.link){
                 case 'puzzles contents':
                     this.props.navigator.replace({
@@ -250,8 +246,6 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'store':
-                    var myPackArray = [];
-                    var keepInList = [];
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
                             myPackArray.push(this.props.puzzleData[j].title);
@@ -274,8 +268,11 @@ class PuzzleLaunch extends Component{
                     });
                     break;
                 case 'store3':
-                    var myPackArray = [];
-                    var keepInList = this.props.puzzleData[item.index].data;
+                    if(this.props.puzzleData[item.index].data.length == 0){
+                        Alert.alert('Coming soon...', 'Sorry, no combo packs available yet; please check back!');
+                        return;
+                    }
+                    keepInList = this.props.puzzleData[item.index].data;
 
                     for (var j=0; j<this.props.puzzleData.length; j++){
                         if (this.props.puzzleData[j].type == 'mypack'){
@@ -287,7 +284,6 @@ class PuzzleLaunch extends Component{
                             keepInList.splice(i, 1);
                         }
                     }
-
                     this.props.navigator.push({
                         id: 'combo store',
                         passProps: {
@@ -478,7 +474,7 @@ class PuzzleLaunch extends Component{
 }
 
 
-var container_styles = StyleSheet.create({
+const container_styles = StyleSheet.create({
     container: {
         flex: 1,
     },
