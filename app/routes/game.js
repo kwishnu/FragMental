@@ -4,8 +4,8 @@ import moment from 'moment';
 import Button from '../components/Button';
 import DropdownMenu from '../components/DropdownMenu';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-let Sound = require('react-native-sound');
+import { normalize, normalizeFont }  from '../config/pixelRatio';
+var Sound = require('react-native-sound');
 function randomNum(low, high) {
     high++;
     return Math.floor((Math.random())*(high-low))+low;
@@ -72,22 +72,24 @@ function shuffleArray(array) {
     }
     return array;
 }
-let deepCopy = require('../data/deepCopy.js');
-let fragData = require('../data/objPassed.js');
-let styles = require('../styles/styles');
-let {width, height} = require('Dimensions').get('window');
-let SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
-let timeoutHandle;
+var deepCopy = require('../data/deepCopy.js');
+var fragData = require('../data/objPassed.js');
+var styles = require('../styles/styles');
+var {width, height} = require('Dimensions').get('window');
+var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
+var timeoutHandle;
+const KEY_Time = 'timeKey';
 const KEY_Puzzles = 'puzzlesKey';
 const KEY_solvedTP = 'solvedTP';
 const KEY_daily_solved_array = 'solved_array';
 const KEY_Sound = 'soundKey';
+const KEY_HighScore = 'highScoreKey';
 const KEY_UseNumLetters = 'numLetters';
 const KEY_ratedTheApp = 'ratedApp';
-let dataBackup = {};
-let puzzleData = {};
-let dsArray = [];
-let playedPlinkLast = false;
+var dataBackup = {};
+var puzzleData = {};
+var dsArray = [];
+var playedPlinkLast = false;
 const click = new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
@@ -203,7 +205,7 @@ class Game extends Component {
         this.setColors();
         this.setRated();
         AsyncStorage.getItem(KEY_UseNumLetters).then((value) => {
-            let valueToBool = (value == 'true')?true:false;
+            var valueToBool = (value == 'true')?true:false;
             this.setState({useNumLetters: valueToBool});
             this.storeGameVariables(this.state.index);
             this.setState({isLoading: false});
@@ -222,7 +224,7 @@ class Game extends Component {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
-        })
+        });
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
@@ -237,11 +239,31 @@ class Game extends Component {
         return true;
     }
     handleAppStateChange=(appState)=>{
-        if(appState == 'active' && this.state.wentToRate == true){
-            this.setRated();
-            //this.reset_scene();
+        if(appState == 'active'){
+            if(this.state.wentToRate == true){
+                this.setRated();
+                return;
+            }
+            let timeNow = moment().valueOf();
+            AsyncStorage.getItem(KEY_Time).then((storedTime) => {
+                let sT = JSON.parse(storedTime);
+                let diff = (timeNow - sT)/1000;
+                if(diff>7200){
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                    this.props.navigator.replace({
+                        id: 'splash screen',
+                        passProps: {
+                            motive: 'initialize'
+                        }
+                    });
+                }
+            });
         }
-     }
+    }
     setRated(){
         var numToUse = (this.state.hasRated == 'true')?6:2;
         var opacityToUse = (this.state.hasRated == 'true')?1:0;
@@ -375,7 +397,7 @@ class Game extends Component {
                         puzzleSolved: false,
                         wentBust: false,
                         isLoading: false,
-                        bgColor: this.props.bgColor,
+                        bgColor: this.props.bgColor
                     });
     }
     closeGame() {
@@ -387,13 +409,13 @@ class Game extends Component {
             }
         }
         var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
-        for(let i=0; i<4; i++){
+        for(var i=0; i<4; i++){
             var titleIndex = -1;
-            var rand0to9 = [0,1,2,3,4,5,6,7,8,9];
-            rand0to9 = shuffleArray(rand0to9);
-            for (var r=0; r<10; r++){
-                if (myPackArray.indexOf(puzzleData[levels[i]].data[rand0to9[r]].name) < 0){
-                    titleIndex = rand0to9[r];
+            let rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
+            rnd = shuffleArray(rnd);
+            for (let r=0; r<puzzleData[levels[i]].data.length; r++){
+                if (myPackArray.indexOf(puzzleData[levels[i]].data[rnd[r]].name) < 0){
+                    titleIndex = rnd[r];
                     break;
                 }
             }
@@ -464,7 +486,7 @@ class Game extends Component {
         var gl = this.state.goLeft;
         var colSort = this.state.columnSort;
 
-        if(which==100){
+        if(which==100){//keyFrag
             theFrag = this.state.keyFrag;
         }else{
             var theFrag = data[which].frag;
@@ -472,8 +494,8 @@ class Game extends Component {
         }
         var guessFragsArray = this.state.currentFrags.split('|');
         var onFrag = this.state.onThisFrag;
-        if(theFrag == guessFragsArray[onFrag] || (theFrag == this.state.keyFrag && guessFragsArray[onFrag] == '^')){
-            if(which<100){
+        if(theFrag == guessFragsArray[onFrag] || (theFrag == this.state.keyFrag && guessFragsArray[onFrag] == '^')){//made a correct guess...
+            if(which < 100){//not the keyFrag
                 data[which].opacity = 0;
             }
             var theWord = this.state.answerText;
@@ -494,13 +516,13 @@ class Game extends Component {
                         playedPlinkLast = true;
                     }
                 }
-            }else{
+            }else{//solved a clue
                 onFrag  = 0;
                 scoreToAdd = 3;
                 sArray[onClue]='solved';
                 entire_puzzleSolved = true;
                 colSort++;
-                switch(gl){
+                switch(gl){//cycle through animation directions
                     case 250:
                         gl = -100;
                         break;
@@ -513,75 +535,113 @@ class Game extends Component {
                     default: gl = -100;
                 }
 
-                for(goThru_sArray=onClue + 1;goThru_sArray<onClue + sArray.length;goThru_sArray++){
+                for(goThru_sArray=onClue + 1;goThru_sArray<onClue + sArray.length;goThru_sArray++){//cycle through clues array, skipping solved ones:
                     if(sArray[goThru_sArray % sArray.length]==''){
                         onClue = goThru_sArray % sArray.length;
                         currClue =  this.state.theCluesArray[onClue]
                         entire_puzzleSolved = false;
                         newCurrentFrags = currClue.substring(0, currClue.indexOf(':'));
                         newNumFrags = (currClue.substring(0, currClue.indexOf(':')).split('|')).length;
-
                         break;
                     }
                 }
                 if (entire_puzzleSolved){
-                    if(this.state.useSounds == true){fanfare.play();}
-                    if(this.props.fromWhere == 'puzzle launcher'){
-                        var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
-                        this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
-                        var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
-                        if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
+                    AsyncStorage.getItem(KEY_HighScore).then((highScore) => {
+                        if(this.state.useSounds == true){fanfare.play();}
+                        if(this.props.fromWhere == 'puzzle launcher'){
+                            var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
+                            this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
+                            var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
+                            if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
+                            try {
+                                AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
+                            } catch (error) {
+                                window.alert('AsyncStorage error: ' + error.message);
+                            }
+                        }else{
+                            var addOrNot = (this.props.fromWhere == 'puzzles contents')?this.state.index:this.state.index + 1;
+                            dsArray[addOrNot] = '1';
+                        }
                         try {
-                            AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
+                            AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
                         } catch (error) {
                             window.alert('AsyncStorage error: ' + error.message);
                         }
-                    }else{
-                        dsArray[this.state.index] = '1';
-                    }
-                    try {
-                        AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
-                    } catch (error) {
-                        window.alert('AsyncStorage error: ' + error.message);
-                    }
-                    if(this.props.fromWhere == 'puzzles contents'){
-                        try {
-                            AsyncStorage.setItem(KEY_solvedTP, 'true');
-                        } catch (error) {
-                            window.alert('AsyncStorage error: ' + error.message);
+                        if(this.props.fromWhere == 'puzzles contents'){
+                            try {
+                                AsyncStorage.setItem(KEY_solvedTP, 'true');
+                            } catch (error) {
+                                window.alert('AsyncStorage error: ' + error.message);
+                            }
                         }
-                    }
-                    var accolades = 'Right on!*You\'re so smart!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
-                    var accolade = accolades[Math.floor(Math.random()*accolades.length)];
-
-
-                    if(this.state.score < 40){
-                        currClue = accolade;
-                    }else{
-                        var toAdd = this.state.score;
-                        if(howMuchToScore>0)toAdd = toAdd + scoreToAdd;
-                        currClue = accolade.replace('!', '...' + toAdd + ' points!');
-                    }
+                        var theScore = this.state.score;
+                        theScore = theScore + scoreToAdd;
+                        var strScore = theScore.toString();
+                        switch (true){
+                            case ((theScore > highScore) && highScore != 0):
+                                currClue = 'Nice going! ' + strScore + ' points is a new high score!'
+                                try {
+                                    AsyncStorage.setItem(KEY_HighScore, strScore);
+                                } catch (error) {
+                                    window.alert('AsyncStorage error: ' + error.message);
+                                }
+                                break;
+                            case (theScore == highScore):
+                                currClue = 'Way to go...' + strScore + ' points ties your high score!'
+                                break;
+                            default:
+                                var accolades = 'Right on!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
+                                var accolade = accolades[Math.floor(Math.random()*accolades.length)];
+                                if(theScore < 40){
+                                    currClue = accolade;
+                                }else{
+                                    currClue = accolade.replace('!', '...' + strScore + ' points!');
+                                }
+                                if (highScore == 0){
+                                    try {
+                                        AsyncStorage.setItem(KEY_HighScore, strScore);
+                                    } catch (error) {
+                                        window.alert('AsyncStorage error: ' + error.message);
+                                    }
+                                }
+                        }
+                        this.setState({ theData: data,
+                                        daily_solvedArray: dsArray,
+                                        answerText: theWord,
+                                        onThisClue: onClue,
+                                        onThisFrag: onFrag,
+                                        currentFrags: newCurrentFrags,
+                                        numFrags: newNumFrags,
+                                        puzzleSolved: entire_puzzleSolved,
+                                        solvedArray: sArray,
+                                        goLeft: gl,
+                                        columnSort: colSort,
+                                        currentClue: currClue
+                        });
+                        this.score_increment(scoreToAdd);
+                    });
                 }
             }
-            this.setState({ theData: data,
-                            daily_solvedArray: dsArray,
-                            answerText: theWord,
-                            onThisClue: onClue,
-                            onThisFrag: onFrag,
-                            currentFrags: newCurrentFrags,
-                            numFrags: newNumFrags,
-                            puzzleSolved: entire_puzzleSolved,
-                            solvedArray: sArray,
-                            goLeft: gl,
-                            columnSort: colSort,
-                            currentClue: currClue
-                        });
-            if(howMuchToScore>0) {
-                this.score_increment(scoreToAdd);
-            }else{
-                if(this.state.useSounds == true){blat.play();}
-                this.score_decrement(1);
+            if (!entire_puzzleSolved){
+                this.setState({ theData: data,
+                                daily_solvedArray: dsArray,
+                                answerText: theWord,
+                                onThisClue: onClue,
+                                onThisFrag: onFrag,
+                                currentFrags: newCurrentFrags,
+                                numFrags: newNumFrags,
+                                puzzleSolved: entire_puzzleSolved,
+                                solvedArray: sArray,
+                                goLeft: gl,
+                                columnSort: colSort,
+                                currentClue: currClue
+                });
+                if(howMuchToScore>0) {
+                    this.score_increment(scoreToAdd);
+                }else{
+                    if(this.state.useSounds == true){blat.play();}
+                    this.score_decrement(1);
+                }
             }
         }else{
             if(this.state.useSounds == true){blat.play();}
@@ -679,14 +739,14 @@ class Game extends Component {
         }
     }
     score_increment(howMuch){
-        var score = parseInt(this.state.score, 10);
+        var score = this.state.score;
         score += howMuch;
         this.setState({score: score,
                        scoreColor: 'green',
                       });
     }
     score_decrement(howMuch){
-        var score = parseInt(this.state.score, 10);
+        var score = this.state.score;
         score -= howMuch;
         score = (score < 0)?0:score;
         var bgc = (score < 1)?'#cd0404':this.state.bgColor;
@@ -745,68 +805,66 @@ class Game extends Component {
                         answerText: ''
         });
     }
-    give_hint(fromHintButton){
-        if(this.state.numHints > 0 || !fromHintButton){
+    give_hint(){
+        if(this.state.numHints > 0){
             var remainingHints = this.state.numHints - 1;
-            if(fromHintButton){
-                if(this.state.hasRated == 'true'){
-                    switch(remainingHints){
-                        case 5:
-                            this.setState({
-                                hint6Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 4:
-                            this.setState({
-                                hint5Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 3:
-                            this.setState({
-                                hint4Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 2:
-                            this.setState({
-                                hint3Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 1:
-                            this.setState({
-                                hint2Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 0:
-                            this.setState({
-                                hint1Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        default:
-                            return;
-                    }
-                }else{
-                    switch(remainingHints){
-                        case 1:
-                            this.setState({
-                                hint2Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        case 0:
-                            this.setState({
-                                hint1Color: '#000',
-                                numHints: remainingHints
-                            });
-                            break;
-                        default:
-                            return;
-                    }
+            if(this.state.hasRated == 'true'){
+                switch(remainingHints){
+                    case 5:
+                        this.setState({
+                            hint6Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 4:
+                        this.setState({
+                            hint5Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 3:
+                        this.setState({
+                            hint4Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 2:
+                        this.setState({
+                            hint3Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 1:
+                        this.setState({
+                            hint2Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 0:
+                        this.setState({
+                            hint1Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    default:
+                        return;
+                }
+            }else{
+                switch(remainingHints){
+                    case 1:
+                        this.setState({
+                            hint2Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    case 0:
+                        this.setState({
+                            hint1Color: '#000',
+                            numHints: remainingHints
+                        });
+                        break;
+                    default:
+                        return;
                 }
             }
             var solved = this.state.puzzleSolved;
@@ -822,8 +880,8 @@ class Game extends Component {
             }
             for(var goThruData = 0; goThruData<data.length; goThruData++){
                 if(data[goThruData].frag == guessFragsArray[onFrag]){
-                this.guess(goThruData, -1);
-                return;
+                    this.guess(goThruData, -1);
+                    return;
                 }
             }
         }else if(this.state.hasRated != 'true'){
@@ -839,7 +897,7 @@ class Game extends Component {
 				{ text: 'Sure!', onPress: () => {
                     NetInfo.isConnected.fetch().then(isConnected => {
                         if (isConnected){
-                            let storeUrl = Platform.OS === 'ios' ?
+                            var storeUrl = Platform.OS === 'ios' ?
                                 'http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=' + configs.appStoreID + '&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8' :
                                 'market://details?id=' + configs.appStoreID;
                             this.setState({hasRated: 'true',
@@ -873,8 +931,7 @@ class Game extends Component {
             counter++;
         }
         var nl_text = (this.state.useNumLetters == true)?(counter.toString() + '  letters'):'';
-        var prefix = (this.state.useNumLetters == true)?'':(parseInt(this.state.onThisClue + 1, 10) + ':  ');
-        textToReturn = prefix + currClue.substring(currClue.indexOf(':') + 1);
+        textToReturn = currClue.substring(currClue.indexOf(':') + 1);
         textToReturn = (this.state.wentBust == true)?'Oops, try again!':textToReturn;
         solved = (solved == true || this.state.wentBust == true)?true:false;
         switch (which){
@@ -916,7 +973,7 @@ class Game extends Component {
                 opacity: parseInt(data[index].opacity, 10)
             }
             var text = data[index].frag;
-        result.push(this.drawTile(index, style, text));
+            result.push(this.drawTile(index, style, text));
         }
         return result;
     }
@@ -1068,10 +1125,10 @@ class Game extends Component {
                             </View>
                             <View style={ game_styles.buttons_container }>
                                 <Button style={[game_styles.skip_button, this.darkBorder('#64aefa')]} onPress={ () => this.skip_to_next() }>
-                                    <Image source={ require('../images/skip.png')} style={{ width: 60, height: 60 }} />
+                                    <Image source={ require('../images/skip.png')} style={{ width: normalize(height/13), height: normalize(height/13) }} />
                                 </Button>
-                                <Button style={[game_styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint(true) }>
-                                    <Image source={ require('../images/question.png')} style={{ width: 60, height: 60 }} />
+                                <Button style={[game_styles.hint_button, this.darkBorder('#4aeeb2')]} onPress={ () => this.give_hint() }>
+                                    <Image source={ require('../images/question.png')} style={{ width: normalize(height/13), height: normalize(height/13) }} />
                                 </Button>
                             </View>
                             <View style={ game_styles.hints_container }>
@@ -1160,8 +1217,8 @@ var game_styles = StyleSheet.create({
         paddingTop: 4,
         paddingBottom: 2,
         paddingTop: 2,
-        paddingLeft: 8,
-        paddingRight: 8,
+        paddingLeft: height*.02,
+        paddingRight: height*.02,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -1189,7 +1246,7 @@ var game_styles = StyleSheet.create({
     },
     keyfrag_text: {
         color: '#038c30',
-        fontSize: configs.LETTER_SIZE,
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.12),
         fontWeight: 'bold',
     },
     word_container: {
