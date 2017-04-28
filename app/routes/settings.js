@@ -5,17 +5,14 @@ import Button from '../components/Button';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-
-var styles = require('../styles/styles');
-var {width, height} = require('Dimensions').get('window');
-
-var KEY_Sound = 'soundKey';
-var KEY_Color = 'colorKey';
-var KEY_Notifs = 'notifsKey';
-var KEY_NotifTime = 'notifTimeKey';
-var KEY_UseNumLetters = 'numLetters';
-
+import { normalize, normalizeFont }  from '../config/pixelRatio';
+const styles = require('../styles/styles');
+const {width, height} = require('Dimensions').get('window');
+const KEY_Sound = 'soundKey';
+const KEY_Color = 'colorKey';
+const KEY_Notifs = 'notifsKey';
+const KEY_NotifTime = 'notifTimeKey';
+const KEY_UseNumLetters = 'numLetters';
 var nowISO = moment().valueOf();
 var tonightMidnight = moment().endOf('day').valueOf();
 
@@ -32,7 +29,8 @@ module.exports = class Settings extends Component {
             notif_time: '7',
             notif_text: 'Yes, at',
             nl_state: true,
-            nl_text: 'Show number of letters'
+            nl_text: 'Show number of letters',
+            pickerColor: '#ffffff'
         };
        this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
@@ -75,13 +73,15 @@ module.exports = class Settings extends Component {
                 this.setState({
                     notifs_state: true,
                     notif_time: notifs,
-                    notif_text: 'Yes, at'
+                    notif_text: 'Yes, at',
+                    pickerColor: '#ffffff'
                 });
             }else{
                 this.setState({
                     notifs_state: false,
                     notif_time: '7',
-                    notif_text: 'No'
+                    notif_text: 'No',
+                    pickerColor: '#666666'
                 });
             }
         });
@@ -101,8 +101,6 @@ module.exports = class Settings extends Component {
                 }
             }
         });
-
-
     }
     componentWillUnmount () {
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
@@ -158,15 +156,18 @@ module.exports = class Settings extends Component {
         PushNotification.cancelLocalNotifications({id: '777'});
         var yesOrNo = '';
         var strNotifs = '';
+        var textColor = '';
         if(state){
             yesOrNo = 'Yes, at';
+            textColor = '#ffffff';
             strNotifs = this.state.notif_time;
             this.startNotifications(strNotifs);
         }else{
             yesOrNo = 'No';
+            textColor = '#666666';
             strNotifs = '0';
         }
-        this.setState({ notifs_state: state, notif_text: yesOrNo });
+        this.setState({ notifs_state: state, notif_text: yesOrNo, pickerColor: textColor });
         try {
             AsyncStorage.setItem(KEY_Notifs, strNotifs);
         } catch (error) {
@@ -184,21 +185,17 @@ module.exports = class Settings extends Component {
         }
     }
     startNotifications(time) {
-        //let date = new Date(Date.now() + (parseInt(time, 10) * 1000));
         var tomorrowAM = new Date(Date.now() + (moment(tonightMidnight).add(parseInt(time, 10), 'hours').valueOf()) - nowISO);
-
         PushNotification.localNotificationSchedule({
             message: "A new Daily Puzzle is in!",
             vibrate: true,
             soundName: 'plink.mp3',
-            repeatType: 'day',//can be 'time', if so use following:
-            //repeatTime: 86400000,//daily
+            //repeatType: 'day',//can be 'time', if so use following:
+            repeatTime: 86400000,//daily
             date: tomorrowAM,
             id: '777',
         });
     }
-
-
 
     render() {
         return (
@@ -213,7 +210,6 @@ module.exports = class Settings extends Component {
                         <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                 </View>
-
                 <View style={ settings_styles.settings_container }>
                     <View>
                         <View style={settings_styles.parameter_container}>
@@ -224,14 +220,10 @@ module.exports = class Settings extends Component {
                                 <Switch value={this.state.sounds_state} onValueChange={(state)=>{this.toggleGameSounds(state)}}/>
                             </View>
                         </View>
-
                         <View style={settings_styles.parameter_container}>
                             <View style={settings_styles.divider}>
                             </View>
                         </View>
-
-
-
                         <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                             <View style={[settings_styles.text_container, {alignItems: 'flex-end'}]}>
                                 <Text style={settings_styles.text}>{this.state.use_colors}</Text>
@@ -240,12 +232,10 @@ module.exports = class Settings extends Component {
                                 <Switch value={this.state.color_state} onValueChange={(state)=>{this.toggleColor(state)}}/>
                             </View>
                         </View>
-
                         <View style={settings_styles.parameter_container}>
                             <View style={settings_styles.divider}>
                             </View>
                         </View>
-
                         <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
                             <View style={settings_styles.text_container}>
                                 <Text style={[settings_styles.text, {paddingLeft: 15}]}>Receive new puzzle notifications...</Text>
@@ -259,21 +249,24 @@ module.exports = class Settings extends Component {
                                 <Switch value={this.state.notifs_state} onValueChange={(state)=>{this.toggleUseNotifs(state)}}/>
                             </View>
                         </View>
-                        <View style={[settings_styles.parameter_container, {marginTop: height*0.05}]}>
-                            <Picker
-                                enabled={this.state.notifs_state}
-                                style={settings_styles.picker}
-                                selectedValue={this.state.notif_time}
-                                onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
-                            >
-                                <Picker.Item label='5:00 am' value={'5'} />
-                                <Picker.Item label='6:00 am' value={'6'} />
-                                <Picker.Item label='7:00 am' value={'7'} />
-                                <Picker.Item label='8:00 am' value={'8'} />
-                                <Picker.Item label='9:00 am' value={'9'} />
-                            </Picker>
+                        <View style={settings_styles.parameter_container}>
+                            <View style={settings_styles.text_container}>
+                            </View>
+                            <View style={settings_styles.switch_container}>
+                                <Picker
+                                    enabled={this.state.notifs_state}
+                                    style={[settings_styles.picker, {color: this.state.pickerColor}]}
+                                    selectedValue={this.state.notif_time}
+                                    onValueChange={(selectedValue ) => this.setNotifTime({ selectedValue  })}
+                                >
+                                    <Picker.Item label='5:00 am' value={'5'} />
+                                    <Picker.Item label='6:00 am' value={'6'} />
+                                    <Picker.Item label='7:00 am' value={'7'} />
+                                    <Picker.Item label='8:00 am' value={'8'} />
+                                    <Picker.Item label='9:00 am' value={'9'} />
+                                </Picker>
+                            </View>
                         </View>
-
                         <View style={settings_styles.parameter_container}>
                             <View style={settings_styles.divider}>
                             </View>
@@ -332,18 +325,17 @@ const settings_styles = StyleSheet.create({
         paddingLeft: 6,
     },
     text: {
-        color: 'white',
-        fontSize: configs.LETTER_SIZE * 0.5,
+        color: '#ffffff',
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.5/6)
     },
     picker: {
-        width: 100,
-        color: 'white',
+        width: normalize(height/5.5)
     },
     divider: {
         height: StyleSheet.hairlineWidth,
         width: width * 0.9,
         backgroundColor: '#333333',
         marginTop: 20,
-    },
+    }
 });
 
