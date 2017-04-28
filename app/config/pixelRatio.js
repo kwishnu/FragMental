@@ -1,28 +1,27 @@
-var React = require('react-native')
-var { PixelRatio } = React
+import React from 'react';
+import { PixelRatio } from 'react-native';
+let pixelRatio = PixelRatio.get();
+let {width, height} = require('Dimensions').get('window');
 
-var pixelRatio = PixelRatio.get();
-
-module.exports = (size) => {
-    switch (pixelRatio){
-        case 1:
-            return size * 0.9;
+export const normalize = (size) => {
+    switch (true){
+        case (pixelRatio < 1.4):
+            return size * 0.8;
             break;
-        case 2:
+        case (pixelRatio < 2.4):
             return size * 1.15;
             break;
-        case 3:
+        case (pixelRatio < 3.4):
             return size * 1.35;
             break;
         default:
-            return size * pixelRatio;
+            return size * 1.5;
     }
 }
 
-//    if (pixelRatio == 2) {
-//        return size * 1.15;
-//    }
-//    if (pixelRatio == 3) {
-//        return size * 1.35;
-//    }
-//    return size * pixelRatio;
+export const normalizeFont = (size) => {
+  if (pixelRatio < 1.4){
+      return Math.sqrt((height*height)+(width*width))*(size/175);
+  }
+  return Math.sqrt((height*height)+(width*width))*(size/100);
+}
