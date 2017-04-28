@@ -3,22 +3,17 @@ import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroi
 //import Row from '../components/Row';
 import Button from '../components/Button';
 import configs from '../config/configs';
-import normalize from '../config/pixelRatio';
-
-var styles = require('../styles/styles');
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 var InAppBilling = require("react-native-billing");
-var { width, height } = require('Dimensions').get('window');
-var CELL_WIDTH = width; // one tile's fraction of the screen width
-var CELL_HEIGHT = CELL_WIDTH * .5;
-var CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
-var TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
-var TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
-var BORDER_RADIUS = CELL_PADDING * .3;
-var KEY_expandInfo = 'expandInfoKey';
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
-}
+const styles = require('../styles/styles');
+const { width, height } = require('Dimensions').get('window');
+const CELL_WIDTH = width;
+const CELL_HEIGHT = CELL_WIDTH * .5;
+const CELL_PADDING = Math.floor(CELL_WIDTH * .08);
+const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
+const TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
+const BORDER_RADIUS = CELL_PADDING * .3;
+const KEY_expandInfo = 'expandInfoKey';
 
 module.exports = class StoreListView extends Component {
     constructor(props) {
@@ -117,12 +112,12 @@ module.exports = class StoreListView extends Component {
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
                         <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
-                            <Image source={ require('../images/arrow_back.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
                         <Button style={{right: height*.02}}>
-                            <Image source={ require('../images/no_image.png') } style={ { width: height*.07, height: height*.07 } } />
+                            <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                     </View>
                     <View style={store_styles.listview_container}>
@@ -173,7 +168,7 @@ module.exports = class StoreListView extends Component {
         }
     }
 };
-startPurchase=(item_name, itemID, nav)=>{
+startPurchase = (item_name, itemID, nav) => {
     InAppBilling.open()
     .then(() => InAppBilling.purchase(itemID))
     .then((details) => {
@@ -192,8 +187,7 @@ startPurchase=(item_name, itemID, nav)=>{
         console.log(err);
         return InAppBilling.close()
     });
-}
-
+};
 const Row = ({props, navigator}) => (
     <TouchableHighlight onPress={()=>startPurchase(props.name, props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
         <View style={store_styles.row_view}>
@@ -286,14 +280,14 @@ const store_styles = StyleSheet.create({
         alignItems: 'center',
     },
     text_small: {
-        fontSize: normalize(configs.LETTER_SIZE * .4),
+        fontSize: normalizeFont(configs.LETTER_SIZE * .07),
         marginLeft: height * .02
     },
     launcher_text: {
-        fontSize: normalize(configs.LETTER_SIZE * .65),
+        fontSize: normalizeFont(configs.LETTER_SIZE * .1),
     },
     info_text: {
-        fontSize: normalize(configs.LETTER_SIZE * .6),
+        fontSize: normalizeFont(configs.LETTER_SIZE * .085),
         color: '#333333'
     },
     launcher: {
