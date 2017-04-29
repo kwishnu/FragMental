@@ -146,6 +146,7 @@ class Game extends Component {
             numFrags: 0,//(this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')).split('|')).length,
             answerText: '',
             score: 10,
+            highScore: 0,
             onThisClue: 0,
             onThisFrag: 0,
             fragOpacity: 1,
@@ -224,6 +225,9 @@ class Game extends Component {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
+            return AsyncStorage.getItem(KEY_HighScore);
+        }).then((hs) => {
+            this.setState({highScore: hs});
         });
     }
     componentWillUnmount () {
@@ -449,27 +453,23 @@ class Game extends Component {
     }
     nextGame(){
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
-        if(this.props.fromWhere == 'puzzles contents'){this.closeGame();return;}
-        var newIndex = (parseInt(this.state.index, 10) + 1).toString();
-        this.setState({daily_solvedArray: dsArray,
+        var newIndex = this.state.index + 1;
+        var onLastGameInPack = (this.props.fromWhere == 'puzzles contents' || newIndex == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
+        if(this.props.fromWhere == 'puzzles contents' || onLastGameInPack){this.closeGame();return;}
+        this.setState({ daily_solvedArray: dsArray,
                         isLoading: true,
-                        index: newIndex,
-                        });
-        var onLastGameInPack = (this.props.fromWhere == 'puzzles contents' || parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
-        if (onLastGameInPack){
-            this.closeGame();
+                        index: newIndex
+        });
+        this.storeGameVariables(newIndex);
+        var nextTitle = '';
+        if(this.props.fromWhere == 'daily launcher'){
+            var today = moment(this.state.title, 'MMMM D, YYYY');
+            nextTitle = today.subtract(1, 'days').format('MMMM D, YYYY');
         }else{
-            this.storeGameVariables(newIndex);
-            var nextTitle = '';
-            if(this.props.fromWhere == 'daily launcher'){
-                var today = moment(this.state.title, 'MMMM D, YYYY');
-                nextTitle = today.subtract(1, 'days').format('MMMM D, YYYY');
-            }else{
-                nextTitle = (parseInt(this.state.title, 10) + 1).toString();
-            }
-            this.setState({ title: nextTitle, forwardBackOpacity: 0 });
-            setTimeout(() => {this.reset_scene()}, 500);
+            nextTitle = (parseInt(this.state.title, 10) + 1).toString();
         }
+        this.setState({ title: nextTitle, forwardBackOpacity: 0 });
+        setTimeout(() => {this.reset_scene()}, 500);
     }
     guess(which, howMuchToScore) {
         if(this.state.puzzleSolved == true){this.nextGame();}
@@ -546,80 +546,82 @@ class Game extends Component {
                     }
                 }
                 if (entire_puzzleSolved){
-                    AsyncStorage.getItem(KEY_HighScore).then((highScore) => {
-                        if(this.state.useSounds == true){fanfare.play();}
-                        if(this.props.fromWhere == 'puzzle launcher'){
-                            var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
-                            this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
-                            var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
-                            if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
-                            try {
-                                AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
-                            } catch (error) {
-                                window.alert('AsyncStorage error: ' + error.message);
-                            }
-                        }else{
-                            var addOrNot = (this.props.fromWhere == 'puzzles contents')?this.state.index:this.state.index + 1;
-                            dsArray[addOrNot] = '1';
-                        }
+                    var highScore = this.state.highScore;
+                    if(this.state.useSounds == true){fanfare.play();}
+                    if(this.props.fromWhere == 'puzzle launcher'){
+                        var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
+                        this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
+                        var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
+                        if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
                         try {
-                            AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
+                            AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
                         } catch (error) {
                             window.alert('AsyncStorage error: ' + error.message);
                         }
-                        if(this.props.fromWhere == 'puzzles contents'){
+                    }else if(this.props.fromWhere == 'puzzles contents'){
+                        dsArray[this.state.index] = '1';
+                    }else{//from daily launcher
+                        dsArray[this.state.index + 1] = '1';
+                        this.setState({daily_solvedArray: dsArray});
+                    }
+                    try {
+                        AsyncStorage.setItem(KEY_daily_solved_array, JSON.stringify(dsArray));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                    if(this.props.fromWhere == 'puzzles contents'){
+                        try {
+                            AsyncStorage.setItem(KEY_solvedTP, 'true');
+                        } catch (error) {
+                            window.alert('AsyncStorage error: ' + error.message);
+                        }
+                    }
+                    var theScore = this.state.score;
+                    theScore = theScore + scoreToAdd;
+                    var strScore = theScore.toString();
+                    switch (true){
+                        case ((theScore > highScore) && highScore != 0):
+                            currClue = 'Nice going! ' + strScore + ' points is a new high score!'
                             try {
-                                AsyncStorage.setItem(KEY_solvedTP, 'true');
+                                AsyncStorage.setItem(KEY_HighScore, strScore);
                             } catch (error) {
                                 window.alert('AsyncStorage error: ' + error.message);
                             }
-                        }
-                        var theScore = this.state.score;
-                        theScore = theScore + scoreToAdd;
-                        var strScore = theScore.toString();
-                        switch (true){
-                            case ((theScore > highScore) && highScore != 0):
-                                currClue = 'Nice going! ' + strScore + ' points is a new high score!'
+                            break;
+                        case (theScore == highScore):
+                            currClue = 'Way to go...' + strScore + ' points ties your high score!'
+                            break;
+                        default:
+                            var accolades = 'Right on!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
+                            var accolade = accolades[Math.floor(Math.random()*accolades.length)];
+                            if(theScore < 40){
+                                currClue = accolade;
+                            }else{
+                                currClue = accolade.replace('!', '...' + strScore + ' points!');
+                            }
+                            if (highScore == 0){
                                 try {
                                     AsyncStorage.setItem(KEY_HighScore, strScore);
                                 } catch (error) {
                                     window.alert('AsyncStorage error: ' + error.message);
                                 }
-                                break;
-                            case (theScore == highScore):
-                                currClue = 'Way to go...' + strScore + ' points ties your high score!'
-                                break;
-                            default:
-                                var accolades = 'Right on!*Nice going!*Way to go!*Good work!*Good job!*That\'s it!*Congratulations!*Now you have it!*Good for you!*Couldn\'t have done it better myself!*That\'s the right way to do it!*You did it that time!*That\'s not half bad!*Nice going!*That\'s the way!*That\'s the way to do it!*You\'ve got your brain in gear today!*Excellent!*Wonderful!*That\'s great!*You\'ve got that down!*That\'s it!*Good going!*Good for you!*I think you\'ve got it now!*Way to go!'.split('*');
-                                var accolade = accolades[Math.floor(Math.random()*accolades.length)];
-                                if(theScore < 40){
-                                    currClue = accolade;
-                                }else{
-                                    currClue = accolade.replace('!', '...' + strScore + ' points!');
-                                }
-                                if (highScore == 0){
-                                    try {
-                                        AsyncStorage.setItem(KEY_HighScore, strScore);
-                                    } catch (error) {
-                                        window.alert('AsyncStorage error: ' + error.message);
-                                    }
-                                }
-                        }
-                        this.setState({ theData: data,
-                                        daily_solvedArray: dsArray,
-                                        answerText: theWord,
-                                        onThisClue: onClue,
-                                        onThisFrag: onFrag,
-                                        currentFrags: newCurrentFrags,
-                                        numFrags: newNumFrags,
-                                        puzzleSolved: entire_puzzleSolved,
-                                        solvedArray: sArray,
-                                        goLeft: gl,
-                                        columnSort: colSort,
-                                        currentClue: currClue
-                        });
-                        this.score_increment(scoreToAdd);
+                            }
+                    }
+                    this.animate_word(currClue, theWord, colSort, gl, entire_puzzleSolved);
+                    this.setState({ theData: data,
+                                    daily_solvedArray: dsArray,
+                                    answerText: theWord,
+                                    onThisClue: onClue,
+                                    onThisFrag: onFrag,
+                                    currentFrags: newCurrentFrags,
+                                    numFrags: newNumFrags,
+                                    puzzleSolved: entire_puzzleSolved,
+                                    solvedArray: sArray,
+                                    goLeft: gl,
+                                    columnSort: colSort,
+                                    currentClue: currClue
                     });
+                    this.score_increment(scoreToAdd);
                 }
             }
             if (!entire_puzzleSolved){
@@ -643,11 +645,11 @@ class Game extends Component {
                     this.score_decrement(1);
                 }
             }
-        }else{
+        }else{//wrong guess
             if(this.state.useSounds == true){blat.play();}
             this.score_decrement(1);
         }
-        if (solved){//at least one clue is solved
+        if (solved && !entire_puzzleSolved){//at least one clue is solved
             if(this.state.useSounds == true && !entire_puzzleSolved)slide.play();//only a word, not the entire puzzle
             this.animate_word(currClue, theWord, colSort, gl, entire_puzzleSolved);
         };
@@ -875,12 +877,12 @@ class Game extends Component {
             var onFrag = this.state.onThisFrag;
 
             if(guessFragsArray[onFrag] == '^'){
-                this.guess(100, -1);
+                this.guess(100, -3);
                 return;
             }
             for(var goThruData = 0; goThruData<data.length; goThruData++){
                 if(data[goThruData].frag == guessFragsArray[onFrag]){
-                    this.guess(goThruData, -1);
+                    this.guess(goThruData, -3);
                     return;
                 }
             }
