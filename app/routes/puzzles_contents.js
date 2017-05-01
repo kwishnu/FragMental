@@ -147,8 +147,6 @@ class PuzzleContents extends Component{
         Orientation.lockToPortrait();
         AppState.addEventListener('change', this.handleAppStateChange);
         var nowISO = moment().valueOf();
-        var launchDay = moment('2016 11', 'YYYY-MM');//December 1, 2016 (zero-based months)
-        var dayDiff = launchDay.diff(nowISO, 'days');//# of days since 12/1/2016
         var tonightMidnight = moment().endOf('day').valueOf();
         try {
             AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(this.props.puzzleData));
