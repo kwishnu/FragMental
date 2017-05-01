@@ -21,8 +21,6 @@ const KEY_HighScore = 'highScoreKey';
 const KEY_show_score = 'showScoreKey';
 const KEY_Score = 'scoreKey';
 const {width, height} = require('Dimensions').get('window');
-//const SPRING_CONFIG = {tension: 2, friction: 3}; //Soft spring
-var SPRING_CONFIG = {bounciness: 0, speed: .5};//{tension: 2, friction: 3, velocity: 3};//velocity: .1};
 
 class StartScene extends Component {
     constructor(props) {
@@ -36,7 +34,7 @@ class StartScene extends Component {
     }
     componentDidMount() {
         this.animate_hand();
-        this.spin()
+        this.spin();
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         if (this.props.seenIntro != 'true'){
             var initArray = [
@@ -104,7 +102,6 @@ class StartScene extends Component {
         {
           toValue: 1,
           duration: 1000,
-//          easing: Easing.linear
         }
         ).start(() => this.animate_hand())
     }
@@ -158,14 +155,14 @@ class StartScene extends Component {
                             <View level={0}><Text style={styles.swipeText}>Swipe through for a quick tutorial...</Text></View>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 20}} level={-15}>
-                            <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
+                            <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
                         </View>
                     </View>
                 </View>
 
                 <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
                     <View style={[styles.header, {marginTop:-35}]}>
-                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/bg.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/bg.png')} />
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0, marginTop:-30, marginLeft: 5}]} level={-20}>
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/top.png')} />
