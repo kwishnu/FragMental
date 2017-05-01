@@ -14,6 +14,11 @@ const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
 const TILE_HEIGHT = CELL_HEIGHT - CELL_PADDING * 2;
 const BORDER_RADIUS = CELL_PADDING * .3;
 const KEY_expandInfo = 'expandInfoKey';
+function shadeColor2(color, percent) {
+    percent = percent/100;
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+}
 
 module.exports = class StoreListView extends Component {
     constructor(props) {
@@ -189,7 +194,11 @@ startPurchase = (item_name, itemID, nav) => {
     });
 };
 const Row = ({props, navigator}) => (
-    <TouchableHighlight onPress={()=>startPurchase(props.name, props.product_id, navigator)} style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}>
+    <TouchableHighlight
+        onPress={()=>startPurchase(props.name, props.product_id, navigator)}
+        style={[store_styles.launcher, {backgroundColor: props.color}, this.lightBorder(props.color)]}
+        underlayColor={ shadeColor2(props.color, -20) }
+        >
         <View style={store_styles.row_view}>
             <Text style={[store_styles.text_small, this.getTextColor(props.color)]}>
               {`${props.num_puzzles}`}
@@ -281,7 +290,8 @@ const store_styles = StyleSheet.create({
     },
     text_small: {
         fontSize: normalizeFont(configs.LETTER_SIZE * .07),
-        marginLeft: height * .02
+        marginLeft: height * .02,
+        marginRight: height * .02
     },
     launcher_text: {
         fontSize: normalizeFont(configs.LETTER_SIZE * .1),
