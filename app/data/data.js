@@ -1,26 +1,26 @@
 module.exports = [
     {
-		title:'Contents',
+		title: 'Contents',
 		index: '0',
-		type:'toPuzzles',
+		type: 'toPuzzles',
         link: 'puzzles contents'
     },
     {
-		title:'Today\'s Puzzle',
+		title: 'Today\'s Puzzle',
 		index: '1',
-		type:'toPuzzles',
+		type: 'toPuzzles',
         link: 'game board'
     },
     {
-		title:'Daily Puzzles',
+		title: 'Daily Puzzles',
 		index: '2',
-		type:'toPuzzles',
+		type: 'toPuzzles',
         link: 'daily launcher'
     },
     {
-		title:'Easy',
+		title: 'Easy',
 		index: '3',
-		type:'store',
+		type: 'store',
         link: 'store',
         data:[
                 {
@@ -116,9 +116,9 @@ module.exports = [
             ]
     },
     {
-		title:'Moderate',
+		title: 'Moderate',
 		index: '4',
-		type:'store',
+		type: 'store',
         link: 'store',
         data:[
                 {
@@ -214,9 +214,9 @@ module.exports = [
             ]
     },
     {
-		title:'Hard',
+		title: 'Hard',
 		index: '5',
-		type:'store',
+		type: 'store',
         link: 'store',
         data:[
                 {
@@ -312,9 +312,9 @@ module.exports = [
             ]
     },
     {
-		title:'Theme',
+		title: 'Theme',
 		index: '6',
-		type:'store',
+		type: 'store',
         link: 'store',
         data:[
                 {
@@ -410,9 +410,9 @@ module.exports = [
             ]
     },
     {
-		title:'Easy Combo',
+		title: 'Easy Combo',
 		index: '7',
-		type:'combos',
+		type: 'combos',
         link: 'store3',
         data:[
                 {
@@ -445,9 +445,9 @@ module.exports = [
             ]
     },
     {
-		title:'Moderate Combo',
+		title: 'Moderate Combo',
 		index: '8',
-		type:'combos',
+		type: 'combos',
         link: 'store3',
         data:[
                 {
@@ -480,9 +480,9 @@ module.exports = [
             ]
     },
     {
-		title:'Hard Combo',
+		title: 'Hard Combo',
 		index: '9',
-		type:'combos',
+		type: 'combos',
         link: 'store3',
         data:[
                 {
@@ -515,9 +515,9 @@ module.exports = [
             ]
     },
     {
-		title:'Mixed Combo',
+		title: 'Mixed Combo',
 		index: '10',
-		type:'combos',
+		type: 'combos',
         link: 'store3',
         data:[
                 {
@@ -550,59 +550,59 @@ module.exports = [
             ]
     },
     {
-		title:'Facebook',
+		title: 'Facebook',
 		index: '11',
-		type:'social',
+		type: 'social',
         link: 'facebook'
     },
     {
-		title:'Twitter',
+		title: 'Twitter',
 		index: '12',
-		type:'social',
+		type: 'social',
         link: 'twitter'
     },
     {
-		title:'How To Play',
+		title: 'How To Play',
 		index: '13',
-		type:'toPuzzles',
+		type: 'toPuzzles',
         link: 'app_intro'
     },
     {
-		title:'Settings',
+		title: 'Settings',
 		index: '14',
-		type:'about',
+		type: 'about',
         link: 'settings'
     },
     {
-		title:'About',
+		title: 'About',
 		index: '15',
-		type:'about',
+		type: 'about',
         link: 'about'
     },
 	{
-		title:'Today\'s Puzzle',
+		title: 'Today\'s Puzzle',
 		index: '16',
-		type:'daily',
-		show:'true',
-		num_puzzles:'1',
-		num_solved:'0',
-		solved:'false',
+		type: 'daily',
+		show: 'true',
+		num_puzzles: '1',
+		num_solved: '0',
+		solved: 'false',
         product_id: '',
-		bg_color:'#079707',
+		bg_color: '#079707',
 		puzzles:[
             'ish~pu|bl|^|ab|le:Like a good book**ener|giz|es:Gives vitality**embe|ll|^:Make \'better\' by adding extra detail**styl|^|ly:With an eye toward fashion**stan|za:Section of a poem or song**adm|on|^|ing:Warning or reprimanding someone firmly**mal|ad|ro|it:Ineffective or bungling'
         ]
 	},
 	{
-		title:'Last Three Days',
+		title: 'Last Three Days',
 		index: '17',
-		type:'daily',
-		show:'true',
-		num_puzzles:'3',
-		num_solved:'0',
-		solved:'false',
+		type: 'daily',
+		show: 'true',
+		num_puzzles: '3',
+		num_solved: '0',
+		solved: 'false',
         product_id: '',
-		bg_color:'#C0C0C0',
+		bg_color: '#C0C0C0',
 		puzzles:[
             'wo~^|rk|outs:Exercise sessions**br|oa|ds|^|rd:Wide-bladed hand-wielded weapon**hard|^|ods:Mahogany, maple, oak and teak, for example**glow|^|rm:A bioluminescent insect larva**ca|nc|un:Mexican city on the Yucatán Peninsula**po|ck|ma|rk:Pitted scar on the skin**sh|er|^|od:Royal forest in Nottinghamshire',
             'ef~whit|^|ish:Cod, haddock, hake and pollock for example**cir|ca|dian:On a twenty-four-hour cycle**in|^|fab|le:Can\'t be expressed in words**stup|^|ac|tion:State of astonishment**to|wr|op|es:They\'re sometimes found between bumpers**ther|^|ore:Ergo**sp|ad|^|ul:Just a bit of dirt',
@@ -610,15 +610,15 @@ module.exports = [
         ]
 	},
 	{
-		title:'Last Thirty Days',
+		title: 'Last Thirty Days',
 		index: '18',
-		type:'daily',
-		show:'false',
-		num_puzzles:'30',
-		num_solved:'0',
-		solved:'false',
+		type: 'daily',
+		show: 'false',
+		num_puzzles: '30',
+		num_solved: '0',
+		solved: 'false',
         product_id: '',
-		bg_color:'#FFB300',
+		bg_color: '#FFB300',
 		puzzles:[
             'wo~^|rk|outs:Exercise sessions**br|oa|ds|^|rd:Wide-bladed hand-wielded weapon**hard|^|ods:Mahogany, maple, oak and teak, for example**glow|^|rm:A bioluminescent insect larva**ca|nc|un:Mexican city on the Yucatán Peninsula**po|ck|ma|rk:Pitted scar on the skin**sh|er|^|od:Royal forest in Nottinghamshire',
             'ef~whit|^|ish:Cod, haddock, hake and pollock for example**cir|ca|dian:On a twenty-four-hour cycle**in|^|fab|le:Can\'t be expressed in words**stup|^|ac|tion:State of astonishment**to|wr|op|es:They\'re sometimes found between bumpers**ther|^|ore:Ergo**sp|ad|^|ul:Just a bit of dirt',
@@ -649,21 +649,25 @@ module.exports = [
             'cin~hal|lu|^|at|es:Sees things that aren\'t there**ma|^|tosh:A full-length waterproof coat**ca|vity:Dreaded diagnosis at the dentist**kl|utzy:Clumsy**fas|^|at|ed:Enthralled**neo|my|^:Topically applied antibiotic \'new\' in 1949**in|^|er|ates:Burns in a furnace**^|dere|lla:Glass slipper slipper',
             'hi~len|gt|^|est:Most protracted**hol|st|er:Sheath for carrying a firearm**mac|^|ni|st:Skilled metal fabricator**linc|olns|^|re:County in the east of England**layu|ps:Close-range basketball shots**^|kers:Cross-country walkers**poac|^|ng:Taking game illegally**fa|rt|^|ng:Once a quarter of an English penny',
             'ou~gr|^|ndh|ogs:Punxsutawney Phil and his kind**lim|^|si|ne:A stretch**ha|za|rd|ing:Making a guess**fa|ub|^|rg:A Parisian suburb**scr|^|nged:Got by on scraps**dar|tm|^|th:Private Ivy League research university in New Hampshire**tr|^|sers:Pants',
-            'gd~wr|on|^|oe|rs:Lawbreakers**smol|deri|ng:Burning slowly with no flame**kin|^|om:One level above Phylum**alch|emy:Attempting the transformation of lead into gold**amy|^|ala:Almond-shaped mass of gray matter**clam|be|ri|ng:Moving in an awkward and laborious way**win|^|in|gs:Pictographic fonts'
+            'gd~wr|on|^|oe|rs:Lawbreakers**smol|deri|ng:Burning slowly with no flame**kin|^|om:One level above Phylum**alch|emy:Turning lead into gold**amy|^|ala:Almond-shaped mass of gray matter**clam|be|ri|ng:Moving in an awkward and laborious way**win|^|in|gs:Pictographic fonts'
         ]
 	},
 	{
-		title:'Eggplant',
+		title: 'Eggplant',
 		index: '19',
-		type:'mypack',
-		show:'true',
-		num_puzzles:'30',
-		num_solved:'0',
-		solved:'false',
+		type: 'mypack',
+		show: 'true',
+		num_puzzles: '30',
+		num_solved: '0',
+		solved: 'false',
         product_id: '',
-		bg_color:'#2B0B30',
+		bg_color: '#2B0B30',
 		puzzles:[
-			're~^|ce|des:Moves back, as a hairline**ent|^|es:They\'re sometimes served on trays**^|si|gns:Bows out**ig|no|^:Look the other way**^|exa|mi|ne:Take another good look at**sh|oes|to|^:Establishment with many horns**fo|^|st|er:Tree manager**fo|^|ign|er:Lou Graham-led arena rock band',
+            'aba~al|^|ma:Home of the \'Crimson Tide\'**chin|less:Lacking strength of character**^|shed|ly:In an embarrassed way**rut|^|ga:Yellow-fleshed root eaten as a vegetable**^|ck:What one is sometimes taken**catw|alk:Where models strut**^|ted:Let up**con|tr|^|nd:Illegal merchandise**^|lo|ne:An edible mollusk of warm seas**outp|atie|nt:Procedure not requiring admittance',
+            'sc~splu|rges:Spends big**di|^|ov|er|ed:Found by talent scouts**^|arla|tti:Italian Baroque composer**di|^|ipl|es:Close followers**pre|^|ho|ol:Where much refrigerator art is produced**^|ot|ch:Whisky, not Whiskey**di|^|re|dit|ed:Damaged the reputation of',
+            'br~^|yces:Harper and Dallas Howard, for two**pin|fea|the|rs:Small growths following a molt**^|im:Edge of a cup**^|ig|ad|es:Subdivisions of an army**so|^|iq|uets:Nicknames**^|oth|er|hood:Said of a fraternity**^|ea|th|al|yz|er:Might be used at the side of the road',
+            'tl~san|dc|as|^|es:2016 Beyonce song**prop|or|ti|on:Amount in relation to a whole**hus|^|es:Scams**ou|^|iers:Data not adhering to the norm**coun|ter|ma|nd:Revoke an order**tur|^|ed|ov|es:Known for there being two of them',
+            're~^|ce|des:Moves back, as a hairline**ent|^|es:They\'re sometimes served on trays**^|si|gns:Bows out**ig|no|^:Look the other way**^|exa|mi|ne:Take another good look at**sh|oes|to|^:Establishment with many horns**fo|^|st|er:Tree manager**fo|^|ign|er:Lou Graham-led arena rock band',
             'le~^|ger|de|ma|in:Sleight of hand**^|ek:Drip of the onion family?**^|er|ed:Looked at with smarmy intent**^|wd:R-rated, maybe**cl|ue|^|ss:1995 Alicia Silverstone flick**si|nk|ho|^:Bigger than your run-of-the-mill pothole**^|is:Hawaiian garlands**^|thar|gy:Sluggishness**in|evi|tab|^:Fated',
             'res~expo|su|^:Photos, pre-digital**^|id|ue:Last vestige**lu|^:At the end of the line**^|tu|dy:Cram again**^|truc|tu|re:Make into a different form**ar|^|ting|ly:Attracting attention**^|taur|an|ts:Reservation takers**ma|tu|^:Comes to fruition**al|lu|^:Attractive traits',
             'or~^|lan|do:Florida theme-park haven**ema|nc|ip|at|^:Abraham Lincoln, for one**scu|lpt|^:A chipper artist**ig|^:Dr. Frankenstein\'s assistant**dis|^|ie|nts:Befuddles**win|ds|^:Royal surname**^|iole:Black and orange flyer**unc|^|ked:Breathing, especially if an old red**unm|em|^|able:Easily forgotten',
@@ -688,55 +692,51 @@ module.exports = [
             'rg~cle|^|ym|an:Minister**ma|^|in|ates:Shoves off to the side**vi|^|in:Richard Branson\'s company**shr|iv|ell|ed:Prune-like**pu|^|ato|ry:Place where sins are expiated**st|am|ps:Puts one\'s mark on**ga|^|oyle:Spooky building ornament',
             'ym~pla|^|ates:A child\'s friends**enjo|^|ent:Taking pleasure in something**repa|rab|le:Possible to rectify**an|on|^|ity:Gained by using a disguise**as|^|metr|ical:Uneven**supp|lied:Stocked up**ox|^|or|on:Contradictory terms**enz|^|es:Chemically active proteins',
             'bl~^|as|toff:At the end of a countdown**pr|unes:Cuts back**^|oo|pers:Sometimes shown while the credits roll**^|it|he|ly:With cheerful indifference**pia|nis|ts:Chopin or Liszt, for example**^|oc|kade:Way of preventing goods or people from entering or leaving**^|abs:Tells**dou|^|ed:Got to second**un|^|in|king:Like crocodiles',
-            'bu~^|ll|nose:With one rounded edge**con|fa|^|la|te:Make things up**co|nt|ri|^|te:Give to the cause**^|shw|ha|cker:American Civil War guerilla fighter**stym|ies:Hinders the progress of**^|run|di:Landlocked country in Africa**bo|ws|er:Super Mario bad guy',
-            'aba~al|^|ma:Home of the \'Crimson Tide\'**chin|less:Lacking strength of character**^|shed|ly:In an embarrassed way**rut|^|ga:yellow-fleshed root eaten as a vegetable**^|ck:What one is sometimes taken**catw|alk:Where models strut**^|ted:Let up**con|tr|^|nd:Illegal merchandise**^|lo|ne:An edible mollusk of warm seas**outp|atie|nt:Procedure not requiring admittance',
-            'sc~splu|rges:Spends big**di|^|ov|er|ed:Found by talent scouts**^|arla|tti:Italian Baroque composer**di|^|ipl|es:Close followers**pre|^|ho|ol:Where much refrigerator art is produced**^|ot|ch:Whisky, not Whiskey**di|^|re|dit|ed:Damaged the reputation of',
-            'br~^|yces:Harper and Dallas Howard, for two**pin|fea|the|rs:Small growths following a molt**^|im:Edge of a cup**^|ig|ad|es:Subdivisions of an army**so|^|iq|uets:Nicknames**^|oth|er|hood:Said of a fraternity**^|ea|th|al|yz|er:Might be used at the side of the road',
-            'tl~san|dc|as|^|es:2016 Beyonce song**prop|or|ti|on:Amount in relation to a whole**hus|^|es:Scams**ou|^|iers:Data not adhering to the norm**coun|ter|ma|nd:Revoke an order**tur|^|ed|ov|es:Known for there being two of them'
+            'bu~^|ll|nose:With one rounded edge**con|fa|^|la|te:Make things up**co|nt|ri|^|te:Give to the cause**^|shw|ha|cker:American Civil War guerilla fighter**stym|ies:Hinders the progress of**^|run|di:Landlocked country in Africa**bo|ws|er:Super Mario bad guy'
         ]
 	},
 	{
-		title:'',
+		title: '',
 		index: '20',
-		type:'forsale',
+		type: 'forsale',
         product_id: '',
         price: '',
-		show:'true',
-		num_puzzles:'',
-		solved:'false',
-		bg_color:''
+		show: 'true',
+		num_puzzles: '',
+		solved: 'false',
+		bg_color: ''
 	},
 	{
-		title:'',
+		title: '',
 		index: '21',
-		type:'forsale',
+		type: 'forsale',
         product_id: '',
         price: '',
-		show:'true',
-		num_puzzles:'',
-		solved:'false',
-		bg_color:''
+		show: 'true',
+		num_puzzles: '',
+		solved: 'false',
+		bg_color: ''
 	},
 	{
-		title:'',
+		title: '',
 		index: '22',
-		type:'forsale',
+		type: 'forsale',
         product_id: '',
         price: '',
-		show:'true',
-		num_puzzles:'',
-		solved:'false',
-		bg_color:''
+		show: 'true',
+		num_puzzles: '',
+		solved: 'false',
+		bg_color: ''
 	},
 	{
-		title:'',
+		title: '',
 		index: '23',
-		type:'forsale',
+		type: 'forsale',
         product_id: '',
         price: '',
-		show:'true',
-		num_puzzles:'',
-		solved:'false',
-		bg_color:''
+		show: 'true',
+		num_puzzles: '',
+		solved: 'false',
+		bg_color: ''
 	}
 ];
