@@ -50,8 +50,8 @@ class SplashScreen extends Component {
         var puzzleData = [];
         nowISO = moment().valueOf();
         tonightMidnight = moment().endOf('day').valueOf();
-        var launchDay = moment('2017 03', 'YYYY-MM');//Mar 1, 2017
-        var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 3/1/2017
+        var launchDay = moment('2017 04', 'YYYY-MM');//April 1, 2017
+        var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 4/1/2017
         var startNum = dayDiff - 28;
         if(this.props.motive == 'initialize'){
             var ownedPacks = [];
