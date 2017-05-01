@@ -103,8 +103,8 @@ class StartScene extends Component {
         this.offsetX,
         {
           toValue: 1,
-          duration: 2500,
-          easing: Easing.bounce
+          duration: 1000,
+//          easing: Easing.linear
         }
         ).start(() => this.animate_hand())
     }
@@ -112,6 +112,10 @@ class StartScene extends Component {
         const spin = this.spinValue.interpolate({
             inputRange: [0, 1],
             outputRange: ['0deg', '360deg']
+        })
+        const rotate = this.offsetX.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: ['0deg', '10deg', '0deg']
         })
         const oscillate = this.offsetX.interpolate({
             inputRange: [0, 0.5, 1],
@@ -154,7 +158,7 @@ class StartScene extends Component {
                             <View level={0}><Text style={styles.swipeText}>Swipe through for a quick tutorial...</Text></View>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 20}} level={-15}>
-                            <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}] }} source={require('../images/intro1/hand.png')} />
+                            <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
                         </View>
                     </View>
                 </View>
@@ -170,7 +174,7 @@ class StartScene extends Component {
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/bottom.png')} />
                     </View>
                     <View style={{position: 'absolute', top: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 10}} level={-15}>
-                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}] }} source={require('../images/intro1/hand.png')} />
+                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
                     </View>
                 </View>
 
@@ -190,7 +194,7 @@ class StartScene extends Component {
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/des.png')} />
                     </View>
                     <View style={{position: 'absolute', top: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 10}} level={-15}>
-                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}] }} source={require('../images/intro1/hand.png')} />
+                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
                     </View>
                 </View>
 
@@ -210,7 +214,7 @@ class StartScene extends Component {
                         <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4_2/hint.png')} />
                     </View>
                     <View style={{position: 'absolute', top: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 10}} level={-15}>
-                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}] }} source={require('../images/intro1/hand.png')} />
+                        <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
                     </View>
                 </View>
                <View style={[styles.slide, { backgroundColor: '#081262' }]}>
