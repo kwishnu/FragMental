@@ -96,6 +96,8 @@ const CELL_PADDING = Math.floor(CELL_WIDTH * .08); // 5% of the cell width...+
 const TILE_WIDTH = (CELL_WIDTH - CELL_PADDING * 2);
 const BORDER_RADIUS = CELL_PADDING * .3;
 const KEY_daily_solved_array = 'solved_array';
+const KEY_show_score = 'showScoreKey';
+const KEY_Score = 'scoreKey';
 const KEY_Color = 'colorKey';
 const KEY_midnight = 'midnight';
 const KEY_Premium = 'premiumOrNot';
@@ -128,6 +130,8 @@ class PuzzleContents extends Component{
             isPremium: this.props.isPremium,
             hasRated: 'false',
             menuImage: require('../images/menu.png'),
+            total_score: 0,
+            total_opacity: 1,
             puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
         };
@@ -161,14 +165,36 @@ class PuzzleContents extends Component{
             }else{
                 solvedTodayOrNot = false;
                 try {
-                    AsyncStorage.setItem(KEY_solvedTP, 'false');//
+                    AsyncStorage.setItem(KEY_solvedTP, 'false');
                 } catch (error) {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
             }
             return AsyncStorage.getItem(KEY_ratedTheApp);
         }).then((rated) => {
-            if(rated == 'true'){this.setState({hasRated: rated})}
+            if(rated == 'true')this.setState({hasRated: rated});
+            return AsyncStorage.getItem(KEY_show_score);
+        }).then((showScore) => {
+            if (showScore !== null) {
+                this.setState({total_opacity: parseInt(showScore, 10)});
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_show_score, '1');
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+            return AsyncStorage.getItem(KEY_Score);
+        }).then((total) => {
+            if (total !== null){
+                this.setState({total_score: parseInt(total, 10)});
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_Score, '0');
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
             return AsyncStorage.getItem(KEY_daily_solved_array);
         }).then((theArray) => {
             if (theArray !== null) {
@@ -261,6 +287,9 @@ class PuzzleContents extends Component{
             this.setState({menuImage: require('../images/arrow_back.png')});
             BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         } else {
+            AsyncStorage.getItem(KEY_show_score).then((showScore) => {
+                this.setState({total_opacity: parseInt(showScore, 10)});
+            });
             this.setState({menuImage: require('../images/menu.png')});
             BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
         }
@@ -526,7 +555,7 @@ class PuzzleContents extends Component{
                 });
                 return;
         }
-    //a puzzle pack launcher:
+        //a puzzle pack launcher:
         AsyncStorage.getItem(KEY_Color).then((colors) => {
             if (colors !== null) {
                 useColors = colors;
@@ -566,11 +595,7 @@ class PuzzleContents extends Component{
             )
         }else{
             return (
-                <SideMenu
-                    menu={ menu }
-                    isOpen={ this.state.isOpen }
-                    onChange={ (isOpen) => this.updateMenuState(isOpen) }>
-
+                <SideMenu menu={ menu } isOpen={ this.state.isOpen } onChange={ (isOpen) => this.updateMenuState(isOpen) }>
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
                             <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
@@ -580,6 +605,10 @@ class PuzzleContents extends Component{
                             <Button style={{right: height*.02}}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
+                            <View style={ container_styles.total_score }>
+                                <Text style={[container_styles.total_text, {opacity: this.state.total_opacity}]}>Score:</Text>
+                                <Text style={[container_styles.total_text, {opacity: this.state.total_opacity}]}>{this.state.total_score.toLocaleString()}</Text>
+                            </View>
                         </View>
                         <View style={ container_styles.puzzles_container }>
                              <ListView  showsVerticalScrollIndicator ={false}
@@ -636,6 +665,19 @@ const container_styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: window.width,
         backgroundColor: '#060e4c',
+    },
+    total_score: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        right: 10,
+        top: 10,
+        width: width/3,
+        height: configs.LETTER_SIZE
+    },
+    total_text: {
+        fontSize: normalizeFont(configs.LETTER_SIZE * 0.054),
+        color: '#ffffff'
     },
     puzzles_container: {
         flex: 48,
