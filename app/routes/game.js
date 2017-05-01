@@ -84,6 +84,7 @@ const KEY_solvedTP = 'solvedTP';
 const KEY_daily_solved_array = 'solved_array';
 const KEY_Sound = 'soundKey';
 const KEY_HighScore = 'highScoreKey';
+const KEY_Score = 'scoreKey';
 const KEY_UseNumLetters = 'numLetters';
 const KEY_ratedTheApp = 'ratedApp';
 var dataBackup = {};
@@ -146,6 +147,7 @@ class Game extends Component {
             numFrags: 0,//(this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')).split('|')).length,
             answerText: '',
             score: 10,
+            runningTotal: 0,
             highScore: 0,
             onThisClue: 0,
             onThisFrag: 0,
@@ -209,7 +211,6 @@ class Game extends Component {
             var valueToBool = (value == 'true')?true:false;
             this.setState({useNumLetters: valueToBool});
             this.storeGameVariables(this.state.index);
-            this.setState({isLoading: false});
             return AsyncStorage.getItem(KEY_Sound);
         }).then((sounds) => {
             if (sounds !== null) {
@@ -227,7 +228,31 @@ class Game extends Component {
             }
             return AsyncStorage.getItem(KEY_HighScore);
         }).then((hs) => {
-            this.setState({highScore: hs});
+            if (hs !== null){
+                this.setState({highScore: hs});
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_HighScore, '0');//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+            return AsyncStorage.getItem(KEY_Score);
+        }).then((total) => {
+            if (total !== null){
+                this.setState({runningTotal: parseInt(total, 10)});
+            }else{
+                try {
+                    AsyncStorage.setItem(KEY_Score, '0');//
+                } catch (error) {
+                    window.alert('AsyncStorage error: ' + error.message);
+                }
+            }
+            return true;
+        }).then((done) => {
+            if(done){
+                this.setState({isLoading: false});
+            }
         });
     }
     componentWillUnmount () {
@@ -405,6 +430,11 @@ class Game extends Component {
                     });
     }
     closeGame() {
+        try {
+            AsyncStorage.setItem(KEY_Score, this.state.runningTotal.toString());
+        } catch (error) {
+            window.alert('AsyncStorage error: ' + error.message);
+        }
         var myPackArray = [];
         var str = '';
         for (var key in puzzleData){
@@ -578,6 +608,7 @@ class Game extends Component {
                     }
                     var theScore = this.state.score;
                     theScore = theScore + scoreToAdd;
+                    var accumulatedScore = theScore + this.state.runningTotal;
                     var strScore = theScore.toString();
                     switch (true){
                         case ((theScore > highScore) && highScore != 0):
@@ -619,7 +650,8 @@ class Game extends Component {
                                     solvedArray: sArray,
                                     goLeft: gl,
                                     columnSort: colSort,
-                                    currentClue: currClue
+                                    currentClue: currClue,
+                                    runningTotal: accumulatedScore
                     });
                     this.score_increment(scoreToAdd);
                 }
