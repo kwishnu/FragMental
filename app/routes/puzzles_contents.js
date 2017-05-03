@@ -440,8 +440,8 @@ class PuzzleContents extends Component{
             color: strToReturn,
         };
     }
-    getTitle(title, numPuzzles){
-        var appendNum = (parseInt(numPuzzles, 10) > 30)?' - ' + numPuzzles:'';
+    getTitle(title, numPuzzles, index){
+        var appendNum = (parseInt(index, 10) > 19)?'  ' + numPuzzles:'';
         var titleToReturn = (title.indexOf('*') > -1)?title.substring(1):title;
         titleToReturn = titleToReturn + appendNum;
         return titleToReturn;
@@ -617,7 +617,7 @@ class PuzzleContents extends Component{
                                                  <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color, rowData.product_id)}
                                                                      style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
                                                                      underlayColor={rowData.bg_color} >
-                                                     <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title, rowData.num_puzzles)}</Text>
+                                                     <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title, rowData.num_puzzles, rowData.index)}</Text>
                                                  </TouchableHighlight>
                                              </View>
                                          }
