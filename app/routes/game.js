@@ -430,11 +430,6 @@ class Game extends Component {
                     });
     }
     closeGame() {
-        try {
-            AsyncStorage.setItem(KEY_Score, this.state.runningTotal.toString());
-        } catch (error) {
-            window.alert('AsyncStorage error: ' + error.message);
-        }
         var myPackArray = [];
         var str = '';
         for (var key in puzzleData){
@@ -609,6 +604,11 @@ class Game extends Component {
                     var theScore = this.state.score;
                     theScore = theScore + scoreToAdd;
                     var accumulatedScore = theScore + this.state.runningTotal;
+                    try {
+                        AsyncStorage.setItem(KEY_Score, accumulatedScore.toString());
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                     var strScore = theScore.toString();
                     switch (true){
                         case ((theScore > highScore) && highScore != 0):
