@@ -19,7 +19,6 @@ const KEY_expandInfo = 'expandInfoKey';
 const KEY_Premium = 'premiumOrNot';
 const KEY_HighScore = 'highScoreKey';
 const KEY_show_score = 'showScoreKey';
-const KEY_Score = 'scoreKey';
 const {width, height} = require('Dimensions').get('window');
 
 class StartScene extends Component {
@@ -43,8 +42,7 @@ class StartScene extends Component {
                 [KEY_ratedTheApp, 'false'],
                 [KEY_expandInfo, '1.1.1.1'],
                 [KEY_HighScore, '0'],
-                [KEY_show_score, '1'],
-                [KEY_Score, '0']
+                [KEY_show_score, '1']
             ];
             try {
                 AsyncStorage.multiSet(initArray);
