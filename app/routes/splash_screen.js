@@ -319,7 +319,7 @@ class SplashScreen extends Component {
                 });
         });
     }
-    getPuzzlePack(name, ID, puzzleData){
+    getPuzzlePack(name, ID, puzzleData){//retrieve from server set(s) of puzzles...combo pack if name is an array, single if string, bonus if number
         return new Promise(
             function (resolve, reject) {
                 if (Array.isArray(name)){//combo pack
