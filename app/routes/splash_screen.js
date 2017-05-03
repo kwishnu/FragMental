@@ -18,17 +18,20 @@ var seenStart = false;
 var ready = false;
 var nowISO = 0;
 var tonightMidnight = 0;
+const bonuses = [['500', 'Welcome+500', '3', '#990fd2'], ['1500', 'Achiever+1500', '5', '#f4ce57'], ['2500', 'Talented+2500', '10', '#f2404c'], ['5000', 'Skilled+5000', '10', '#0817a2'], ['7500', 'Seasoned+7500', '10', '#6e097d'], ['10000', 'Expert+10,000', '10', '#f5eaf6'], ['100000000000', 'TooMuch', '1', '#000000']];
 const KEY_Premium = 'premiumOrNot';
 const KEY_Puzzles = 'puzzlesKey';
 const KEY_SeenStart = 'seenStartKey';
 const KEY_Notifs = 'notifsKey';
 const KEY_NotifTime = 'notifTimeKey';
+const KEY_Score = 'scoreKey';
+const KEY_NextBonus = 'bonusKey';
 const {width, height} = require('Dimensions').get('window');
 import { normalize }  from '../config/pixelRatio';
-//'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users
-//'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ
+//'ws://52.52.199.138:80/websocket'; <= bbg3...publication AllData, collections data, data1, data2, details, puzzles, text, users; PuzzApp
+//'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ; MeteorApp
 //'ws://10.0.0.207:3000/websocket'; <= localhost
-var METEOR_URL = 'ws://52.52.205.96:80/websocket';//'ws://10.0.0.207:3000/websocket';//'ws://52.52.205.96:80/websocket';
+var METEOR_URL = 'ws://52.52.205.96:80/websocket';
 Meteor.connect(METEOR_URL);
 
 class SplashScreen extends Component {
@@ -42,26 +45,29 @@ class SplashScreen extends Component {
             connectionBool: true,
             isLoading: true,
             getPurchased: false,
+            nextBonus: '0',
+            totalScore: '0',
             pData: []
         };
     }
     componentDidMount() {
         StatusBar.setHidden(true);
         var puzzleData = [];
-        nowISO = moment().valueOf();
+        nowISO = moment().valueOf();//determine offset # of days for daily puzzles...
         tonightMidnight = moment().endOf('day').valueOf();
         var launchDay = moment('2017 04', 'YYYY-MM');//April 1, 2017
         var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 4/1/2017
         var startNum = dayDiff - 28;
         if(this.props.motive == 'initialize'){
             var ownedPacks = [];
+            var getPurchasedBool = true;
             var premiumBool = 'false';
-            InAppBilling.close()
+            InAppBilling.close()//docs recommend making sure IAB is closed first
             .then(() => InAppBilling.open())
             .then(() => InAppBilling.listOwnedProducts())//get array of purchased items from the store
             .then((details) => {
                 ownedPacks = details;
-            return InAppBilling.close();
+                return InAppBilling.close();
             }).then(()=> {
                 return AsyncStorage.getItem(KEY_Puzzles);
             }).then((puzzles) => {
@@ -75,16 +81,67 @@ class SplashScreen extends Component {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
                 }
-                var getPurchasedBool = (puzzleData.length < 25)?true:false;
-                if(ownedPacks.length > 0){//purchased something, gets access to last 30 daily puzzles rather than last 3 days
-                    puzzleData[17].show = 'false';
-                    puzzleData[18].show = 'true';
-                    premiumBool = 'true';
+                if (puzzleData.length > 24){//screen for bonus packs vs. purchased packs
+                    for (let chk=24; chk<puzzleData.length; chk++){
+                        if (puzzleData[chk].product_id.indexOf('bonus') < 0){
+                            puzzleData[17].show = 'false';//purchased something, gets access to last 30 daily puzzles rather than last 3 days
+                            puzzleData[18].show = 'true';
+                            premiumBool = 'true';
+                            getPurchasedBool = false;//a purchased pack is here, we don't need to retrieve them which would erase progress stats
+                            continue;
+                        }
+                    }
                 }
                 this.setState({ hasPremium: premiumBool,
                                 getPurchased: getPurchasedBool,
                                 pData: puzzleData
                 });
+                return AsyncStorage.getItem(KEY_NextBonus);
+            }).then((nb) => {//get next bonus level, compare to current total score, download bonus pack accordingly...
+                if (nb !== null){
+                    this.setState({nextBonus: nb});
+                }else{
+                    this.setState({nextBonus: '500'});
+                    try {
+                        AsyncStorage.setItem(KEY_NextBonus, '500');
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                }
+                return AsyncStorage.getItem(KEY_Score);
+            }).then((ts) => {
+                var myScore = 0;
+                var strNextBonus = this.state.nextBonus;
+                var bonusScore = parseInt(strNextBonus);//send number so getPuzzlePack() knows this is a bonus pack
+                if (ts !== null){
+                    myScore =  parseInt(ts, 10);
+                }else{
+                    try {
+                        AsyncStorage.setItem(KEY_Score, '0');
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
+                }
+                if (myScore >= bonusScore){
+                    const bID = 'bonus.' + strNextBonus;
+                    for (let getNext=0; getNext<bonuses.length; getNext++){
+                        if (bonuses[getNext][0] == strNextBonus){
+                            const nextToSet = bonuses[getNext + 1][0];//ignoring index-out-of-bounds possibility as top bonus is set at 100,000,000,000...
+                            try {
+                                AsyncStorage.setItem(KEY_NextBonus, nextToSet);
+                            } catch (error) {
+                                window.alert('AsyncStorage error: ' + error.message);
+                            }
+                        }
+                    }
+                    return this.getPuzzlePack(bonusScore, bID, this.state.pData);
+                }else{
+                    return false;
+                }
+            }).then((pArray) => {
+                if (pArray){
+                    this.setState({pData: pArray});
+                }
                 return AsyncStorage.getItem(KEY_Notifs);
             }).then((notifHour) => {//notification hour, zero if no notifications (from Settings)
                 if (notifHour !== null) {
@@ -99,12 +156,12 @@ class SplashScreen extends Component {
                 }
                 return AsyncStorage.getItem(KEY_SeenStart);
             }).then((seenIntro) => {
-                if (seenIntro !== null) {  //has already seen app intro
+                if (seenIntro !== null) {//has already seen app intro
                     this.setState({seenStart: seenIntro});
                 }else{    //hasn't seen app intro...
                     this.setState({seenStart: 'false'});
                     try {
-                        AsyncStorage.setItem(KEY_SeenStart, 'true');//
+                        AsyncStorage.setItem(KEY_SeenStart, 'true');
                     } catch (error) {
                         window.alert('AsyncStorage error: ' + error.message);
                     }
@@ -112,7 +169,7 @@ class SplashScreen extends Component {
                 return NetInfo.isConnected.fetch();
             }).then((isConnected) => {//if has internet connection, get daily puzzles and current app object
                 if(isConnected){
-                    var puzzObject = this.getData(startNum);
+                    var puzzObject = this.getData(this.state.pData, startNum);//load daily puzzles
                     return puzzObject;
                 }else{//still let have access to 30 days already on device even if no internet connection
                     AsyncStorage.getItem(KEY_hasPremium).then((prem) => {
@@ -132,9 +189,11 @@ class SplashScreen extends Component {
                 if(puzzObject){
                     puzzObject[19].num_solved = puzzleData[19].num_solved;//set 'Eggplant' to its current state
                     puzzObject[19].solved = puzzleData[19].solved;
-                    this.setState({ pData: puzzObject })
+                    this.setState({ pData: puzzObject });
+                    return true;
+                }else{
+                    return false;
                 }
-                return NetInfo.isConnected.fetch();
             }).then((isConnected) => {//retrieve purchased packs here
                 var promises = [];
                 if(isConnected && this.state.getPurchased){
@@ -202,7 +261,7 @@ class SplashScreen extends Component {
                 this.setState({isLoading: false});
                 this.gotoScene(whereToGo, this.state.pData);
             }).catch(function(error) {
-                window.alert('195: ' + error.message);
+                window.alert('254: ' + error.message);
             });
         }else{//purchased puzzle pack...
             this.setState({hasPremium: 'true'});
@@ -222,11 +281,11 @@ class SplashScreen extends Component {
             }).then((data) => {
                 this.gotoScene('puzzles contents', data);
             }).catch(function(error) {
-                window.alert('214: ' + error.message);
+                window.alert('274: ' + error.message);
             });
         }
     }
-    getData(sNum){//retrieve server data here, sNum is offset number for daily puzzles;
+    getData(dataArray, sNum){//retrieve server data here, sNum is offset number for daily puzzles;
         return new Promise(
             function (resolve, reject) {
                 var pd = [];
@@ -247,6 +306,9 @@ class SplashScreen extends Component {
                         for(var jj=0; jj<puzzStringArray.length; jj++){
                             pd[18].puzzles[jj] = puzzStringArray[jj];//load last 30 days
                             if(jj < 3){pd[17].puzzles[jj] = puzzStringArray[jj];}//load last 3 days
+                        }
+                        for (let addExtra=24; addExtra<dataArray.length; addExtra++){//add any extra packs onto data array
+                            pd.push(dataArray[addExtra]);
                         }
                         resolve(pd);
                     },
@@ -326,31 +388,44 @@ class SplashScreen extends Component {
                         }
                     });
                 }else{
+                    var strName = '';
                     var title = '';
                     var index = '';
                     var num_puzzles = '';
                     var bg_color = '';
                     var puzzles = [];
-
-                    for (var k = 0; k < puzzleData.length; k++){
-                    var obj = puzzleData[k];
-                        for (var el in obj) {
-                            if (el == 'data'){
-                                for(var j=0; j<obj[el].length; j++){
-                                    if(puzzleData[k].data[j].name == name){
-                                        title = puzzleData[k].data[j].name;
-                                        index = puzzleData.length.toString();
-                                        num_puzzles = puzzleData[k].data[j].num_puzzles;
-                                        bg_color = puzzleData[k].data[j].color;
-                                        continue;
+                    if(typeof name == 'string'){//regular pack
+                        strName = name;
+                        for (var k = 0; k < puzzleData.length; k++){
+                        var obj = puzzleData[k];
+                            for (var el in obj) {
+                                if (el == 'data'){
+                                    for(var j=0; j<obj[el].length; j++){
+                                        if(puzzleData[k].data[j].name == name){
+                                            title = puzzleData[k].data[j].name;
+                                            //index = puzzleData.length.toString();
+                                            num_puzzles = puzzleData[k].data[j].num_puzzles;
+                                            bg_color = puzzleData[k].data[j].color;
+                                            continue;
+                                        }
                                     }
                                 }
+                            }
+                        }
+                    }else{//bonus pack for score level
+                        strName = name.toString();
+                        for(var bb=0; bb<bonuses.length; bb++){
+                            if (bonuses[bb][0] == strName){
+                                title = bonuses[bb][1];
+                                num_puzzles = bonuses[bb][2];
+                                bg_color = bonuses[bb][3];
+                                continue;
                             }
                         }
                     }
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
-                            const d_puzzles = Meteor.collection('dataP').find({pack: name});
+                            const d_puzzles = Meteor.collection('dataP').find({pack: strName});
                             for (var key in d_puzzles) {
                                 var obj = d_puzzles[key];
                                 for (var prop in obj) {
