@@ -18,7 +18,7 @@ var seenStart = false;
 var ready = false;
 var nowISO = 0;
 var tonightMidnight = 0;
-const bonuses = [['500', 'Welcome+500', '3', '#990fd2'], ['1500', 'Achiever+1500', '5', '#f4ce57'], ['2500', 'Talented+2500', '10', '#f2404c'], ['5000', 'Skilled+5000', '10', '#0817a2'], ['7500', 'Seasoned+7500', '10', '#6e097d'], ['10000', 'Expert+10,000', '10', '#f5eaf6'], ['100000000000', 'TooMuch', '1', '#000000']];
+const bonuses = [['500', 'Welcome +500', '3', '#990fd2'], ['1500', 'Achiever +1500', '5', '#f4ce57'], ['2500', 'Talented +2500', '10', '#f2404c'], ['5000', 'Skilled +5000', '10', '#0817a2'], ['7500', 'Seasoned +7500', '10', '#6e097d'], ['10000', 'Expert +10,000', '10', '#f5eaf6'], ['100000000000', 'TooMuch', '1', '#000000']];
 const KEY_Premium = 'premiumOrNot';
 const KEY_Puzzles = 'puzzlesKey';
 const KEY_SeenStart = 'seenStartKey';
@@ -139,9 +139,7 @@ class SplashScreen extends Component {
                     return false;
                 }
             }).then((pArray) => {
-                if (pArray){
-                    this.setState({pData: pArray});
-                }
+                if (pArray)this.setState({pData: pArray});
                 return AsyncStorage.getItem(KEY_Notifs);
             }).then((notifHour) => {//notification hour, zero if no notifications (from Settings)
                 if (notifHour !== null) {
@@ -169,8 +167,7 @@ class SplashScreen extends Component {
                 return NetInfo.isConnected.fetch();
             }).then((isConnected) => {//if has internet connection, get daily puzzles and current app object
                 if(isConnected){
-                    var puzzObject = this.getData(this.state.pData, startNum);//load daily puzzles
-                    return puzzObject;
+                    return this.getData(this.state.pData, startNum);//load daily puzzles
                 }else{//still let have access to 30 days already on device even if no internet connection
                     AsyncStorage.getItem(KEY_hasPremium).then((prem) => {
                         premiumBool = 'false';
@@ -185,11 +182,13 @@ class SplashScreen extends Component {
                         return false;
                     });
                 }
-            }).then((puzzObject) => {
-                if(puzzObject){
-                    puzzObject[19].num_solved = puzzleData[19].num_solved;//set 'Eggplant' to its current state
-                    puzzObject[19].solved = puzzleData[19].solved;
-                    this.setState({ pData: puzzObject });
+            }).then((puzzleArray) => {
+                if(puzzleArray){
+                    puzzleArray[19].num_solved = puzzleData[19].num_solved;//set 'Eggplant' to its current state
+                    puzzleArray[19].solved = puzzleData[19].solved;
+                    puzzleArray[19].type = puzzleData[19].type;
+                    puzzleArray[19].show = puzzleData[19].show;
+                    this.setState({ pData: puzzleArray });
                     return true;
                 }else{
                     return false;
@@ -206,9 +205,9 @@ class SplashScreen extends Component {
                             }
                         }
                     }
-                    for (var kk=0; kk<ownedPacks.length; kk++){
-                        if (packsOnDevice.indexOf(ownedPacks[kk]) < 0){
-                            var idArray = ownedPacks[kk].split('.');
+                    for (var goThroughOwned=0; goThroughOwned<ownedPacks.length; goThroughOwned++){
+                        if (packsOnDevice.indexOf(ownedPacks[goThroughOwned]) < 0){
+                            var idArray = ownedPacks[goThroughOwned].split('.');
                             if (idArray && idArray.length < 4){//e.g. android.test.purchased
                                 continue;
                             }else if (idArray && idArray.length == 4){//single pack
@@ -221,12 +220,12 @@ class SplashScreen extends Component {
                                     case 2:
                                         packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
                                         break;
-                                    case 3://_and_ in product ID, '&' in title
+                                    case 3://_and_ in product ID, ' & ' in title
                                         packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' & ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
                                         break;
                                     default:
                                 }
-                                promises.push(this.getPuzzlePack(packTitle, ownedPacks[kk], this.state.pData));
+                                promises.push(this.getPuzzlePack(packTitle, ownedPacks[goThroughOwned], this.state.pData));
                             }else if (idArray && idArray.length == 5){//combo pack
                                 var packTitleArray = [];
                                 for (var m=0; m<3; m++){
@@ -240,16 +239,16 @@ class SplashScreen extends Component {
                                         case 2:
                                             packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' ' + packNameArray[1].charAt(0).toUpperCase() + packNameArray[1].slice(1);
                                             break;
-                                        case 3://_and_ in product ID, '&' in title
+                                        case 3://_and_ in product ID, ' & ' in title
                                             packTitle = packNameArray[0].charAt(0).toUpperCase() + packNameArray[0].slice(1) + ' & ' + packNameArray[2].charAt(0).toUpperCase() + packNameArray[2].slice(1);
                                             break;
                                         default:
                                     }
                                     packTitleArray.push(packTitle)
                                 }
-                                promises.push(this.getPuzzlePack(packTitleArray, ownedPacks[kk], this.state.pData));
+                                promises.push(this.getPuzzlePack(packTitleArray, ownedPacks[goThroughOwned], this.state.pData));
                             }else{
-                                console.log('Unknown Product: ', ownedPacks[k]);
+                                console.log('Unknown Product: ', ownedPacks[goThroughOwned]);
                             }
                         }
                     }
@@ -261,7 +260,7 @@ class SplashScreen extends Component {
                 this.setState({isLoading: false});
                 this.gotoScene(whereToGo, this.state.pData);
             }).catch(function(error) {
-                window.alert('254: ' + error.message);
+                window.alert('263: ' + error.message);
             });
         }else{//purchased puzzle pack...
             this.setState({hasPremium: 'true'});
@@ -276,12 +275,11 @@ class SplashScreen extends Component {
                 puzzleData[18].show = 'true';
                 return puzzleData;
             }).then((theData) => {
-                var pushPack = this.getPuzzlePack(this.props.packName, this.props.productID, theData);
-                return pushPack;
+                return this.getPuzzlePack(this.props.packName, this.props.productID, theData);
             }).then((data) => {
                 this.gotoScene('puzzles contents', data);
             }).catch(function(error) {
-                window.alert('274: ' + error.message);
+                window.alert('282: ' + error.message);
             });
         }
     }
@@ -300,7 +298,8 @@ class SplashScreen extends Component {
                             if((parseInt(row.pnum, 10) >= sNum) && (parseInt(row.pnum, 10) < (sNum + 31))){//daily puzzles here
                                 puzzStringArray.unshift(row.puzz);
                             }
-                         });
+                        });
+                        pd.length = 24;
                         pd[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
                         puzzStringArray.shift();
                         for(var jj=0; jj<puzzStringArray.length; jj++){
@@ -319,7 +318,7 @@ class SplashScreen extends Component {
                 });
         });
     }
-    getPuzzlePack(name, ID, puzzleData){//retrieve from server set(s) of puzzles...combo pack if name is an array, single if string, bonus if number
+    getPuzzlePack(name, ID, puzzleData){//retrieve from server set(s) of puzzles...combo pack if name is string array, single if string, bonus if number
         return new Promise(
             function (resolve, reject) {
                 if (Array.isArray(name)){//combo pack
@@ -464,7 +463,7 @@ class SplashScreen extends Component {
                 myPackArray.push(puzzleData[key].title);
             }
         }
-        var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
+        var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme--find one of each in the store that I don't already own...
         for(var i=0; i<4; i++){
             var titleIndex = -1;
             var rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
