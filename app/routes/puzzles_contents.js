@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert, AppState } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, TouchableOpacity, ListView, BackAndroid, AsyncStorage, ActivityIndicator, Alert, Vibration, AppState } from 'react-native';
 import moment from 'moment';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
+import ContentsDialog from '../components/ContentsDialog';
 import Meteor from 'react-native-meteor';
 import configs from '../config/configs';
 import { normalize, normalizeFont }  from '../config/pixelRatio';
@@ -105,27 +106,32 @@ const KEY_Puzzles = 'puzzlesKey';
 const KEY_Time = 'timeKey';
 const KEY_solvedTP = 'solvedTP';
 const KEY_ratedTheApp = 'ratedApp';
-let puzzleData = {};
-let sArray = [];
-let solvedTodayOrNot = false;
+var puzzleData = [];
+var sArray = [];
+var solvedTodayOrNot = false;
 
 
 class PuzzleContents extends Component{
     constructor(props) {
         super(props);
-        const getSectionData = (dataBlob, sectionId) => dataBlob[sectionId];
-        const getRowData = (dataBlob, sectionId, rowId) => dataBlob[`${rowId}`];
-        const ds = new ListView.DataSource({
+        var getSectionData = (dataBlob, sectionId) => dataBlob[sectionId];
+        var getRowData = (dataBlob, sectionId, rowId) => dataBlob[`${rowId}`];
+        var ds = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2,
           sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
           getSectionData,
-          getRowData,
+          getRowData
         });
-        const { dataBlob, sectionIds, rowIds } = formatData(this.props.puzzleData);
+        var { dataBlob, sectionIds, rowIds } = formatData(this.props.puzzleData);
         this.state = {
             id: 'puzzles contents',
             isLoading: true,
             isOpen: false,
+            shouldShowDialog: false,
+            showFullDialog: true,
+            moveToCompleted: 'true',
+            strWhereToSend: '',
+            indexSelected: 0,
             todayFull: null,
             isPremium: this.props.isPremium,
             hasRated: 'false',
@@ -133,15 +139,9 @@ class PuzzleContents extends Component{
             total_score: 0,
             total_opacity: 1,
             puzzleData: this.props.puzzleData,
-            dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds),
+            dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
         };
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
-    }
-    handleHardwareBackButton() {
-        if (this.state.isOpen) {
-            this.toggle();
-            return true;
-        }
     }
     componentDidMount() {
         Orientation.lockToPortrait();
@@ -248,6 +248,16 @@ class PuzzleContents extends Component{
     componentWillUnmount(){
         BackAndroid.removeEventListener('hardwareBackPress', this.handleHardwareBackButton);
         AppState.removeEventListener('change', this.handleAppStateChange);
+    }
+    handleHardwareBackButton() {
+        if (this.state.isOpen) {
+            this.toggle();
+            return true;
+        }
+        if(this.state.shouldShowDialog){
+            this.setState({ shouldShowDialog: false });
+            return true;
+        }
     }
     handleAppStateChange=(appState)=>{
         if(appState == 'active'){
@@ -553,8 +563,7 @@ class PuzzleContents extends Component{
                 });
                 return;
         }
-        //a puzzle pack launcher:
-        AsyncStorage.getItem(KEY_Color).then((colors) => {
+        AsyncStorage.getItem(KEY_Color).then((colors) => {//a puzzle pack launcher:
             if (colors !== null) {
                 useColors = colors;
             }else{
@@ -582,7 +591,63 @@ class PuzzleContents extends Component{
             });
         });
     }
+    showDialog(index, type){
+        if(index < 19)return;
+        Vibration.vibrate(25);
+        BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
+        if(type == 'mypack' || type == 'solved'){
+            let strSolvedOrNot = (type == 'solved')?'Move to My Puzzles':'Move to Completed';
+            let sendToCompleted = (type == 'solved')?'false':'true';
 
+            this.setState({ shouldShowDialog: true,
+                            showFullDialog: true,
+                            strWhereToSend: strSolvedOrNot,
+                            moveToCompleted: sendToCompleted,
+                            indexSelected: index
+            });
+        }else{
+            this.setState({shouldShowDialog: true,
+                            showFullDialog: false
+            });
+        }
+    }
+    onDialogSelect(which){
+        this.setState({ shouldShowDialog: false });
+        var getSectionData = (dataBlob, sectionId) => dataBlob[sectionId];
+        var getRowData = (dataBlob, sectionId, rowId) => dataBlob[`${rowId}`];
+        var ds = new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 !== r2,
+          sectionHeaderHasChanged : (s1, s2) => s1 !== s2,
+          getSectionData,
+          getRowData
+        });
+        switch(which){
+            case 0://touch outside of dropdown, just close
+                return;
+            case 1:
+                let whatToCallIt = (this.state.moveToCompleted == 'true')?'solved':'mypack';
+                puzzleData[this.state.indexSelected].solved = this.state.moveToCompleted;
+                puzzleData[this.state.indexSelected].type = whatToCallIt;
+                break;
+            case 2:
+                puzzleData[this.state.indexSelected].show = 'false';
+                break;
+            case 3:
+                for (let showPuzzles=19; showPuzzles<puzzleData.length; showPuzzles++){
+                    puzzleData[showPuzzles].show = 'true';
+                }
+                break;
+           }
+            try {
+                AsyncStorage.setItem(KEY_Puzzles, JSON.stringify(puzzleData));
+            } catch (error) {
+                window.alert('AsyncStorage error: ' + error.message);
+            }
+            var { dataBlob, sectionIds, rowIds } = formatData(puzzleData);
+            this.setState({ puzzleData: puzzleData,
+                            dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
+            });
+    }
     render() {
         const menu = <Menu onItemSelected={this.onMenuItemSelected} data = {this.props.puzzleData} />;
         if(this.state.isLoading == true){
@@ -615,6 +680,7 @@ class PuzzleContents extends Component{
                                         renderRow={(rowData) =>
                                              <View>
                                                  <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color, rowData.product_id)}
+                                                                     onLongPress={()=> this.showDialog(rowData.index, rowData.type, rowData.solved)}
                                                                      style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
                                                                      underlayColor={rowData.bg_color} >
                                                      <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title, rowData.num_puzzles, rowData.index)}</Text>
@@ -624,6 +690,9 @@ class PuzzleContents extends Component{
                                          renderSectionHeader={(sectionData) => <SectionHeader {...sectionData} />}
                              />
                         </View>
+                        {this.state.shouldShowDialog &&
+                                <ContentsDialog showFull={this.state.showFullDialog} onPress={(num)=>{ this.onDialogSelect(num); }} item1={this.state.strWhereToSend} item2={'Hide from Contents'} item3={'Show hidden packs'}/>
+                        }
                      </View>
                 </SideMenu>
             );
