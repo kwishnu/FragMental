@@ -26,13 +26,13 @@ module.exports = class Settings extends Component {
         BackAndroid.removeEventListener('hardwareBackPress', this.goSomewhere);
         AppState.removeEventListener('change', this.handleAppStateChange);
     }
-    handleAppStateChange=(appState)=>{
+    handleAppStateChange=(appState)=>{//for coming back from rating app
+        AppState.removeEventListener('change', this.handleAppStateChange);
         if(appState == 'active'){
-            this.props.navigator.replace({
+            this.props.navigator.pop({
                 id: 'splash screen',
                 passProps: {
                     motive: 'initialize',
-                    puzzleData: this.props.puzzleData,
                 }
             });
         }
