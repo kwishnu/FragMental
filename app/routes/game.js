@@ -138,6 +138,7 @@ class Game extends Component {
             dataElement: this.props.dataElement,
             title: this.props.title,
             index: this.props.index,
+            fromWhere: this.props.fromWhere,
             keyFrag: '',//this.props.keyFrag,
             theData: {},//this.props.theData,
             theCluesArray: [],//this.props.theCluesArray,
@@ -458,7 +459,7 @@ class Game extends Component {
         }
         try {
             this.props.navigator.replace({
-                id: this.props.fromWhere,
+                id: this.state.fromWhere,
                 passProps: {
                     puzzleData: puzzleData,
                     daily_solvedArray: this.state.daily_solvedArray,
@@ -480,7 +481,11 @@ class Game extends Component {
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
         var newIndex = this.state.index + 1;
         var onLastGameInPack = (this.props.fromWhere == 'puzzles contents' || newIndex == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
-        if(this.props.fromWhere == 'puzzles contents' || onLastGameInPack){this.closeGame();return;}
+        if(this.props.fromWhere == 'puzzles contents' || onLastGameInPack){
+            if(this.props.fromWhere == 'daily launcher')this.setState({fromWhere: 'puzzles contents'});
+            this.closeGame();
+            return;
+        }
         this.setState({ daily_solvedArray: dsArray,
                         isLoading: true,
                         index: newIndex
