@@ -330,21 +330,21 @@ class PuzzleContents extends Component{
                         id: 'start scene',
                         passProps: {
                             destination: 'menu',
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                             introIndex: 1,
                             seenIntro: 'true'
                         }
                     });
                     break;
                 case 'store':
-                    for (var j=0; j<this.props.puzzleData.length; j++){
-                        if (this.props.puzzleData[j].type == 'mypack'){
-                            myPackArray.push(this.props.puzzleData[j].title);
+                    for (var j=0; j<puzzleData.length; j++){
+                        if (puzzleData[j].type == 'mypack'){
+                            myPackArray.push(puzzleData[j].title);
                         }
                     }
-                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
-                        if(myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name) < 0){
-                            keepInList.push(this.props.puzzleData[item.index].data[i]);
+                    for (var i=puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if(myPackArray.indexOf(puzzleData[item.index].data[i].name) < 0){
+                            keepInList.push(puzzleData[item.index].data[i]);
                         }
                     }
                     keepInList = shuffleArray(keepInList);
@@ -354,23 +354,23 @@ class PuzzleContents extends Component{
                             dataIndex: item.index,
                             title: item.title + ' Puzzle Packs',
                             availableList: keepInList,
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
                 case 'store3':
-                    if(this.props.puzzleData[item.index].data.length == 0){
+                    if(puzzleData[item.index].data.length == 0){
                         Alert.alert('Coming soon...', 'Sorry, no combo packs available yet; please check back!');
                         return;
                     }
-                    keepInList = this.props.puzzleData[item.index].data;
-                    for (var j=0; j<this.props.puzzleData.length; j++){
-                        if (this.props.puzzleData[j].type == 'mypack'){
-                            myPackArray.push(this.props.puzzleData[j].title);
+                    keepInList = puzzleData[item.index].data;
+                    for (var j=0; j<puzzleData.length; j++){
+                        if (puzzleData[j].type == 'mypack'){
+                            myPackArray.push(puzzleData[j].title);
                         }
                     }
-                    for (var i=this.props.puzzleData[item.index].data.length - 1; i>=0; i--){
-                        if((myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(this.props.puzzleData[item.index].data[i].name[2]) > -1)){
+                    for (var i=puzzleData[item.index].data.length - 1; i>=0; i--){
+                        if((myPackArray.indexOf(puzzleData[item.index].data[i].name[0]) > -1) && (myPackArray.indexOf(puzzleData[item.index].data[i].name[1]) > -1) && (myPackArray.indexOf(puzzleData[item.index].data[i].name[2]) > -1)){
                             keepInList.splice(i, 1);
                         }
                     }
@@ -380,7 +380,7 @@ class PuzzleContents extends Component{
                             dataIndex: item.index,
                             title: item.title + ' Value Packs',
                             availableList: keepInList,
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
@@ -390,7 +390,7 @@ class PuzzleContents extends Component{
                         passProps: {
                             which: 'FB',
                             color: '#3b5998',
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
@@ -400,7 +400,7 @@ class PuzzleContents extends Component{
                         passProps: {
                             which: 'TW',
                             color: '#1da1f2',
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
@@ -408,7 +408,7 @@ class PuzzleContents extends Component{
                     this.props.navigator.push({
                         id: 'settings',
                         passProps: {
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
@@ -416,7 +416,7 @@ class PuzzleContents extends Component{
                     this.props.navigator.push({
                         id: 'about',
                         passProps: {
-                            puzzleData: this.props.puzzleData,
+                            puzzleData: puzzleData,
                         }
                     });
                     break;
@@ -430,7 +430,7 @@ class PuzzleContents extends Component{
     }
     lightBorder(color, type) {
         var lighterColor = shadeColor(color, 60);
-        var bordWidth = (type == 'daily')? 1:6;
+        var bordWidth = (type == 'daily')? 1:2;
             return {
                 borderColor: lighterColor,
                 borderWidth: bordWidth,
@@ -471,14 +471,14 @@ class PuzzleContents extends Component{
             var titlePrefix = '';
             var gotIt = false;
             var itemIndex = 0;
-            for (var j=0; j<this.props.puzzleData.length; j++){
-                if (this.props.puzzleData[j].type == 'mypack'){
-                    myPackArray.push(this.props.puzzleData[j].title);
+            for (var j=0; j<puzzleData.length; j++){
+                if (puzzleData[j].type == 'mypack'){
+                    myPackArray.push(puzzleData[j].title);
                 }
-                if (!gotIt && this.props.puzzleData[j].link == 'store'){
-                    for (var k=0; k<this.props.puzzleData[j].data.length; k++){
-                        if(this.props.puzzleData[j].data[k].name == theName){
-                            theIndex = this.props.puzzleData[j].index;
+                if (!gotIt && puzzleData[j].link == 'store'){
+                    for (var k=0; k<puzzleData[j].data.length; k++){
+                        if(puzzleData[j].data[k].name == theName){
+                            theIndex = puzzleData[j].index;
                             gotIt = true;
                             continue;
                         }
@@ -499,9 +499,9 @@ class PuzzleContents extends Component{
                     titlePrefix = 'Theme';
                     break;
             }
-            for (var i=this.props.puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
-                if(myPackArray.indexOf(this.props.puzzleData[parseInt(theIndex, 10)].data[i].name) < 0){
-                    keepInList.push(this.props.puzzleData[parseInt(theIndex, 10)].data[i]);
+            for (var i=puzzleData[parseInt(theIndex, 10)].data.length - 1; i>=0; i--){
+                if(myPackArray.indexOf(puzzleData[parseInt(theIndex, 10)].data[i].name) < 0){
+                    keepInList.push(puzzleData[parseInt(theIndex, 10)].data[i]);
                 }
             }
             var putMeBack = null;
@@ -519,7 +519,7 @@ class PuzzleContents extends Component{
                     dataIndex: theIndex,
                     title: titlePrefix + ' Puzzle Packs',
                     availableList: keepInList,
-                    puzzleData: this.props.puzzleData,
+                    puzzleData: puzzleData,
                 }
             });
             this.toggle();
@@ -536,7 +536,7 @@ class PuzzleContents extends Component{
                 this.props.navigator.replace({
                     id: 'game board',
                     passProps: {
-                        puzzleData: this.props.puzzleData,
+                        puzzleData: puzzleData,
                         daily_solvedArray: sArray,
                         title: this.state.todayFull,
                         index: '0',
@@ -556,7 +556,7 @@ class PuzzleContents extends Component{
                 this.props.navigator.replace({
                     id: theDestination,
                     passProps: {
-                        puzzleData: this.props.puzzleData,
+                        puzzleData: puzzleData,
                         daily_solvedArray: sArray,
                         title: theTitle,
                         todayFull: this.state.todayFull,
@@ -584,7 +584,7 @@ class PuzzleContents extends Component{
             this.props.navigator.replace({
                 id: theDestination,
                 passProps: {
-                    puzzleData: this.props.puzzleData,
+                    puzzleData: puzzleData,
                     daily_solvedArray: sArray,
                     title: theTitle,
                     todayFull: this.state.todayFull,
