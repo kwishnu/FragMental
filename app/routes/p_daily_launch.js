@@ -13,10 +13,6 @@ function shuffleArray(array) {
     }
     return array;
 }
-function randomNum(low, high) {
-    high++;
-    return Math.floor((Math.random())*(high-low))+low;
-}
 var puzzleData = {};
 var deepCopy = require('../data/deepCopy.js');
 var fragData = require('../data/objPassed.js');
@@ -74,7 +70,12 @@ class DailyLaunch extends Component{
                             motive: 'initialize'
                         }
                     });
-
+                }else{
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
             });
         }

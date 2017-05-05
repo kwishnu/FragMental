@@ -277,10 +277,16 @@ class PuzzleContents extends Component{
                             motive: 'initialize'
                         }
                     });
+                }else{
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
             });
         }
-     }
+    }
     toggle() {
         this.setState({ isOpen: !this.state.isOpen });
         if (this.state.isOpen) {

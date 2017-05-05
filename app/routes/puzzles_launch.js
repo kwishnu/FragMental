@@ -14,25 +14,6 @@ function shuffleArray(array) {
     return array;
 }
 function shadeColor(color, percent) {
-        var R = parseInt(color.substring(1,3),16);
-        var G = parseInt(color.substring(3,5),16);
-        var B = parseInt(color.substring(5,7),16);
-
-        R = parseInt(R * (100 + percent) / 100);
-        G = parseInt(G * (100 + percent) / 100);
-        B = parseInt(B * (100 + percent) / 100);
-
-        R = (R<255)?R:255;
-        G = (G<255)?G:255;
-        B = (B<255)?B:255;
-
-        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-
-        return '#'+RR+GG+BB;
-}
-function shadeColor2(color, percent) {
     percent = percent/100;
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
@@ -125,7 +106,12 @@ class PuzzleLaunch extends Component{
                             motive: 'initialize'
                         }
                     });
-
+                }else{
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
             });
         }
@@ -135,8 +121,8 @@ class PuzzleLaunch extends Component{
     }
     setColors(){
         var bgC = this.props.bgColor;//
-        var fieldColor = shadeColor2(bgC, 10);
-        var headColor =  shadeColor2(bgC, -20);
+        var fieldColor = shadeColor(bgC, 10);
+        var headColor =  shadeColor(bgC, -20);
         var titletextColor = invertColor(headColor, true);
         titletextColor = (bgC == '#09146d')?'#e3e004':titletextColor;
 
@@ -341,7 +327,7 @@ class PuzzleLaunch extends Component{
         };
     }
     darkBorder(color) {
-        var darkerColor = shadeColor2(color, -60);
+        var darkerColor = shadeColor(color, -60);
             return {borderColor: darkerColor};
     }
     bg(num){

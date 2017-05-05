@@ -11,25 +11,6 @@ function randomNum(low, high) {
     return Math.floor((Math.random())*(high-low))+low;
 }
 function shadeColor(color, percent) {
-        var R = parseInt(color.substring(1,3),16);
-        var G = parseInt(color.substring(3,5),16);
-        var B = parseInt(color.substring(5,7),16);
-
-        R = parseInt(R * (100 + percent) / 100);
-        G = parseInt(G * (100 + percent) / 100);
-        B = parseInt(B * (100 + percent) / 100);
-
-        R = (R<255)?R:255;
-        G = (G<255)?G:255;
-        B = (B<255)?B:255;
-
-        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-
-        return '#'+RR+GG+BB;
-}
-function shadeColor2(color, percent) {
     percent = percent/100;
     var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
     return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
@@ -138,7 +119,6 @@ class Game extends Component {
             dataElement: this.props.dataElement,
             title: this.props.title,
             index: this.props.index,
-            fromWhere: this.props.fromWhere,
             keyFrag: '',//this.props.keyFrag,
             theData: {},//this.props.theData,
             theCluesArray: [],//this.props.theCluesArray,
@@ -264,7 +244,7 @@ class Game extends Component {
         if(this.state.shouldShowDropdown){
             this.setState({ shouldShowDropdown: false });
         }else{
-            this.closeGame();
+            this.closeGame(this.props.fromWhere);
         }
         return true;
     }
@@ -290,6 +270,12 @@ class Game extends Component {
                             motive: 'initialize'
                         }
                     });
+                }else{
+                    try {
+                        AsyncStorage.setItem(KEY_Time, JSON.stringify(timeNow));
+                    } catch (error) {
+                        window.alert('AsyncStorage error: ' + error.message);
+                    }
                 }
             });
         }
@@ -306,9 +292,9 @@ class Game extends Component {
     }
     setColors(){
         var bgC = this.props.bgColor;
-        var fieldColor = shadeColor2(bgC, -10);
-        var headColor =  shadeColor2(bgC, -30);
-        var cluebgColor = shadeColor2(bgC, 30);
+        var fieldColor = shadeColor(bgC, -10);
+        var headColor =  shadeColor(bgC, -30);
+        var cluebgColor = shadeColor(bgC, 30);
         var txtColor = invertColor(fieldColor, true);
         var titletextColor = invertColor(headColor, true);
         var cluetextColor = invertColor(cluebgColor, true);
@@ -331,7 +317,7 @@ class Game extends Component {
             ];
     }
     darkBorder(color) {
-        var darkerColor = shadeColor2(color, -30);
+        var darkerColor = shadeColor(color, -30);
             return {borderColor: darkerColor};
     }
     border(color) {
@@ -430,7 +416,7 @@ class Game extends Component {
                         bgColor: this.props.bgColor
                     });
     }
-    closeGame() {
+    closeGame(where) {
         var myPackArray = [];
         var str = '';
         for (var key in puzzleData){
@@ -459,7 +445,7 @@ class Game extends Component {
         }
         try {
             this.props.navigator.replace({
-                id: this.state.fromWhere,
+                id: where,
                 passProps: {
                     puzzleData: puzzleData,
                     daily_solvedArray: this.state.daily_solvedArray,
@@ -480,10 +466,11 @@ class Game extends Component {
     nextGame(){
         if(!this.state.forwardBackOpacity)return;//keep transparent arrow from responding to touches
         var newIndex = this.state.index + 1;
+        var toWhere = this.props.fromWhere;
         var onLastGameInPack = (this.props.fromWhere == 'puzzles contents' || newIndex == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
         if(this.props.fromWhere == 'puzzles contents' || onLastGameInPack){
-            if(this.props.fromWhere == 'daily launcher')this.setState({fromWhere: 'puzzles contents'});
-            this.closeGame();
+            if(this.props.fromWhere == 'daily launcher')toWhere = 'puzzles contents';
+            this.closeGame(toWhere);
             return;
         }
         this.setState({ daily_solvedArray: dsArray,
@@ -1092,7 +1079,7 @@ class Game extends Component {
                 <View style={{flex: 1}}>
                     <View style={ [game_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [game_styles.game_header, {backgroundColor: this.state.headerColor}]}>
-                            <Button style={{left: 15}} onPress={ () => this.closeGame() }>
+                            <Button style={{left: 15}} onPress={ () => this.closeGame(this.props.fromWhere) }>
                                 <Image source={ require('../images/close.png') } style={{ width: normalize(height/15), height: normalize(height/15) }} />
                             </Button>
                             <Text style={[styles.header_text, {color: this.state.titleColor}]}>{this.state.title}
