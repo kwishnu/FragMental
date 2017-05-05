@@ -147,7 +147,7 @@ class PuzzleLaunch extends Component{
             var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme
             for(var i=0; i<4; i++){
                 var titleIndex = -1;
-                var rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
+                var rnd = Array.from(new Array(puzzleData[levels[i]].data.length), (x,i) => i);
                 rnd = shuffleArray(rnd);
                 for (var r=0; r<puzzleData[levels[i]].data.length; r++){
                     if (myPackArray.indexOf(puzzleData[levels[i]].data[rnd[r]].name) < 0){
