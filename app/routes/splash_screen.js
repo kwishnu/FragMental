@@ -32,7 +32,6 @@ import { normalize }  from '../config/pixelRatio';
 //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ; MeteorApp
 //'ws://10.0.0.207:3000/websocket'; <= localhost
 var METEOR_URL = 'ws://52.52.205.96:80/websocket';
-Meteor.connect(METEOR_URL);
 
 class SplashScreen extends Component {
     constructor(props) {
@@ -51,6 +50,7 @@ class SplashScreen extends Component {
         };
     }
     componentDidMount() {
+        Meteor.connect(METEOR_URL);
         StatusBar.setHidden(true);
         var puzzleData = [];
         nowISO = moment().valueOf();//determine offset # of days for daily puzzles...
@@ -109,7 +109,7 @@ class SplashScreen extends Component {
                     }
                 }
                 return AsyncStorage.getItem(KEY_Score);
-            }).then((ts) => {
+            }).then((ts) => {//total score
                 var myScore = 0;
                 var strNextBonus = this.state.nextBonus;
                 var bonusScore = parseInt(strNextBonus);//send number so getPuzzlePack() knows this is a bonus pack
@@ -286,10 +286,10 @@ class SplashScreen extends Component {
     getData(dataArray, sNum){//retrieve server data here, sNum is offset number for daily puzzles;
         return new Promise(
             function (resolve, reject) {
-                var pd = [];
                 const handle = Meteor.subscribe('AllData', {
                     onReady: function () {
                         const d_puzzles = Meteor.collection('dataD').find();//dataD => daily puzzles and puzzleData object
+                        var pd = [];
                         var puzzStringArray = [];
                         d_puzzles.forEach(function (row) {
                             if(parseInt(row.pnum, 10) == 0){//get puzzleData object here
@@ -299,7 +299,7 @@ class SplashScreen extends Component {
                                 puzzStringArray.unshift(row.puzz);
                             }
                         });
-                        pd.length = 24;
+                        pd.length = 24;//truncate extra elements, which shouldn't be necessary but is...
                         pd[16].puzzles[0] = puzzStringArray[0];//load today's puzzle
                         puzzStringArray.shift();
                         for(var jj=0; jj<puzzStringArray.length; jj++){
@@ -402,7 +402,6 @@ class SplashScreen extends Component {
                                     for(var j=0; j<obj[el].length; j++){
                                         if(puzzleData[k].data[j].name == name){
                                             title = puzzleData[k].data[j].name;
-                                            //index = puzzleData.length.toString();
                                             num_puzzles = puzzleData[k].data[j].num_puzzles;
                                             bg_color = puzzleData[k].data[j].color;
                                             continue;
@@ -435,7 +434,7 @@ class SplashScreen extends Component {
                             }
                             puzzleData.push({
                                 title: title,
-                                index: puzzleData.length,
+                                index: puzzleData.length.toString(),
                                 type: 'mypack',
                                 show: 'true',
                                 num_puzzles: num_puzzles,
@@ -466,7 +465,7 @@ class SplashScreen extends Component {
         var levels = [3,4,5,6];//Easy, Moderate, Hard, Theme--find one of each in the store that I don't already own...
         for(var i=0; i<4; i++){
             var titleIndex = -1;
-            var rnd = Array.from(new Array(parseInt(puzzleData[levels[i]].data.length, 10)), (x,i) => i);
+            var rnd = Array.from(new Array(puzzleData[levels[i]].data.length), (x,i) => i);//[0,1,2, ...for number of packs available]
             rnd = shuffleArray(rnd);
             for (var r=0; r<puzzleData[levels[i]].data.length; r++){
                 if (myPackArray.indexOf(puzzleData[levels[i]].data[rnd[r]].name) < 0){
