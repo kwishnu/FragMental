@@ -26,11 +26,16 @@ class DropdownMenu extends Component {
             this.props.onPress(3);
         }
     }
+    handlePress4(e) {
+        if (this.props.onPress) {
+            this.props.onPress(4);
+        }
+    }
     render() {
         if(this.props.showFull){
             return (
                 <View style={styles.overlay} onStartShouldSetResponder={ this.handlePress0.bind(this)} >
-                    <View style= {[styles.container, {height: height/4}]}>
+                    <View style= {[styles.container, {height: height/3.2}]}>
                         <TouchableOpacity
                             onPress={ this.handlePress1.bind(this) }
                             style={ styles.menuItem } >
@@ -50,6 +55,11 @@ class DropdownMenu extends Component {
                             style={ styles.menuItem } >
                             <Text style={ styles.text }>{ this.props.item3 }</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={ this.handlePress4.bind(this) }
+                            style={ styles.menuItem } >
+                            <Text style={ styles.text }>{ this.props.item4 }</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             );
@@ -58,9 +68,9 @@ class DropdownMenu extends Component {
                 <View style={styles.overlay} onStartShouldSetResponder={ this.handlePress0.bind(this)} >
                     <View style= {[styles.container, {height: height/12}]}>
                         <TouchableOpacity
-                            onPress={ this.handlePress3.bind(this) }
+                            onPress={ this.handlePress4.bind(this) }
                             style={ styles.menuItem } >
-                            <Text style={ styles.text }>{ this.props.item3 }</Text>
+                            <Text style={ styles.text }>{ this.props.item4 }</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
