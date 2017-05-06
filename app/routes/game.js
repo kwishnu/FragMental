@@ -115,17 +115,17 @@ class Game extends Component {
             daily_solvedArray: this.props.daily_solvedArray,
  //***********************************//
             puzzleData: this.props.puzzleData,
-            puzzleArray: [],//this.props.puzzleArray,
+            puzzleArray: [],
             dataElement: this.props.dataElement,
             title: this.props.title,
             index: this.props.index,
-            keyFrag: '',//this.props.keyFrag,
-            theData: {},//this.props.theData,
-            theCluesArray: [],//this.props.theCluesArray,
-            solvedArray: [],//new Array(this.props.theCluesArray.length),
-            currentClue: '',//this.props.theCluesArray[0],
-            currentFrags: '',//this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')),
-            numFrags: 0,//(this.props.theCluesArray[0].substring(0, this.props.theCluesArray[0].indexOf(':')).split('|')).length,
+            keyFrag: '',
+            theData: {},
+            theCluesArray: [],
+            solvedArray: [],
+            currentClue: '',
+            currentFrags: '',
+            numFrags: 0,
             answerText: '',
             score: 10,
             runningTotal: 0,
@@ -310,15 +310,15 @@ class Game extends Component {
         });
     }
     getStyle() {
-    return [
-              game_styles.word_container,
-              {opacity: this.state.fadeAnim},
-              {transform: this.state.pan.getTranslateTransform()}
-            ];
+        return [
+            game_styles.word_container,
+            {opacity: this.state.fadeAnim},
+            {transform: this.state.pan.getTranslateTransform()}
+        ];
     }
     darkBorder(color) {
         var darkerColor = shadeColor(color, -30);
-            return {borderColor: darkerColor};
+        return {borderColor: darkerColor};
     }
     border(color) {
         return {
@@ -788,9 +788,15 @@ class Game extends Component {
         if(this.state.useSounds == true){click.play();}
         var solved = this.state.puzzleSolved;
         var bust = this.state.wentBust;
-            if(solved || bust){return}
-        var data =  this.state.theData;
+        if(solved || bust){
+            var sArr = this.state.solvedArray;
+            for (let x=0; x<sArr.length; x++){
+                sArr[x]='';
+            }
+            this.setState({ solvedArray: sArr });
+        }
         var onFrag = this.state.onThisFrag;
+        var data =  this.state.theData;
         var onClue = this.state.onThisClue;
         var currClue = this.state.currentClue;
         var sArray = this.state.solvedArray;
@@ -808,7 +814,7 @@ class Game extends Component {
                     break;
                 }
             }
-        if(onFrag > 0){
+        if(onFrag > 0){//restore partially solved fragments to opacity 1
             for (restoreFrags=0; restoreFrags<onFrag; restoreFrags++){
                 for (checkFrags=0; checkFrags<data.length; checkFrags++){
                     if (guessFragsArray[restoreFrags] == data[checkFrags].frag){
@@ -832,6 +838,9 @@ class Game extends Component {
         });
     }
     give_hint(){
+        var solved = this.state.puzzleSolved;
+        var bust = this.state.wentBust;
+        if(solved || bust)return;
         if(this.state.numHints > 0){
             var remainingHints = this.state.numHints - 1;
             if(this.state.hasRated == 'true'){
