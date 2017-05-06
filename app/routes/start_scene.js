@@ -32,7 +32,7 @@ class StartScene extends Component {
         this.handleHardwareBackButton = this.handleHardwareBackButton.bind(this);
     }
     componentDidMount() {
-        this.animate_hand();
+        this.animate_hand_delay();
         this.spin();
         BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         if (this.props.seenIntro != 'true'){
@@ -83,15 +83,28 @@ class StartScene extends Component {
         this.goSomewhere();
     }
     spin () {
-      this.spinValue.setValue(0);
-      Animated.timing(
-        this.spinValue,
-        {
-          toValue: 1,
-          duration: 23000,
-          easing: Easing.linear
-        }
-      ).start(() => this.spin())
+        this.spinValue.setValue(0);
+        Animated.timing(
+            this.spinValue,
+            {
+                toValue: 1,
+                duration: 23000,
+                easing: Easing.linear
+            }
+        ).start(() => this.spin())
+    }
+    animate_hand_delay(){
+        this.offsetX.setValue(0);
+        Animated.sequence([
+            Animated.delay(3000),
+            Animated.timing(
+            this.offsetX,
+                {
+                    toValue: 1,
+                    duration: 1000,
+                }
+            )
+        ]).start(() => this.animate_hand())
     }
     animate_hand(){
         this.offsetX.setValue(0);
@@ -160,13 +173,13 @@ class StartScene extends Component {
 
                 <View style={[styles.slide, { backgroundColor: '#486bdd' }]}>
                     <View style={[styles.header, {marginTop:-35}]}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/bg.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2/bg.png')} />
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0, marginTop:-30, marginLeft: 5}]} level={-20}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/top.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2/top.png')} />
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0, marginTop:-35, marginLeft: 20}]} level={30}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2_2/bottom.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro2/bottom.png')} />
                     </View>
                     <View style={{position: 'absolute', top: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 10}} level={-15}>
                         <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
@@ -176,7 +189,7 @@ class StartScene extends Component {
                 <View style={[styles.slide, { backgroundColor: '#3ff14c' }]}>
                     <View style={[styles.header, {marginTop:-35}]}>
                         <View>
-                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3_2/bg.png')} />
+                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro3/bg.png')} />
                         </View>
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0, marginTop:-20}]} level={-10}>
@@ -196,17 +209,17 @@ class StartScene extends Component {
                <View style={[styles.slide, { backgroundColor: '#081262' }]}>
                     <View style={styles.header}>
                         <View>
-                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4_2/bg.png')} />
+                            <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/bg.png')} />
                         </View>
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0}]} level={-10}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4_2/key.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/key.png')} />
                     </View>
                     <View style={[styles.pic, {top: 0, left: 0}]} level={-20}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4_2/skip.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/skip.png')} />
                     </View>
                     <View style={[styles.pic, {top: 0, left: 10}]} level={-30}>
-                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4_2/hint.png')} />
+                        <Image style={{ width: width, height: height, resizeMode: 'contain' }} source={require('../images/intro4/hint.png')} />
                     </View>
                     <View style={{position: 'absolute', top: 0, left: 0, flexDirection: 'row', justifyContent: 'flex-end', width: width, height: width*.2, marginTop: 10}} level={-15}>
                         <Animated.Image style={{ width: width*.2, height: width*.1, marginRight: 40, transform: [{translateX: oscillate}, { rotate: rotate}] }} source={require('../images/intro1/hand.png')} />
