@@ -185,7 +185,6 @@ class SplashScreen extends Component {
             }).then((puzzleArray) => {
                 if(puzzleArray){
                     puzzleArray[19].num_solved = puzzleData[19].num_solved;//set 'Eggplant' to its current state
-                    puzzleArray[19].solved = puzzleData[19].solved;
                     puzzleArray[19].type = puzzleData[19].type;
                     puzzleArray[19].show = puzzleData[19].show;
                     this.setState({ pData: puzzleArray });
