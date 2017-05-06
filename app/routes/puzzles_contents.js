@@ -99,6 +99,7 @@ const BORDER_RADIUS = CELL_PADDING * .3;
 const KEY_daily_solved_array = 'solved_array';
 const KEY_show_score = 'showScoreKey';
 const KEY_Score = 'scoreKey';
+const KEY_NextBonus = 'bonusKey';
 const KEY_Color = 'colorKey';
 const KEY_midnight = 'midnight';
 const KEY_Premium = 'premiumOrNot';
@@ -131,6 +132,8 @@ class PuzzleContents extends Component{
             showFullDialog: true,
             moveToCompleted: 'true',
             strWhereToSend: '',
+            strOpenPuzzles: '',
+            openClose: true,
             indexSelected: 0,
             todayFull: null,
             isPremium: this.props.isPremium,
@@ -138,6 +141,7 @@ class PuzzleContents extends Component{
             menuImage: require('../images/menu.png'),
             total_score: 0,
             total_opacity: 1,
+            nextBonus: 0,
             puzzleData: this.props.puzzleData,
             dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
         };
@@ -145,6 +149,19 @@ class PuzzleContents extends Component{
     }
     componentDidMount() {
         Orientation.lockToPortrait();
+        AsyncStorage.getItem(KEY_NextBonus).then((nb) => {//get next bonus level, compare to current total score, send to Splash if needs to update
+            this.setState({nextBonus: parseInt(nb, 10)});
+            return AsyncStorage.getItem(KEY_Score);
+        }).then((ts) => {//total score
+            let myTotal = parseInt(ts, 10);
+            this.setState({total_score: myTotal});
+            if (myTotal > this.state.nextBonus){
+                this.props.navigator.replace({
+                    id: 'splash screen',
+                    passProps: {motive: 'initialize'}
+                });
+            }
+        });
         AppState.addEventListener('change', this.handleAppStateChange);
         var nowISO = moment().valueOf();
         var tonightMidnight = moment().endOf('day').valueOf();
@@ -178,17 +195,6 @@ class PuzzleContents extends Component{
             }else{
                 try {
                     AsyncStorage.setItem(KEY_show_score, '1');
-                } catch (error) {
-                    window.alert('AsyncStorage error: ' + error.message);
-                }
-            }
-            return AsyncStorage.getItem(KEY_Score);
-        }).then((total) => {
-            if (total !== null){
-                this.setState({total_score: parseInt(total, 10)});
-            }else{
-                try {
-                    AsyncStorage.setItem(KEY_Score, '0');
                 } catch (error) {
                     window.alert('AsyncStorage error: ' + error.message);
                 }
@@ -273,9 +279,7 @@ class PuzzleContents extends Component{
                     }
                     this.props.navigator.replace({
                         id: 'splash screen',
-                        passProps: {
-                            motive: 'initialize'
-                        }
+                        passProps: {motive: 'initialize'}
                     });
                 }else{
                     try {
@@ -604,15 +608,19 @@ class PuzzleContents extends Component{
         if(type == 'mypack' || type == 'solved'){
             let strSolvedOrNot = (type == 'solved')?'Move to My Puzzles':'Move to Completed';
             let sendToCompleted = (type == 'solved')?'false':'true';
+            let strOpenOrClose = (parseInt(puzzleData[index].num_solved, 10) < parseInt(puzzleData[index].num_puzzles, 10))?'Open all puzzles':'Open first only';
+            let openOrClose = (strOpenOrClose == 'Open all puzzles')? true:false;
 
             this.setState({ shouldShowDialog: true,
                             showFullDialog: true,
                             strWhereToSend: strSolvedOrNot,
                             moveToCompleted: sendToCompleted,
-                            indexSelected: index
+                            indexSelected: index,
+                            strOpenPuzzles: strOpenOrClose,
+                            openClose: openOrClose
             });
         }else{
-            this.setState({shouldShowDialog: true,
+            this.setState({ shouldShowDialog: true,
                             showFullDialog: false
             });
         }
@@ -632,13 +640,19 @@ class PuzzleContents extends Component{
                 return;
             case 1:
                 let whatToCallIt = (this.state.moveToCompleted == 'true')?'solved':'mypack';
-                puzzleData[this.state.indexSelected].solved = this.state.moveToCompleted;
                 puzzleData[this.state.indexSelected].type = whatToCallIt;
                 break;
             case 2:
-                puzzleData[this.state.indexSelected].show = 'false';
+                if(this.state.openClose){
+                    puzzleData[this.state.indexSelected].num_solved = puzzleData[this.state.indexSelected].num_puzzles;
+                }else{
+                    puzzleData[this.state.indexSelected].num_solved = '0';
+                }
                 break;
             case 3:
+                puzzleData[this.state.indexSelected].show = 'false';
+                break;
+            case 4:
                 for (let showPuzzles=19; showPuzzles<puzzleData.length; showPuzzles++){
                     puzzleData[showPuzzles].show = 'true';
                 }
@@ -686,7 +700,7 @@ class PuzzleContents extends Component{
                                         renderRow={(rowData) =>
                                              <View>
                                                  <TouchableHighlight onPress={() => this.onSelect(rowData.index, rowData.title, rowData.bg_color, rowData.product_id)}
-                                                                     onLongPress={()=> this.showDialog(rowData.index, rowData.type, rowData.solved)}
+                                                                     onLongPress={()=> this.showDialog(rowData.index, rowData.type)}
                                                                      style={[container_styles.launcher, this.bg(rowData.bg_color), this.lightBorder(rowData.bg_color, rowData.type)]}
                                                                      underlayColor={rowData.bg_color} >
                                                      <Text style={[container_styles.launcher_text, this.getTextColor(rowData.bg_color, rowData.index)]}>{this.getTitle(rowData.title, rowData.num_puzzles, rowData.index)}</Text>
@@ -697,7 +711,7 @@ class PuzzleContents extends Component{
                              />
                         </View>
                         {this.state.shouldShowDialog &&
-                                <ContentsDialog showFull={this.state.showFullDialog} onPress={(num)=>{ this.onDialogSelect(num); }} item1={this.state.strWhereToSend} item2={'Hide from Contents'} item3={'Show hidden packs'}/>
+                                <ContentsDialog showFull={this.state.showFullDialog} onPress={(num)=>{ this.onDialogSelect(num); }} item1={this.state.strWhereToSend} item2={this.state.strOpenPuzzles} item3={'Hide from Contents'} item4={'Show hidden packs'} />
                         }
                      </View>
                 </SideMenu>
