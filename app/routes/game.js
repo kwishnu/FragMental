@@ -87,17 +87,17 @@ const plink2 = new Sound('plink.mp3', Sound.MAIN_BUNDLE, (error) => {
     window.alert('Sound file not found');
   }
 });
-const slide = new Sound('slide.mp3', Sound.MAIN_BUNDLE, (error) => {
+const slide = new Sound('swish.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
   }
 });
-const blat = new Sound('blat.mp3', Sound.MAIN_BUNDLE, (error) => {
+const blat = new Sound('block.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
   }
 });
-const fanfare = new Sound('fanfare.mp3', Sound.MAIN_BUNDLE, (error) => {
+const fanfare = new Sound('aah.mp3', Sound.MAIN_BUNDLE, (error) => {
   if (error) {
     window.alert('Sound file not found');
   }
@@ -136,7 +136,7 @@ class Game extends Component {
             forwardBackOpacity: 0,
             pan: new Animated.ValueXY(),
             fadeAnim: new Animated.Value(1),
-            goLeft: 250,
+            goLeft: 200,
             columnSort: -1,
             answer0: '',
             answer1: '',
@@ -540,14 +540,14 @@ class Game extends Component {
                 entire_puzzleSolved = true;
                 colSort++;
                 switch(gl){//cycle through animation directions
-                    case 250:
+                    case 200:
                         gl = -100;
                         break;
                     case -100:
                         gl = 20;
                         break;
                     case 20:
-                        gl = 250;
+                        gl = 200;
                         break;
                     default: gl = -100;
                 }
