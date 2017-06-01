@@ -333,8 +333,8 @@ class PuzzleLaunch extends Component{
     bg(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         if (onThis = numPuzzles){
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10);
+         if (onThis == numPuzzles){
             strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#079707';
             return {
                 backgroundColor: strToReturn
@@ -354,12 +354,10 @@ class PuzzleLaunch extends Component{
     getUnderlay(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         if (onThis = numPuzzles){
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10);
+         if (onThis == numPuzzles){
             strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#079707';
-            return {
-                backgroundColor: strToReturn
-            };
+            return strToReturn;
          }
          if(num==onThis){
              strToReturn='#00FF00';
@@ -374,12 +372,10 @@ class PuzzleLaunch extends Component{
     getBorder(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
-         if (onThis = numPuzzles){
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10);
+         if (onThis == numPuzzles){
             strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#00a700';
-            return {
-                backgroundColor: strToReturn
-            };
+            return {borderColor: strToReturn};
          }
          if(num==onThis){
              strToReturn='#0F0';
