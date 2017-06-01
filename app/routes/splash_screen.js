@@ -32,6 +32,7 @@ import { normalize }  from '../config/pixelRatio';
 //'ws://52.52.205.96:80/websocket'; <= Publications...publication AllData, collections dataA...dataZ; MeteorApp
 //'ws://10.0.0.207:3000/websocket'; <= localhost
 var METEOR_URL = 'ws://52.52.205.96:80/websocket';
+var ATLAS_URL = 'mongodb://kwish:Sadiedog11!@fmcluster-shard-00-00-zurft.mongodb.net:27017,fmcluster-shard-00-01-zurft.mongodb.net:27017,fmcluster-shard-00-02-zurft.mongodb.net:27017/admin?ssl=true&replicaSet=FMCluster-shard-0&authSource=admin';
 
 class SplashScreen extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ class SplashScreen extends Component {
             notif_time: '',
             hasPremium: 'false',
             connectionBool: true,
-            isLoading: true,
+//            isLoading: true,
             getPurchased: false,
             nextBonus: '0',
             totalScore: '0',
@@ -166,10 +167,10 @@ class SplashScreen extends Component {
                 }
                 return NetInfo.isConnected.fetch();
             }).then((isConnected) => {//if has internet connection, get daily puzzles and current app object
-                if(isConnected){
+                if(Meteor.status().status == 'connected'){//isConnected && ...
                     return this.getData(this.state.pData, startNum);//load daily puzzles
                 }else{//still let have access to 30 days already on device even if no internet connection
-                    AsyncStorage.getItem(KEY_hasPremium).then((prem) => {
+                    AsyncStorage.getItem(KEY_Premium).then((prem) => {
                         premiumBool = 'false';
                         if(prem == 'true'){
                             puzzleData[17].show = 'false';
@@ -194,7 +195,7 @@ class SplashScreen extends Component {
                 }
             }).then((isConnected) => {//retrieve purchased packs here
                 var promises = [];
-                if(isConnected && this.state.getPurchased){
+                if(isConnected && this.state.getPurchased && Meteor.status().status == 'connected'){
                     var packNames = [];
                     var packsOnDevice = [];
                     for (var k=0; k<this.state.pData.length; k++){
@@ -256,8 +257,9 @@ class SplashScreen extends Component {
             }).then(() => {
                 var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
                 this.setNotifications();
-                this.setState({isLoading: false});
-                this.gotoScene(whereToGo, this.state.pData);
+//                this.setState({isLoading: false});
+                setTimeout(() => {this.gotoScene(whereToGo, this.state.pData)}, 500);//Hate to do this, but avoids warning of setting state on mounted component
+                //this.gotoScene(whereToGo, this.state.pData);
             }).catch(function(error) {
                 window.alert('263: ' + error.message);
             });
@@ -324,6 +326,7 @@ class SplashScreen extends Component {
                     var title = [];
                     var index = [];
                     var num_puzzles = [];
+                    var solved = [[],[],[]];
                     var product_id = '';
                     var bg_color = [];
                     var puzzles = [[],[],[]];
@@ -346,6 +349,11 @@ class SplashScreen extends Component {
                             }
                         }
                     }
+                    for (var sol=0; sol<3; sol++){
+                        var arr = new Array(parseInt(num_puzzles[sol])).fill(0);
+                        solved[sol] = arr;
+                    }
+
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
                                 const d_puzzles = Meteor.collection('dataC').find({pack: combinedName});
@@ -372,7 +380,7 @@ class SplashScreen extends Component {
                                         show: 'true',
                                         num_puzzles: num_puzzles[push],
                                         num_solved: '0',
-                                        solved: 'false',
+                                        solved: solved[push],
                                         product_id: ID,
                                         bg_color: bg_color[push],
                                         puzzles: puzzles[push]
@@ -390,6 +398,7 @@ class SplashScreen extends Component {
                     var title = '';
                     var index = '';
                     var num_puzzles = '';
+                    var solved = [];
                     var bg_color = '';
                     var puzzles = [];
                     if(typeof name == 'string'){//regular pack
@@ -420,6 +429,9 @@ class SplashScreen extends Component {
                             }
                         }
                     }
+                    var arr = new Array(parseInt(num_puzzles)).fill(0);
+                    solved = arr;
+
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
                             const d_puzzles = Meteor.collection('dataP').find({pack: strName});
@@ -438,7 +450,7 @@ class SplashScreen extends Component {
                                 show: 'true',
                                 num_puzzles: num_puzzles,
                                 num_solved: '0',
-                                solved: 'false',
+                                solved: solved,
                                 product_id: ID,
                                 bg_color: bg_color,
                                 puzzles: puzzles
@@ -482,7 +494,7 @@ class SplashScreen extends Component {
             }
         }
         var connected = this.state.connectionBool;
-        this.setState({isLoading: false});
+//        this.setState({isLoading: false});
         this.props.navigator.replace({
             id: whichScene,
             passProps: {
@@ -514,20 +526,20 @@ class SplashScreen extends Component {
 
 
     render() {
-        if(this.state.isLoading == true){
+//        if(this.state.isLoading == true){
             return(
                 <View style={ splash_styles.container }>
                     <Image style={{ width: normalize(height/4), height: normalize(height/4) }} source={require('../images/icon_round.png')} />
                     <ActivityIndicator style={splash_styles.spinner} animating={true} size={'large'}/>
                 </View>
             )
-        }else{
-            return (
-                <View style={ splash_styles.container }>
-                    <Image style={{ width: normalize(height/4), height: normalize(height/4) }} source={require('../images/icon_round.png')} />
-                </View>
-            );
-        }
+//        }else{
+//            return (
+//                <View style={ splash_styles.container }>
+//                    <Image style={{ width: normalize(height/4), height: normalize(height/4) }} source={require('../images/icon_round.png')} />
+//                </View>
+//            );
+//        }
     }
 }
 
