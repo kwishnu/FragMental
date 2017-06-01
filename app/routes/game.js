@@ -568,6 +568,7 @@ class Game extends Component {
                     if(this.props.fromWhere == 'puzzle launcher'){
                         var newNumSolved = (parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10) + 1).toString();
                         this.props.puzzleData[this.props.dataElement].num_solved = newNumSolved;
+                        this.props.puzzleData[this.props.dataElement].solved[this.state.index] = 1;
                         var onLastGameInPack=(parseInt(this.state.index, 10) + 1 == parseInt(this.props.puzzleData[this.props.dataElement].num_puzzles, 10))?true:false;
                         if(onLastGameInPack){this.props.puzzleData[this.props.dataElement].type = 'solved';}
                         try {
