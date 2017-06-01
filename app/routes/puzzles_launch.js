@@ -333,21 +333,34 @@ class PuzzleLaunch extends Component{
     bg(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         if (onThis = numPuzzles){
+            strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#079707';
+            return {
+                backgroundColor: strToReturn
+            };
+         }
          if(num==onThis){
              strToReturn='#00FF00';
              }else if(num<onThis){
              strToReturn='#079707';
              }else{
              strToReturn='#999ba0';
-             }
-
+         }
          return {
-         backgroundColor: strToReturn
+             backgroundColor: strToReturn
          };
     }
     getUnderlay(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         if (onThis = numPuzzles){
+            strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#079707';
+            return {
+                backgroundColor: strToReturn
+            };
+         }
          if(num==onThis){
              strToReturn='#00FF00';
              }else if(num<onThis){
@@ -361,6 +374,13 @@ class PuzzleLaunch extends Component{
     getBorder(num){
          var strToReturn='';
          var onThis = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         var numPuzzles = parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10);
+         if (onThis = numPuzzles){
+            strToReturn = (this.props.puzzleData[this.props.dataElement].solved[num] == 0)?'#00FF00':'#00a700';
+            return {
+                backgroundColor: strToReturn
+            };
+         }
          if(num==onThis){
              strToReturn='#0F0';
              }else if(num<onThis){
