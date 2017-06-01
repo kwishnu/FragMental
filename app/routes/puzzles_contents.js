@@ -248,7 +248,7 @@ class PuzzleContents extends Component{
             window.alert('p_c: ' + error.message);
         });
         if (this.props.connectionBool == false){
-            Alert.alert('No Connection', 'Sorry, an internet connection is required to load Daily Puzzles');
+            Alert.alert('No Server Connection', 'Sorry, unable to load Daily Puzzles');
         }
     }
     componentWillUnmount(){
