@@ -56,8 +56,8 @@ class SplashScreen extends Component {
         var puzzleData = [];
         nowISO = moment().valueOf();//determine offset # of days for daily puzzles...
         tonightMidnight = moment().endOf('day').valueOf();
-        var launchDay = moment('2017 04', 'YYYY-MM');//April 1, 2017
-        var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 4/1/2017
+        var launchDay = moment('2017 06', 'YYYY-MM');//June 1, 2017
+        var dayDiff = -launchDay.diff(nowISO, 'days');//# of days since 6/1/2017
         var startNum = dayDiff - 28;
         if(this.props.motive == 'initialize'){
             var ownedPacks = [];
@@ -257,7 +257,6 @@ class SplashScreen extends Component {
             }).then(() => {
                 var whereToGo = (this.state.seenStart == 'true')?'puzzles contents':'start scene';
                 this.setNotifications();
-//                this.setState({isLoading: false});
                 setTimeout(() => {this.gotoScene(whereToGo, this.state.pData)}, 500);//Hate to do this, but avoids warning of setting state on mounted component
                 //this.gotoScene(whereToGo, this.state.pData);
             }).catch(function(error) {
@@ -310,6 +309,8 @@ class SplashScreen extends Component {
                         for (let addExtra=24; addExtra<dataArray.length; addExtra++){//add any extra packs onto data array
                             pd.push(dataArray[addExtra]);
                         }
+                        pd[17].show = dataArray[17].show;
+                        pd[18].show = dataArray[18].show;
                         resolve(pd);
                     },
                     onStop: function () {
@@ -431,7 +432,6 @@ class SplashScreen extends Component {
                     }
                     var arr = new Array(parseInt(num_puzzles)).fill(0);
                     solved = arr;
-
                     const subs = Meteor.subscribe('AllData', {
                         onReady: function () {
                             const d_puzzles = Meteor.collection('dataP').find({pack: strName});
@@ -526,20 +526,12 @@ class SplashScreen extends Component {
 
 
     render() {
-//        if(this.state.isLoading == true){
             return(
                 <View style={ splash_styles.container }>
                     <Image style={{ width: normalize(height/4), height: normalize(height/4) }} source={require('../images/icon_round.png')} />
                     <ActivityIndicator style={splash_styles.spinner} animating={true} size={'large'}/>
                 </View>
             )
-//        }else{
-//            return (
-//                <View style={ splash_styles.container }>
-//                    <Image style={{ width: normalize(height/4), height: normalize(height/4) }} source={require('../images/icon_round.png')} />
-//                </View>
-//            );
-//        }
     }
 }
 
