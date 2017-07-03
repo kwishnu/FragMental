@@ -125,7 +125,6 @@ class PuzzleLaunch extends Component{
         var headColor =  shadeColor(bgC, -20);
         var titletextColor = invertColor(headColor, true);
         titletextColor = (bgC == '#09146d')?'#e3e004':titletextColor;
-
         this.setState({
             bgColor: fieldColor,
             headerColor: headColor,
@@ -409,7 +408,8 @@ class PuzzleLaunch extends Component{
             });
         });
     }
-    onSelect(index) {
+    onSelect(strIndex) {
+        let index = parseInt(strIndex);
         if(index>parseInt(this.props.puzzleData[this.props.dataElement].num_solved, 10))return;
         this.props.navigator.replace({
             id: 'game board',
@@ -463,7 +463,7 @@ class PuzzleLaunch extends Component{
                                              <TouchableHighlight onPress={() => this.onSelect(rowData)}
                                                                  underlayColor={() => this.getUnderlay(rowData)}
                                                                  style={[container_styles.launcher, this.getBorder(rowData), this.bg(rowData)]} >
-                                                 <Text style={ styles.puzzle_text_large }>{rowData + 1}</Text>
+                                                 <Text style={ styles.puzzle_text_large }>{String(rowData + 1)}</Text>
                                              </TouchableHighlight>
                                          </View>}
                              />
