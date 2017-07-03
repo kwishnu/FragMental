@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight, ListView, BackAndroid, AsyncStorage, NetInfo } from 'react-native';
 //import Row from '../components/Row';
+import Meteor from 'react-native-meteor';
 import Button from '../components/Button';
 import configs from '../config/configs';
 import { normalize, normalizeFont }  from '../config/pixelRatio';
@@ -111,7 +112,7 @@ module.exports = class StoreListView extends Component {
     }
 
     render() {
-        const rows = this.dataSource.cloneWithRows(this.props.availableList);
+       const rows = this.dataSource.cloneWithRows(this.props.availableList);
        if(this.state.expand){
             return (
                 <View style={store_styles.container}>
@@ -174,23 +175,29 @@ module.exports = class StoreListView extends Component {
     }
 };
 startPurchase = (item_name, itemID, nav) => {
-    InAppBilling.open()
-    .then(() => InAppBilling.purchase(itemID))
-    .then((details) => {
-        nav.pop({});
-        nav.replace({
-            id: 'splash screen',
-            passProps: {
-                motive: 'purchase',
-                packName: item_name,
-                productID: itemID
-            }
-        });
-        console.log("You purchased: ", details)
-        return InAppBilling.close()
-    }).catch((err) => {
-        console.log(err);
-        return InAppBilling.close()
+    NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected && Meteor.status().status == 'connected'){
+            InAppBilling.open()
+            .then(() => InAppBilling.purchase(itemID))
+            .then((details) => {
+                nav.pop({});
+                nav.replace({
+                    id: 'splash screen',
+                    passProps: {
+                        motive: 'purchase',
+                        packName: item_name,
+                        productID: itemID
+                    }
+                });
+                console.log("You purchased: ", details)
+                return InAppBilling.close()
+            }).catch((err) => {
+                console.log(err);
+                return InAppBilling.close()
+            });
+        }else{
+            Alert.alert('Not Connected', `Sorry, we can't reach our servers right now. Please try again later!`);
+        }
     });
 };
 const Row = ({props, navigator}) => (
