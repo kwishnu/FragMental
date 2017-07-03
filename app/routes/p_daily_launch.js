@@ -14,8 +14,6 @@ function shuffleArray(array) {
     return array;
 }
 var puzzleData = {};
-var deepCopy = require('../data/deepCopy.js');
-var fragData = require('../data/objPassed.js');
 const SideMenu = require('react-native-side-menu');
 const Menu = require('../nav/menu');
 const styles = require('../styles/styles');
