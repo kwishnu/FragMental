@@ -604,7 +604,6 @@ class PuzzleContents extends Component{
     showDialog(index, type){
         if(index < 19)return;
         Vibration.vibrate(25);
-        BackAndroid.addEventListener('hardwareBackPress', this.handleHardwareBackButton);
         if(type == 'mypack' || type == 'solved'){
             let strSolvedOrNot = (type == 'solved')?'Move to My Puzzles':'Move to Completed';
             let sendToCompleted = (type == 'solved')?'false':'true';
@@ -711,7 +710,7 @@ class PuzzleContents extends Component{
                              />
                         </View>
                         {this.state.shouldShowDialog &&
-                                <ContentsDialog showFull={this.state.showFullDialog} onPress={(num)=>{ this.onDialogSelect(num); }} item1={this.state.strWhereToSend} item2={this.state.strOpenPuzzles} item3={'Hide from Contents'} item4={'Show hidden packs'} />
+                            <ContentsDialog showFull={this.state.showFullDialog} onPress={(num)=>{ this.onDialogSelect(num); }} item1={this.state.strWhereToSend} item2={this.state.strOpenPuzzles} item3={'Hide from Contents'} item4={'Show hidden packs'} />
                         }
                      </View>
                 </SideMenu>
