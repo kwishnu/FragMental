@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import configs from '../config/configs';
-import { normalizeFont }  from '../config/pixelRatio';
+import { normalize, normalizeFont }  from '../config/pixelRatio';
 const { width, height } = require('Dimensions').get('window');
 
 module.exports = StyleSheet.create({
@@ -20,6 +20,12 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#ffffff',
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: normalize(height*0.077),
+        height: normalize(height*0.077)
     },
     puzzle_text_large: {
         color: '#000',

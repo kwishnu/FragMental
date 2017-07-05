@@ -336,11 +336,11 @@ class DailyLaunch extends Component{
                         onChange={ (isOpen) => this.updateMenuState(isOpen) }>
                 <View style={ [container_styles.container, this.border('#070f4e')] }>
                     <View style={ container_styles.header }>
-                        <Button style={{left: 10}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Button style={styles.button} onPress={ () => this.handleHardwareBackButton() }>
                             <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}</Text>
-                        <Button style={{right: 15}}>
+                        <Button style={styles.button}>
                             <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                     </View>

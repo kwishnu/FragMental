@@ -75,11 +75,11 @@ module.exports = class Settings extends Component {
         return (
             <View style={about_styles.container}>
                 <View style={ about_styles.header }>
-                    <Button style={{left: height*.02}} onPress={ () => this.goSomewhere() }>
+                    <Button style={styles.button} onPress={ () => this.goSomewhere() }>
                         <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                     <Text style={styles.header_text} >About FragMental</Text>
-                    <Button style={{right: height*.02}}>
+                    <Button style={styles.button}>
                         <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                     </Button>
                 </View>

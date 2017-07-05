@@ -680,11 +680,11 @@ class PuzzleContents extends Component{
                 <SideMenu menu={ menu } isOpen={ this.state.isOpen } onChange={ (isOpen) => this.updateMenuState(isOpen) }>
                     <View style={ [container_styles.container, this.border('#070f4e')] }>
                         <View style={ container_styles.header }>
-                            <Button style={{left: height*.02}} onPress={ () => this.toggle() }>
-                                <Image source={this.state.menuImage} style={ { width: normalize(height/15), height: normalize(height/15) } } />
+                            <Button style={styles.button} onPress={ () => this.toggle() }>
+                                <Image source={this.state.menuImage} style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                             </Button>
                             <Image source={ require('../images/logo2.png') } style={ { width: normalize(height * .25), height: normalize(height * .06) } } />
-                            <Button style={{right: height*.02}}>
+                            <Button style={styles.button}>
                                 <Image source={ require('../images/no_image.png') } style={ { width: normalize(height/15), height: normalize(height/15) } } />
                             </Button>
                             <View style={ container_styles.total_score }>

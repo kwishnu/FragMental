@@ -243,12 +243,12 @@ module.exports = class Settings extends Component {
             return (
                 <View style={settings_styles.container}>
                     <View style={ settings_styles.header }>
-                        <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Button style={styles.button} onPress={ () => this.handleHardwareBackButton() }>
                             <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                         <Text style={styles.header_text} >Settings
                         </Text>
-                        <Button style={{right: height*.02}}>
+                        <Button style={styles.button}>
                             <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*0.07), height: normalize(height*0.07) } } />
                         </Button>
                     </View>

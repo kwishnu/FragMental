@@ -77,12 +77,12 @@ module.exports = class Social extends Component {
         return (
                 <View style={[social_styles.container, {borderColor: this.props.color}]}>
                     <View style={ [social_styles.header, {backgroundColor: this.props.color}] }>
-                        <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Button style={styles.button} onPress={ () => this.handleHardwareBackButton() }>
                             <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
-                        <Button style={{right: height*.02}}>
+                        <Button style={styles.button}>
                             <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                     </View>

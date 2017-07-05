@@ -117,12 +117,12 @@ module.exports = class StoreListView extends Component {
             return (
                 <View style={store_styles.container}>
                     <View style={ store_styles.header }>
-                        <Button style={{left: height*.02}} onPress={ () => this.handleHardwareBackButton() }>
+                        <Button style={styles.button} onPress={ () => this.handleHardwareBackButton() }>
                             <Image source={ require('../images/arrow_back.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                         <Text style={styles.header_text} >{this.props.title}
                         </Text>
-                        <Button style={{right: height*.02}}>
+                        <Button style={styles.button}>
                             <Image source={ require('../images/no_image.png') } style={ { width: normalize(height*.07), height: normalize(height*.07) } } />
                         </Button>
                     </View>
@@ -132,7 +132,9 @@ module.exports = class StoreListView extends Component {
                                 <Text style={store_styles.info_text} >{this.state.infoString}</Text>
                             </View>
                             <View style={ store_styles.button_container }>
-                                <Button style={ store_styles.button } onPress={ () => this.toggleInfoBox(this.state.expand) }>
+                                <View style={{flex: 3}}>
+                                </View>
+                                <Button style={ store_styles.gotit_button } onPress={ () => this.toggleInfoBox(this.state.expand) }>
                                         <Text style={[store_styles.button_text, {color: 'red'}]}> X   </Text>
                                         <Text style={[store_styles.button_text, {color: '#ffffff'}]} > Got it!</Text>
                                 </Button>
@@ -235,19 +237,26 @@ const store_styles = StyleSheet.create({
         width: window.width,
         backgroundColor: '#12046c',
     },
-    button: {
+    button_container: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        width: width * 0.75,
+        backgroundColor: 'transparent',
+    },
+    gotit_button: {
+        flex: 2,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#666666',
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 8,
-        paddingRight: 8,
+        paddingVertical: 10
     },
     button_text: {
         fontSize: configs.LETTER_SIZE * .6,
         fontWeight: 'bold',
+        marginVertical: 10
     },
     listview_container: {
         flex: 12,
@@ -273,14 +282,6 @@ const store_styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: width * 0.7,
-        backgroundColor: 'transparent',
-    },
-    button_container: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        width: width * 0.75,
         backgroundColor: 'transparent',
     },
     listview: {

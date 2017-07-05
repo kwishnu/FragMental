@@ -1089,13 +1089,13 @@ class Game extends Component {
                 <View style={{flex: 1}}>
                     <View style={ [game_styles.container, {backgroundColor: this.state.bgColor}, this.darkBorder(this.state.bgColor)] }>
                         <View style={ [game_styles.game_header, {backgroundColor: this.state.headerColor}]}>
-                            <Button style={{left: 15}} onPress={ () => this.closeGame(this.props.fromWhere) }>
-                                <Image source={ require('../images/close.png') } style={{ width: normalize(height/15), height: normalize(height/15) }} />
+                            <Button style={styles.button} onPress={ () => this.closeGame(this.props.fromWhere) }>
+                                <Image source={ require('../images/close.png') } style={{ width: normalize(height*.07), height: normalize(height*.07) }} />
                             </Button>
                             <Text style={[styles.header_text, {color: this.state.titleColor}]}>{this.state.title}
                             </Text>
-                            <Button style={{right: 15}} onPress={ () => this.showDropdown() }>
-                                <Image source={this.state.dropdownImage} style={{ width: normalize(height/15), height: normalize(height/15) }} />
+                            <Button style={styles.button} onPress={ () => this.showDropdown() }>
+                                <Image source={this.state.dropdownImage} style={{ width: normalize(height*.07), height: normalize(height*.07) }} />
                             </Button>
                         </View>
 
